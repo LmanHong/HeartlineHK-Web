@@ -1,0 +1,116 @@
+.menu-btn-container .menu-btn img{
+    width: 30px;
+    position: absolute;
+    right: 20px;
+    top: calc(50vh - 15px);
+    z-index: 1;
+}
+
+.menu-btn-container .background{
+    position: absolute;
+    top: calc(50vh - 250px);
+    right: -40px;
+    height: 500px;
+    
+}
+
+.menu-content{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: var(--mainblue);
+    width: 100vw;
+    height: 100vh;
+}
+
+a.logo{
+    text-decoration: none;
+}
+
+.logo .background{
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    left: 20px;
+    top: 20px;
+}
+
+.logo .front{
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left:  25px;
+    top: 8px;
+    z-index: 1;
+}
+
+.logo .name{
+    position: relative;
+    display: inline-block;
+    left: 110px;
+    font-size: 2rem;
+    width: fit-content;
+    color: white;
+}
+
+.chat-btn{
+    height: 60px;
+    position: absolute;
+    top: 20px;
+    right: 40px;
+}
+
+.fa{
+    font-size: 2.5rem;
+    color: white;
+    text-decoration: none;
+    position: absolute;
+    top: 30px;
+}
+
+.fa-facebook{
+    right: 140px;
+}
+
+.fa-instagram{
+    right: 180px;
+}
+
+.menu-content .menu-btn img{
+    width: 30px;
+    position: absolute;
+    right: 20px;
+    top: calc(50vh - 15px);
+    z-index: 1;
+}
+
+.menu-content .menu-btn-background{
+    position: absolute;
+    top: calc(50vh - 250px);
+    right: -40px;
+    height: 500px;
+}
+
+ul.menu-links{
+    padding-top: 20vh;
+    padding-left: 10vw;
+    width: fit-content;
+    list-style-type: none;
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+}
+
+.menu-links .link{
+    height: 5rem;
+    width: 300px;
+}
+
+.menu-links .link a{
+    text-decoration: none;
+    color: white;
+    font-size: 3rem;
+    margin:20px 20px;
+
+}
