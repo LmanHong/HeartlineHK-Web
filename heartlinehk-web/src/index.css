@@ -7,6 +7,7 @@
 
 html{
   --mainblue: #1a2c43;
+  overflow-x: hidden;
 }
 
 body {
@@ -23,8 +24,4 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-.display-none{
-  display: none;
 }

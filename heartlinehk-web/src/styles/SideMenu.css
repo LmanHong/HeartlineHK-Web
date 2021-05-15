@@ -1,3 +1,4 @@
+/* unopened menu button style  */
 .menu-btn-container .menu-btn img{
     width: 30px;
     position: absolute;
@@ -14,10 +15,44 @@
     
 }
 
+/* Opened side menu style */
+
+@keyframes slidein{
+    0% {
+        transform: translateX(0);
+    }
+    10%{
+        transform: translateX(-50%);
+    }
+    100%{
+        transform: translateX(-150%);
+    }
+}
+
+@keyframes slideout{
+    0% {
+        transform: translateX(-150%);
+    }
+    90%{
+        transform: translateX(-50%);
+    }
+    100%{
+        transform: translateX(0);
+    }
+}
+
+.menu-content.opened{
+    animation: slidein 0s forwards;
+}
+
+.menu-content:not(.opened){
+    animation: slideout 0s forwards;
+}
+
 .menu-content{
     position: fixed;
     top: 0;
-    left: 0;
+    left: 150%;
     z-index: 2;
     background-color: var(--mainblue);
     width: 100vw;
@@ -61,7 +96,7 @@ a.logo{
     right: 40px;
 }
 
-.fa{
+.nav-item.fa{
     font-size: 2.5rem;
     color: white;
     text-decoration: none;
@@ -87,6 +122,7 @@ a.logo{
 
 .menu-content .menu-btn-background{
     position: absolute;
+    z-index: 0;
     top: calc(50vh - 250px);
     right: -40px;
     height: 500px;
@@ -113,4 +149,31 @@ ul.menu-links{
     font-size: 3rem;
     margin:20px 20px;
 
+}
+
+.menu-links .link a .fa-caret-down{
+    margin: 0 10px;
+}
+
+/* Dropdown menu styles */
+
+.dropdown-trigger:hover .dropdown-menu{
+    opacity: 1;
+}
+
+ul.dropdown-menu{
+    position: absolute;
+    left: 10vw; 
+    top: calc(120px + 20vh + 14rem);
+    list-style-type: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.dropdown-menu .dropdown-link{
+    height: 2.5rem;
+}
+
+.dropdown-menu .dropdown-link a{
+    font-size: 1.5rem;
 }

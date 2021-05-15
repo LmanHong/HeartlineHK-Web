@@ -1,0 +1,77 @@
+.footer-container{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    position: sticky;
+    bottom: 0;
+    width: calc(100vw - 40px);
+    padding-left: 40px;
+    background-image: url('../img/footer/footer\ w\ pattern.PNG');
+    background-repeat: repeat-x;
+    height: 200px;
+}
+
+.footer-container .back-top-btn{
+    position: absolute;
+    left: calc(50% - 0.75rem - 40px);
+    bottom: 200px;
+    text-decoration: none;
+    color: var(--mainblue);
+    font-size: 1.5rem;
+}
+
+.footer-container .back-top-btn::after{
+    position: absolute;
+    bottom: -15px;
+    left: -23px;
+    width: 75px;
+    content: "back to top";
+    font-size: 1rem;
+}
+
+.footer-container .sponsor{
+    position: relative;
+    top: 40%;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.footer-container .terms-and-conditions{
+    position: relative;
+    top: 40%;
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.footer-container .copyright{
+    position: relative;
+    top: 32%;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.footer-container .telephone{
+    position: relative;
+    top: 12%;
+    right: 3%;
+    float: right;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.footer-container .fa:not(.back-top-btn){
+    position: relative;
+    top: 10%;
+    right: 3%;
+    margin-left: 15px;
+    float: right;
+    color: white;
+    font-size: 1.8rem;
+    text-decoration: none;
+}

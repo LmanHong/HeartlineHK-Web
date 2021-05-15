@@ -1,0 +1,12 @@
+.home{
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: fit-content;
+}
+
+.carousel{
+    position: relative;
+    height: 500px;
+    
+}
