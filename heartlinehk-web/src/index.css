@@ -5,6 +5,50 @@
   font-style: normal;
 }
 
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-Normal.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-ExtraLight.ttf');
+  font-weight:200;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-Light.ttf');
+  font-weight:300;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-Medium.ttf');
+  font-weight:500;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-Bold.ttf');
+  font-weight:bold;
+  font-style: normal;
+}
+
+@font-face{
+  font-family: 'GenJyuuGothic';
+  src: url('fonts/GenJyuuGothic-Heavy.ttf');
+  font-weight:900;
+  font-style: normal;
+}
+
+
+
 html{
   --mainblue: #1a2c43;
   overflow-x: hidden;

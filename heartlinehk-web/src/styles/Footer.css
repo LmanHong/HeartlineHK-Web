@@ -1,5 +1,5 @@
 .footer-container{
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    font-family: 'GenJyuuGothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
     position: sticky;
@@ -13,7 +13,8 @@
 
 .footer-container .back-top-btn{
     position: absolute;
-    left: calc(50% - 0.75rem - 40px);
+    margin-left: 50%;
+    left: -0.75rem;
     bottom: 200px;
     text-decoration: none;
     color: var(--mainblue);

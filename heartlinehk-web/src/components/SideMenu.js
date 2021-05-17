@@ -51,7 +51,7 @@ const SideMenu = () =>{
                 <img src={onbackground} alt={onbackground} className="menu-btn-background" />
 
                 <ul className="menu-links">
-                    <li className="link"><Link to="/" onClick={closeSideMenu}>關於我們</Link></li>
+                    <li className="link"><Link to="/about-us" onClick={closeSideMenu}>關於我們</Link></li>
                     <li className="link"><Link to="/" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
                         <a href="#">支持我們<i className="fa fa-caret-down"></i></a>

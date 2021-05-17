@@ -22,19 +22,19 @@
         transform: translateX(0);
     }
     10%{
-        transform: translateX(-50%);
+        transform: translateX(-50vw);
     }
     100%{
-        transform: translateX(-150%);
+        transform: translateX(-150vw);
     }
 }
 
 @keyframes slideout{
     0% {
-        transform: translateX(-150%);
+        transform: translateX(-150vw);
     }
     90%{
-        transform: translateX(-50%);
+        transform: translateX(-50vw);
     }
     100%{
         transform: translateX(0);
@@ -52,7 +52,7 @@
 .menu-content{
     position: fixed;
     top: 0;
-    left: 150%;
+    left: 150vw;
     z-index: 2;
     background-color: var(--mainblue);
     width: 100vw;
