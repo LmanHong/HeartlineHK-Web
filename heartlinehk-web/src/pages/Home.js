@@ -98,7 +98,7 @@ const Home = () =>{
                 </div>
             </div>
             <div className="learn-more-container">
-                <p className="sub-title">了解更多...</p>
+                <h1 className="sub-title">了解更多...</h1>
                 <div className="learn-more-links">
                     <Link to="/about-us" className="link">
                         <img src={aboutus} alt={aboutus} className="link-image" />

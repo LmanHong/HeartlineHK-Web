@@ -1,0 +1,181 @@
+.about-us{
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: fit-content;
+}
+
+.principles-container, .how-to-use-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 50px 0;
+    color: var(--mainblue);
+}
+
+/* Main text and logo in About Us styles */
+
+.about-us .main-text{
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    padding-top: 100px;
+    color: var(--mainblue);
+}
+
+.about-us .main-text h1{
+    position: absolute;
+    top: 0;
+    left: calc(50% - 5rem);
+    font-size: 2.5rem;
+    font-weight: normal;
+    text-align: center;
+    background-image: url('../img/Pages/2\ 關於我們/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+}
+
+.about-us .main-text p{
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    margin: 0 auto;
+    text-align: start;
+    height: fit-content;
+}
+
+.about-us .main-text .logo{
+    height: 250px;
+}
+
+/* 4 Principles styles */
+
+
+
+.principles-container .sub-title{
+    font-size: 2.5rem;
+    font-weight: normal;
+}
+
+.principles-container .principles-list{
+    margin:0 auto;
+    width: 80%;
+    list-style: none;
+}
+
+.principles-list .principle{
+    width: 100%;
+    height: 100px;
+    display: inline-grid;
+    column-gap: 20px;
+    grid-template-rows: 50px 50px;
+    align-content: center;
+}
+
+.principles-list .principle img{
+    height: 100px;
+    grid-row: 1 / span 2;
+}
+
+.principles-list .principle p{
+    font-family: 'GenJyuuGothic';
+    margin-top: 0;
+    margin-bottom: 0;
+    width: fit-content;
+    height: fit-content;
+}
+
+.principles-list .principle .name{
+    font-size: 1.3rem;
+    color: var(--mainblue);
+    border-radius: 5px;
+    padding: 0 15px;
+    margin-top: 15px;
+}
+
+.principles-list .principle:nth-child(2n+1){
+    grid-template-columns: min-content auto;
+}
+
+.principles-list .principle:nth-child(2n+0){
+    grid-template-columns: auto min-content;
+}
+
+.principles-list .principle:nth-child(2n+1) img{
+    grid-column: 1 / span 1;
+}
+
+.principles-list .principle:nth-child(2n+0) img{
+    grid-column: 2 / span 1;
+}
+
+.principles-list .principle:nth-child(2n+1) p{
+    justify-self: start;
+}
+
+.principles-list .principle:nth-child(2n+0) p{
+    justify-self: end;
+}
+
+/* How to use section styles */
+.how-to-use-container .sub-title{
+    font-size: 2.5rem;
+    font-weight: normal;
+}
+
+.how-to-use-container .use-cases-list{
+    list-style: none;
+    float: left;
+    font-family: 'GenJyuuGothic';
+    font-size: 1.5rem;
+    text-align: end;
+    margin: 0;
+    margin-left: 100px;
+    padding: 10px 40px;
+    line-height: 1.6;
+}
+
+.how-to-use-container .use-cases-list li:first-child{
+    color: rgb(56, 56, 56);
+}
+
+
+.how-to-use-container .use-cases-list li:nth-child(2){
+    color: rgb(78, 129, 151);
+}
+
+.how-to-use-container .use-cases-list li:nth-child(3){
+    color: rgb(183, 100, 53);
+}
+
+.how-to-use-container .methods-container{
+    font-family: 'GenJyuuGothic';
+    color: var(--mainblue);
+    width: fit-content;
+    line-height: 1.6;
+}
+
+.how-to-use-container .methods-container p{
+    margin: 0;
+}
+
+.how-to-use-container .methods-container .methods-list{
+    list-style:square;
+    margin: 0;
+    padding-left: calc(180px + 9rem + 70px);
+}
+
+.how-to-use-container .methods-container .methods-list span{
+    color: #e19251;
+}
+
+.how-to-use-container .methods-container a{
+    color: var(--mainblue);
+}

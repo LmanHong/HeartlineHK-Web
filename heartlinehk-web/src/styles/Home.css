@@ -231,6 +231,7 @@
 
 .learn-more-container .sub-title{
     font-size: 2.5rem;
+    font-weight: normal;
     color: var(--mainblue);
 }
 
