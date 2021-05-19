@@ -1,0 +1,350 @@
+.volunteer-recruit{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+}
+
+/* Main title and text on Volunteer Recruit page styles */
+
+.volunteer-recruit .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.volunteer-recruit .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    background-image: url('../img/Pages/4\ 義工招募/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.volunteer-recruit .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+    width: 80%;
+}
+
+/* Apply deadline styles */
+
+.volunteer-recruit .apply-deadline-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 50px 0;
+    color: #4e8197;
+}
+
+.apply-deadline-container h1{
+    position: relative;
+    margin: 20px auto;
+    padding: 5px 2.5rem;
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(153, 209, 196, 0.5);
+    border-radius: 5px;
+    font-size: 2.3rem;
+    font-weight: normal;
+}
+
+.apply-deadline-container h1::before{
+    content: " ";
+    display: block;
+    width: 5rem;
+    height: 5rem;
+    position: absolute;
+    left: -4.5rem;
+    top: -2.5rem;
+    transform: rotate(210deg);
+    background-image: url('../img/Pages/4\ 義工招募/b.gif');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+
+.apply-deadline-container a{
+    display: block;
+    text-decoration: none;
+    width: fit-content;
+    height: fit-content;
+    margin: 30px auto;
+    padding: 3px 1.8rem;
+    border-radius: 5px;
+    font-size: 1.5rem;
+    color: #4e8197;
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Responsibility text styles */
+
+.volunteer-recruit .responsibility-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto 10px auto;
+    padding: 50px 0;
+    line-height: 1.6;
+    color: var(--mainblue);
+}
+
+.responsibility-container .sub-title{
+    margin: 0 0 25px -25px;
+    font-size: 2.3rem;
+    font-weight: normal;
+    color: #7d7767;
+}
+
+.responsibility-container p,
+.responsibility-container ul{
+    font-family: 'GenJyuuGothic';
+    font-size: 1.1rem;
+}
+
+.responsibility-container ul span{
+    color: #b79275;
+}
+
+.responsibility-container p span{
+    color: #dd2e44;
+}
+
+.responsibility-container img{
+    position: absolute;
+    right: 15px;
+    bottom: -5%;
+    width: 150px;
+}
+
+.responsibility-container::before{
+    content: " ";
+    display:block;
+    position: absolute;
+    right: 180px;
+    bottom: -20px;
+    width: 150px;
+    height: 90px;
+    z-index: 1;
+    background-image: url('../img/Pages/4\ 義工招募/f.PNG');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+.responsibility-container::after{
+    content: " ";
+    display:block;
+    position: absolute;
+    right: 100px;
+    bottom: -50px;
+    width: 150px;
+    height: 90px;
+    opacity: 0.7;
+    z-index: 1;
+    background-image: url('../img/Pages/4\ 義工招募/g.PNG');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+}
+
+/* Requirements text styles */
+
+.volunteer-recruit .requirements-container{
+    position: relative;
+    width: 80%;
+    max-width: 510px;
+    height: fit-content;
+    margin-top: 0;
+    padding: 50px 0 0 450px;
+    line-height: 1.6;
+    color: var(--mainblue);
+}
+
+.volunteer-recruit .requirements-container::before{
+    content: " ";
+    display: block;
+    position: absolute;
+    left: -150px;
+    width: 600px;
+    height: 250px;
+    background-image: url('../img/Pages/4\ 義工招募/h.PNG');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.requirements-container .sub-title{
+    margin: 0 0 25px -25px;
+    font-size: 2.3rem;
+    font-weight: normal;
+    color: #416c7c;
+}
+
+.requirements-container p,
+.requirements-container ul{
+    font-family: 'GenJyuuGothic';
+    font-size: 1.1rem;
+}
+
+.requirements-container ul span{
+    color: #547bbd;
+}
+
+/* Benefits text styles */
+
+.volunteer-recruit .benefits-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto 10px auto;
+    padding: 50px 0;
+    line-height: 1.6;
+    color: var(--mainblue);
+}
+
+.benefits-container .sub-title{
+    margin: 0 0 25px -25px;
+    font-size: 2.3rem;
+    font-weight: normal;
+    color: #8d8d8d;
+}
+
+.benefits-container p,
+.benefits-container ul{
+    font-family: 'GenJyuuGothic';
+    font-size: 1.1rem;
+}
+.benefits-container span{
+    color: #7d7767;
+}
+
+.volunteer-recruit .benefits-container::after{
+    content: " ";
+    display: block;
+    position: relative;
+    top: 50px;
+    left: 50%;
+    width: 1920px;
+    height: 35px;
+    background-image: url('../img/Pages/4\ 義工招募/i.PNG');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:contain;
+}
+
+/* Common questions and answers styles */
+
+.volunteer-recruit .common-questions-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto 10px auto;
+    padding: 50px 0;
+    line-height: 1.6;
+    color: var(--mainblue);
+}
+
+.common-questions-container .sub-title{
+    margin: 0 0 25px 125px;
+    font-size: 2.3rem;
+    font-weight: normal;
+    color: #b79275;
+}
+
+.common-questions-container ol{
+    font-family: 'GenJyuuGothic';
+    font-size: 1.1rem;
+}
+
+.common-questions-container > ol{
+    margin-left: 150px;
+}
+
+.common-questions-container:before{
+    content: " ";
+    display: block;
+    position: absolute;
+    left: -25px;
+    top: calc(2.3rem + 150px);
+    width: 150px;
+    height: 182px;
+    background-image: url('../img/Pages/4\ 義工招募/k.PNG');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.common-questions-container p{
+    margin: 0.3rem 0;
+}
+
+.common-questions-container .question{
+    color: #b79275;
+}
+
+.common-questions-container .answer{
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.common-questions-container .answer.expanded{
+    max-height: 300px;
+}
+
+.common-questions-container .question button{
+    border-style: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    background-color: transparent;
+    background-image: url('../img/Pages/4\ 義工招募/expand-button.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    cursor: pointer;
+    transform: rotate(0deg);
+    transition: transform 0.5s;
+}
+
+.common-questions-container .question button.expanded{
+    transform: rotate(180deg);
+}
+
+.common-questions-container p span{
+    color: #dd2e44;
+}
+
+.volunteer-recruit .contact-text{
+    position: relative;
+    width: 60%;
+    max-width: 960px;
+    margin: 0 auto 50px auto;
+    font-size: 1rem;
+    font-family: 'GenJyuuGothic';
+    color: var(--mainblue);
+    line-height: 1.6;
+    text-align: center;
+}
+
+.volunteer-recruit .contact-text a{
+    color: var(--mainblue);
+}

@@ -43,7 +43,8 @@ const Home = () =>{
     }
 
     useEffect(()=>{
-        setInterval(()=>{
+        if ("carouselTimer" in window) clearInterval(window.carouselTimer);
+        window.carouselTimer = setInterval(()=>{
             let carouselSlides = document.querySelectorAll('.carousel-slide');
             let currentIndex = -1;
             carouselSlides.forEach((slide, index) =>{
@@ -108,7 +109,7 @@ const Home = () =>{
                         <img src={chatroom} alt={chatroom} className="link-image" />
                         <p className="link-text">聯天室</p>
                     </Link>
-                    <Link to="/" className="link">
+                    <Link to="/support-us" className="link">
                         <img src={supportus} alt={supportus} className="link-image" />
                         <p className="link-text">支持我們</p>
                     </Link>

@@ -1,4 +1,5 @@
 import menubtn from '../img/menu bar/menu-button.png';
+import closemenubtn from '../img/menu bar/cross.PNG';
 import offbackground from '../img/menu bar/with pattern.PNG';
 import onbackground from '../img/menu bar/with pattern opened.png';
 import logo from '../img/header/logo.png';
@@ -46,7 +47,7 @@ const SideMenu = () =>{
 
 
                 <a href="#" className="menu-btn" onClick={closeSideMenu}>
-                    <img src={menubtn} alt={menubtn}/>
+                    <img src={closemenubtn} alt={closemenubtn}/>
                 </a>
                 <img src={onbackground} alt={onbackground} className="menu-btn-background" />
 
@@ -54,11 +55,11 @@ const SideMenu = () =>{
                     <li className="link"><Link to="/about-us" onClick={closeSideMenu}>關於我們</Link></li>
                     <li className="link"><Link to="/" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
-                        <a href="#">支持我們<i className="fa fa-caret-down"></i></a>
+                        <Link to="/support-us" onClick={closeSideMenu}>支持我們<i className="fa fa-caret-down"></i></Link>
                         <ul className="dropdown-menu">
-                            <li className="dropdown-link"><Link to="/" onClick={closeSideMenu}>捐款</Link></li>
-                            <li className="dropdown-link"><Link to="/" onClick={closeSideMenu}>成為合作夥伴</Link></li>
-                            <li className="dropdown-link"><Link to="/" onClick={closeSideMenu}>成為義工</Link></li>
+                            <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#donation"}} onClick={closeSideMenu}>捐款</Link></li>
+                            <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#partner"}} onClick={closeSideMenu}>成為合作夥伴</Link></li>
+                            <li className="dropdown-link"><Link to="/volunteer-recruit" onClick={closeSideMenu}>成為義工</Link></li>
                         </ul>
                     </li>
                     <li className="link"><Link to="/" onClick={closeSideMenu}>最新動態</Link></li>

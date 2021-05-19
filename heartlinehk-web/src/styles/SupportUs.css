@@ -1,0 +1,155 @@
+.support-us{
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: fit-content;
+}
+
+/* Support Us page main title text styles*/
+
+.support-us .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.support-us .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    background-image: url('../img/Pages/3\ 支持我們/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.support-us .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+    width: 80%;
+}
+
+/* Support methods styles */
+
+.support-us .support-methods-container{
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 50px 0;
+    color: var(--mainblue);
+    list-style: none;
+}
+
+.support-us .support-methods-container .support-method{
+    width: 80%;
+    max-width: 960px;
+    min-height: 250px;
+    height: fit-content;
+    position: relative;
+    margin: 0 auto 100px auto;
+}
+
+.support-us .support-methods-container .support-method:last-child{
+    margin-bottom: 0;
+}
+
+.support-methods-container .support-method:nth-child(2n+1) .sub-title,
+.support-methods-container .support-method:nth-child(2n+1) .support-detail span,
+.support-methods-container .support-method:nth-child(2n+1) .support-detail .detail-left ol{
+    color: #b76435;
+}
+
+.support-methods-container .support-method:nth-child(2n) .sub-title,
+.support-methods-container .support-method:nth-child(2n) .support-detail .detail-left ol{
+    color: #48568b;
+}
+
+.support-methods-container .support-method img{
+    width: 200px;
+    position: absolute;
+    top: 0;
+}
+
+.support-methods-container .support-method .sub-title{
+    margin: 0 0 25px 0;
+    font-size: 2.3rem;
+    font-weight: normal;
+    padding-left: 250px;
+}
+
+.support-methods-container .support-method .support-detail{
+    position: relative;
+    font-family: 'GenJyuuGothic';
+    padding-left: 250px;
+    line-height: 1.8;
+    font-size: 0.95rem;
+    display: grid;
+    grid-template-columns: 47.5% 47.5%;
+    justify-content: space-evenly;
+}
+
+.support-method .support-detail p{
+    margin: 0;
+}
+
+.support-method .support-detail .detail-left{
+    list-style-position: inside;
+    text-align: end;
+}
+
+.support-method .support-detail .detail-left p:first-child{
+    font-size: 0.9rem;
+
+}
+
+.support-method:first-child .support-detail .detail-left ol,
+.support-method:nth-child(2) .support-detail .detail-left ol,
+.support-method:nth-child(3) .support-detail .detail-left :not(p:first-child){
+    margin: 0;
+    padding: 0;
+    font-size: 1.2rem;
+}
+
+.support-method .support-detail .detail-right ul{
+    list-style: none;
+}
+
+
+.support-method .support-detail .volunteer-recruit-btn{
+    display: block;
+    text-decoration: none;
+    width: fit-content;
+    color: var(--mainblue);
+    margin: 20px auto;
+    padding: 0 10%;
+    background-color: #99d1c4;
+    border-radius: 5px;
+}
+
+/* Bottom contact method text styles */
+
+.support-us .contact-text{
+    position: relative;
+    width: 60%;
+    max-width: 960px;
+    margin: 0 auto 50px auto;
+    font-size: 1rem;
+    font-family: 'GenJyuuGothic';
+    color: var(--mainblue);
+    line-height: 1.6;
+    text-align: center;
+}
+
+.support-us .contact-text a{
+    color: var(--mainblue);
+}

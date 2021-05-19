@@ -1,0 +1,85 @@
+.flip-countdown{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: fit-content;
+    font-size: 2rem;
+    color: white;
+    margin: 0 auto;
+}
+
+.flip-countdown .card{
+    position: relative;
+    width: 0.8em;
+    height: 1.5em;
+    transform-style:preserve-3d;
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.card .card-front,
+.card .card-back{
+    position: absolute;
+    width: 0.8em;
+    height: 1.1em;
+    padding: 0.2em 0;
+    text-align: center;
+    border-radius: 5px;
+    background-color: lightgrey;
+}
+
+@keyframes rotate{
+    0% {
+        transform: rotateX(0turn);
+    }
+    100%{
+        transform: rotateX(-0.25turn);
+    }
+}
+
+.card .card-back{
+    transform: rotateX(0.25turn);
+}
+
+.flip-countdown .day-countdown,
+.flip-countdown .month-countdown,
+.flip-countdown .year-countdown{
+    margin: 0 0.3em;
+    position: relative;
+    display: grid;
+    width: fit-content;
+    column-gap: 0.1em;
+} 
+
+.flip-countdown .day-countdown,
+.flip-countdown .month-countdown{
+    grid-template-columns: 0.8em 0.8em;
+}
+
+.flip-countdown .year-countdown{
+    grid-template-columns: 0.8em 0.8em 0.8em 0.8em;
+}
+
+
+
+.day-countdown p,
+.month-countdown p,
+.year-countdown p{
+    font-family: 'GenJyuuGothic';
+    font-size: 0.3em;
+    color: grey;
+    position: absolute;
+    bottom: -20px;
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+
+
+
+
+
+

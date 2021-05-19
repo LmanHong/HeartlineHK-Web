@@ -5,8 +5,15 @@ import nonjudgemental from "../img/Pages/2 關於我們/h.PNG";
 import nondirective from "../img/Pages/2 關於我們/j.PNG";
 import Footer from "../components/Footer.js";
 import "../styles/AboutUs.css";
+import { useEffect } from "react";
 
 const AboutUs = () =>{
+
+    useEffect(()=>{
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }, []);
+
     return (
         <div className="about-us">
             <div className="main-text">
