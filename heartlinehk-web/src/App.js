@@ -4,8 +4,9 @@ import Home from './pages/Home.js';
 import AboutUs from './pages/AboutUs.js';
 import SupportUs from './pages/SupportUs.js';
 import VolunteerRecruit from './pages/VolunteerRecruit.js';
+import RelatedServices from './pages/RelatedServices.js';
+import FAQ from './pages/FAQ.js';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import { useEffect } from 'react';
 
 function App() {
 
@@ -27,6 +28,12 @@ function App() {
           </Route>
           <Route exact path="/volunteer-recruit">
             <VolunteerRecruit/>
+          </Route>
+          <Route exact path="/faq">
+            <FAQ/>
+          </Route>
+          <Route exact path="/related-services">
+            <RelatedServices/>
           </Route>
         </Switch>
       </div>

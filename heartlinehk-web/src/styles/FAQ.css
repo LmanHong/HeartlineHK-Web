@@ -1,0 +1,119 @@
+.faq{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+
+}
+
+.faq .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.faq .main-text::after{
+    content: " ";
+    display: block;
+    position: absolute;
+    bottom: -220px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    transform: rotate(15deg);
+    background-image: url('../img/Pages/6\ FAQ/b.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.faq .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    background-image: url('../img/Pages/6\ FAQ/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.faq .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+    width: 80%;
+}
+
+.faq .main-text p a{
+    color: var(--mainblue);
+}
+
+.faq .q-and-a-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 100px 0;
+    color: var(--mainblue);
+    font-family: 'GenJyuuGothic';
+    font-size: 1.3rem;
+    display: grid;
+    grid-template-columns: 49% 49%;
+    column-gap: 15px;
+}
+
+
+
+.faq .q-and-a-container .question{
+    position: relative;
+    width: calc(100% - 60px);
+    height: fit-content;
+    flex-grow: 1;
+    padding: 60px 30px;
+    border-radius: 10px;
+}
+
+.faq .q-and-a-container .left-column .question:not(:first-child),
+.faq .q-and-a-container .right-column .question:not(:first-child){
+    margin-top: 15px;
+}
+
+.faq .q-and-a-container .right-column .question:first-child{
+    margin-top: 150px;
+}
+
+.faq .q-and-a-container .question .question-text{
+    position: absolute;
+    left: 10%;
+    top: calc(50% - 0.65rem);
+    width: 80%;
+    height: fit-content;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.faq .q-and-a-container .question .answer-text{
+    opacity: 0;
+    margin: 0;
+    transition: opacity 0.5s;
+}
+
+.faq .q-and-a-container .question:hover .answer-text{
+    opacity: 1;
+}
+
+.faq .q-and-a-container .question:hover .question-text{
+    opacity: 0;
+}

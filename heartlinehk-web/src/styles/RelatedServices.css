@@ -1,0 +1,110 @@
+.related-services{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.related-services .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.related-services .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    background-image: url('../img/Pages/7\ 相關服務/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.related-services .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+}
+
+.related-services .services-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 50px 0;
+    color: var(--mainblue);
+    list-style: none;
+}
+
+.related-services .services-container .service{
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    min-height: 350px;
+    margin: 20px auto;
+}
+
+.related-services .services-container .service:last-child{
+    width: 80%;
+}
+
+.related-services .services-container .service h1{
+    color: #b79275;
+    font-size: 2.3rem;
+    font-weight: normal;
+}
+
+.related-services .services-container .service ul{
+    font-family: 'GenJyuuGothic';
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.related-services .services-container .service:first-child::before{
+    content: " ";
+    display: block;
+    position: relative;
+    float: right;
+    width: 400px;
+    height: 400px;
+    background-image: url('../img/Pages/7\ 相關服務/在線文字輔導.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.related-services .services-container .service:nth-child(2)::before{
+    content: " ";
+    display: block;
+    position: relative;
+    float: left;
+    width: 350px;
+    height: 350px;
+    background-image: url('../img/Pages/7\ 相關服務/熱線服務.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.related-services .services-container .service:nth-child(3)::before{
+    content: " ";
+    display: block;
+    position: relative;
+    float: right;
+    width: 400px;
+    height: 400px;
+    background-image: url('../img/Pages/7\ 相關服務/電郵輔導.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}

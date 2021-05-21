@@ -63,8 +63,8 @@ const SideMenu = () =>{
                         </ul>
                     </li>
                     <li className="link"><Link to="/" onClick={closeSideMenu}>最新動態</Link></li>
-                    <li className="link"><Link to="/" onClick={closeSideMenu}>相關服務</Link></li>
-                    <li className="link"><Link to="/" onClick={closeSideMenu}>常見問題</Link></li>
+                    <li className="link"><Link to="/related-services" onClick={closeSideMenu}>相關服務</Link></li>
+                    <li className="link"><Link to="/faq" onClick={closeSideMenu}>常見問題</Link></li>
                 </ul>
             </div>
         </div>
