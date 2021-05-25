@@ -1,61 +1,94 @@
 nav {
     top: 0;
-    width: 100%;
+    width: calc(100% - 40px);
     height: 80px;
-    padding-left: 20px;
-    padding-top: 20px;
+    padding: 20px 20px 0 20px;
     background-color: none;
 }
 
-a.nav-logo{
+nav a.nav-logo{
+    position: relative;
+    display: inline-flex;
+    float: left;
     text-decoration: none;
+    width: fit-content;
+    height: 80px;
+    align-items: center;
+    margin: -15px 0 0 0;
 }
 
-.nav-logo .background{
+nav .nav-logo .front{
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-left: 5px;
+}
+
+nav .nav-logo::after{
+    content: " ";
+    display: block;
     position: absolute;
     width: 60px;
     height: 60px;
-    left: 20px;
-    top: 20px;
+    top: 10px;
+    left: 0;
+    background-image: url('../img/header/flicker-box.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    z-index: -1;
 }
 
-.nav-logo .front{
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    left:  25px;
-    top: 8px;
-    z-index: 1;
-}
-
-.nav-name{
+nav .nav-name{
     position: relative;
     display: inline-block;
-    top: -20px;
-    left: 90px;
     font-size: 2rem;
     width: fit-content;
     color: var(--mainblue);
+    margin: 0;
 }
 
-.chat-btn{
-    height: 60px;
-    position: absolute;
-    right: 40px;
+nav .nav-items-container{
+    float: right;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.nav-item.fa{
+nav .nav-items-container .nav-item{
+    float: right;
+    text-align: center;
+    margin-left: 10px;
+}
+
+nav .nav-item .chat-btn{
+    display: block;
+    width: 5.5rem;
+    height: 3.75rem;
+    background-image: url('../img/header/chat-button.PNG');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+nav .nav-item.mobile a{
+    display: none;
+    width: 2.5rem;
+    height: 2.5rem;
     font-size: 2.5rem;
-    color: white;
+    padding: 0.5rem 0;
     text-decoration: none;
-    position: absolute;
-    top: 30px;
+    color: var(--mainblue);
 }
 
-.fa-facebook{
-    right: 140px;
+@media screen and (max-width: 576px){
+    nav .nav-item.mobile a{
+        display: block;
+    }
 }
 
-.fa-instagram{
-    right: 180px;
+@media screen and (max-width: 540px){
+    nav .nav-name{
+        display: none;
+    }
 }

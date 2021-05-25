@@ -52,6 +52,7 @@
 html{
   --mainblue: #1a2c43;
   overflow-x: hidden;
+  font-size: 16px;
 }
 
 body {
@@ -68,4 +69,10 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+@media screen and (max-width: 375px){
+  html{
+    font-size: 12px;
+  }
 }

@@ -15,6 +15,9 @@
     width: 0.8em;
     height: 1.5em;
     transform-style:preserve-3d;
+}
+
+.flip-countdown .card.rotating{
     animation-name: rotate;
     animation-duration: 1s;
     animation-fill-mode: forwards;

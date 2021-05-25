@@ -6,15 +6,15 @@ import SupportUs from './pages/SupportUs.js';
 import VolunteerRecruit from './pages/VolunteerRecruit.js';
 import RelatedServices from './pages/RelatedServices.js';
 import FAQ from './pages/FAQ.js';
+import LatestFeed from './pages/LatestFeed.js';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 function App() {
 
-
   return (
     <Router>
       <div className="App" style={{position: "relative", minHeight:"100vh"}}>
-        <NavBar/>
+        <NavBar menuContentClass={"menu-content"}/>
         <SideMenu/>
         <Switch>
           <Route exact path="/">
@@ -34,6 +34,9 @@ function App() {
           </Route>
           <Route exact path="/related-services">
             <RelatedServices/>
+          </Route>
+          <Route exact path="/latest-feed">
+            <LatestFeed/>
           </Route>
         </Switch>
       </div>

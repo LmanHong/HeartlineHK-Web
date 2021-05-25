@@ -7,10 +7,13 @@ import supportus from "../img/Pages/1 主頁/g.PNG";
 import chatroom from "../img/Pages/1 主頁/chat button.PNG";
 import Footer from "../components/Footer.js";
 import "../styles/Home.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {Link} from "react-router-dom";
 
 const Home = () =>{
+
+    const [carouselImageHeight, setCarouselImageHeight] = useState(500);
+    const [carouselFontSize, setCarouselFontSize] = useState(40);
 
     const moveToSlide = (targetIndex) =>{
         //Move carousel to the slide with targetIndex
@@ -43,6 +46,20 @@ const Home = () =>{
     }
 
     useEffect(()=>{
+        const resizeWindow = () => {
+            let aspectRatio = 1.7775;
+            let fontToHeightRatio = 40.0 / 500.0;
+            let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+            let imgWidth = Math.min(0.8*vw, 889);
+            let imgHeight = imgWidth / aspectRatio;
+            if (vw <= 576) imgHeight = vw / aspectRatio;
+            let computedFontSize = fontToHeightRatio * imgHeight;
+            setCarouselFontSize(Math.floor(computedFontSize));
+            setCarouselImageHeight(imgHeight);
+        }
+        resizeWindow();
+        window.addEventListener('resize', resizeWindow);
+
         if ("carouselTimer" in window) clearInterval(window.carouselTimer);
         window.carouselTimer = setInterval(()=>{
             let carouselSlides = document.querySelectorAll('.carousel-slide');
@@ -52,27 +69,32 @@ const Home = () =>{
             });
             moveToSlide((currentIndex+1)%carouselSlides.length);
         }, 10000);
+
+        return () =>{
+            clearInterval(window.carouselTimer);
+            window.removeEventListener('resize', resizeWindow);
+        }
     }, []);
 
     return (
         <div className="home">
             <div className="carousel">
-                <div className="carousel-track-container">
-                    <ul className="carousel-track">
+                <div className="carousel-track-container" style={{height: carouselImageHeight}}>
+                    <ul className="carousel-track" style={{height: carouselImageHeight}}>
                         <li className="carousel-slide selected" style={{left: "0"}}>
                             <img src={carouselimg1} alt={carouselimg1} className="carousel-image" />
-                            <p className="super-text">我們是</p>
-                            <p className="main-text">一班大學生</p>
+                            <p className="super-text" style={{fontSize: (carouselFontSize/2.0), bottom: `calc(18% + ${carouselFontSize * 1.125}px)`}}>我們是</p>
+                            <p className="main-text" style={{fontSize: carouselFontSize}}>一班大學生</p>
                         </li>
                         <li className="carousel-slide" style={{left: "100%"}}>
                             <img src={carouselimg2} alt={carouselimg2} className="carousel-image" />
-                            <p className="super-text">我們是</p>
-                            <p className="main-text">一個推廣心理健康的機構</p>
+                            <p className="super-text" style={{fontSize: (carouselFontSize/2.0), bottom: `calc(18% + ${carouselFontSize * 1.125}px)`}}>我們是</p>
+                            <p className="main-text" style={{fontSize: carouselFontSize}}>一個推廣心理健康的機構</p>
                         </li>
                         <li className="carousel-slide" style={{left: "200%"}}>
                             <img src={carouselimg3} alt={carouselimg3} className="carousel-image" />
-                            <p className="super-text">我們是</p>
-                            <p className="main-text">一個聽你傾訴的平台</p>
+                            <p className="super-text" style={{fontSize: (carouselFontSize/2.0), bottom: `calc(18% + ${carouselFontSize * 1.125}px)`}}>我們是</p>
+                            <p className="main-text" style={{fontSize: carouselFontSize}}>一個聽你傾訴的平台</p>
                         </li>
                     </ul>
                 </div>

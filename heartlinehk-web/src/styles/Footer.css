@@ -1,14 +1,12 @@
 .footer-container{
-    font-family: 'GenJyuuGothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    font-family: 'GenJyuuGothic';
     position: sticky;
     bottom: 0;
-    width: calc(100vw - 40px);
-    padding-left: 40px;
+    width: calc(100vw - 4rem);
+    padding: 1rem 2rem;
     background-image: url('../img/footer/footer\ w\ pattern.PNG');
     background-repeat: repeat-x;
-    height: 200px;
+    height: calc(200px - 2rem);
 }
 
 .footer-container .back-top-btn{
@@ -24,55 +22,70 @@
 .footer-container .back-top-btn::after{
     position: absolute;
     bottom: -15px;
-    left: -23px;
-    width: 75px;
+    left: -20px;
+    width: 72px;
     content: "back to top";
-    font-size: 1rem;
+    font-size: 0.8rem;
+    font-family: 'GenJyuuGothic';
 }
 
-.footer-container .sponsor{
+.footer-container .left-column{
+    margin: 0;
+    padding: 0;
     position: relative;
+    left: 0;
     top: 40%;
     color: white;
-    font-size: 1.1rem;
     font-weight: 600;
+    height: 60%
 }
 
-.footer-container .terms-and-conditions{
-    position: relative;
-    top: 40%;
+.footer-container .right-column{
+    position: absolute;
+    bottom: 15%;
+    right: 2rem;
+    width: fit-content;
+    display: flex;
+    flex-direction: row-reverse;
+    column-gap: 0.5rem;
+    align-items: center;
+}
+
+.footer-container .left-column .sponsor p{
+    margin: 0;
+    font-size: 1rem;
+    float: left;
+}
+
+.footer-container .left-column .terms-and-conditions{
+    position: absolute;
+    left: 0;
+    bottom: 1rem;
     text-decoration: none;
     color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.8rem;
 }
 
-.footer-container .copyright{
-    position: relative;
-    top: 32%;
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
+.footer-container .left-column .copyright{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    font-size: 0.8rem;
+    margin: 0;
 }
 
-.footer-container .telephone{
-    position: relative;
-    top: 12%;
-    right: 3%;
-    float: right;
+.footer-container .right-column .footer-item{
+    display: block;
+    text-decoration: none;
     color: white;
+    height: fit-content;
+}
+
+.footer-container .right-column .telephone{
     font-size: 1rem;
     font-weight: 600;
-    text-decoration: none;
 }
 
-.footer-container .fa:not(.back-top-btn){
-    position: relative;
-    top: 10%;
-    right: 3%;
-    margin-left: 15px;
-    float: right;
-    color: white;
-    font-size: 1.8rem;
-    text-decoration: none;
+.footer-container .right-column .fa{
+    font-size: 2rem;
 }

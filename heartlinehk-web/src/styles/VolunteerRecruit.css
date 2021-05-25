@@ -313,13 +313,14 @@
 
 .common-questions-container .question button{
     border-style: none;
+    border-radius: 50%;
     width: 1.1rem;
     height: 1.1rem;
-    background-color: transparent;
-    background-image: url('../img/Pages/4\ 義工招募/expand-button.png');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    font-size: 0.3rem;
+    padding: 0;
+    margin: 0 5px;
+    color: white;
+    background-color: #d9d9d9;
     cursor: pointer;
     transform: rotate(0deg);
     transition: transform 0.5s;

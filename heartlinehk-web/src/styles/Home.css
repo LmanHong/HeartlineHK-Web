@@ -9,8 +9,8 @@
 
 .carousel{
     position: relative;
-    max-height: 500px;
     height: 80vh;
+    max-height: 500px;
     max-width: 889px;
     width: 80%;
     margin: 0 auto;
@@ -89,7 +89,7 @@
 
 .carousel-nav{
     position: relative;
-    top: -15%;
+    top: 0;
     height: fit-content;
     display: flex;
     justify-content: center;
@@ -107,6 +107,13 @@
 
 .carousel-nav .carousel-indicator.selected{
     background: rgb(187, 50, 0);
+}
+
+@media screen and (max-width: 576px){
+    .carousel{
+        max-width: 576px;
+        width: 100%;
+    }
 }
 
 /* Descriptions at the middle of homepage styles */

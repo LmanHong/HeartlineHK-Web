@@ -1,0 +1,138 @@
+.latest-feed{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.latest-feed .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.latest-feed .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    background-image: url('../img/Pages/5\ 最新動態/a.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.latest-feed .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+    width: 80%;
+}
+
+.latest-feed .main-text p a{
+    color: var(--mainblue);
+}
+
+.latest-feed .ig-posts-container{
+    position: relative;
+    width: 70%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    font-family: 'GenJyuuGothic';
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    grid-auto-rows: min-content;
+    column-gap: 5%;
+    row-gap: 20px;
+}
+
+.latest-feed .ig-posts-container .ig-post{
+    position: relative;
+    text-decoration: none;
+    color: white;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.latest-feed .ig-posts-container .ig-post img{
+    width: 100%;
+}
+
+.latest-feed .ig-posts-container .ig-post p{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 20px);
+    height: fit-content;
+    padding: 10px 10px 10px 10px;
+    margin: 0 auto;
+    padding: calc(50% - 0.5rem - 3px) 10px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    background-color: rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.latest-feed .ig-posts-container .ig-post:hover p{
+    opacity: 1; 
+}
+
+.latest-feed .date-selector-container{
+    width: 70%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 20px auto;
+}
+
+.latest-feed .date-selector-container .month-select,
+.latest-feed .date-selector-container .year-select{
+    display: inline-block;
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+}
+
+.latest-feed .date-selector-container select{
+    position: relative;
+    border: none;
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    font-size: 1rem;
+    width: 6rem;
+    background:transparent;
+    outline: none;
+    font-family: "TanukiPermanentMarker";
+    color: var(--mainblue);
+    appearance: none;
+}
+
+.latest-feed .date-selector-container .month-select::after,
+.latest-feed .date-selector-container .year-select::after{
+    content: " ";;
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 1.3rem;
+    height: 1.3rem;
+    background-image: url('../img/Pages/5\ 最新動態/Date Selection Button.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    pointer-events: none;
+}
