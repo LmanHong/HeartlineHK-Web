@@ -9,23 +9,10 @@
 
 .carousel{
     position: relative;
-    height: 80vh;
-    max-height: 500px;
+    max-height: 512px;
     max-width: 889px;
     width: 80%;
     margin: 0 auto;
-}
-
-.carousel::after{
-    content:" ";
-    display:block;
-    position: relative;
-    top: 50px;
-    left: 75%;
-    height: 20px;
-    background-image: url('../img/Pages/1\ 主頁/c.PNG');
-    background-repeat: no-repeat;
-    background-size:200%;
 }
 
 .carousel .carousel-track-container{
@@ -86,6 +73,17 @@
     bottom: calc(18% + 45px);
 }
 
+@media screen and (max-width: 640px){
+    .carousel-track .carousel-slide .main-text{
+        font-size: 2rem;
+    }
+
+    .carousel-track .carousel-slide .super-text{
+        font-size: 1rem;
+        bottom: calc(18% + (2rem * 1.125));
+    }
+}
+
 
 .carousel-nav{
     position: relative;
@@ -98,6 +96,7 @@
 .carousel-nav .carousel-indicator{
     width: 12px;
     height: 12px;
+    padding: 0;
     border-radius: 50%;
     border-style: none;
     background: rgba(0,0,0,0.3);
@@ -119,30 +118,49 @@
 /* Descriptions at the middle of homepage styles */
 .descriptions-container{
     position: relative;
-    top: 50px;
+    margin-top: 50px;
     width: 100%;
     height: 400px;
     font-family: 'GenJyuuGothic';
     font-size: 1.3rem;
-    font-weight: 500;
+    font-weight: 400;
     color: var(--mainblue);
 }
 
-.descriptions-container .left-decoration{
+.descriptions-container::after{
+    content:" ";
+    display:block;
+    position: absolute;
+    top: 0;
+    right: -178px;
+    height: 20px;
+    width: 533.5px;
+    background-image: url('../img/Pages/1\ 主頁/c.PNG');
+    background-repeat: no-repeat;
+    background-size:200%;
+}
+
+.descriptions-container::before{
+    content: " ";
+    display: block;
     position: absolute;
     top: 50px;
     left: -100px;
-    width: 500px;
-    z-index:1;
+    width: 31.25rem;
+    height: 15.625rem;
+    background-image: url('../img/Pages/1\ 主頁/e.PNG');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 
 .descriptions-container .dialog1{
     position: absolute;
-    top: 40px;
-    left: 320px;
-    width: 160px;
-    height: 100px;
-    padding: 0 20px;
+    top: 2.5rem;
+    left: 20rem;
+    width: 10rem;
+    height: 6.25rem;
+    padding: 0 1.25rem;
     display: flex;
     flex-direction: column;
     background-image: url('../img/Pages/1\ 主頁/d.PNG');
@@ -152,33 +170,33 @@
 }
 
 .descriptions-container .dialog1 p{
-    padding: 0;
+    margin: 0;
 
 }
 
 .descriptions-container .dialog1 p:first-child{
-    margin-top: 12px;
-    margin-bottom: -8px;
-    margin-left: 20%;
+    padding-top: 12px;
+    margin-bottom: -0.5rem;
+    padding-left: 20%;
 }
 
 .descriptions-container .dialog1 p:nth-of-type(2){
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left: 28%;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 28%;
 }
 
 .descriptions-container .dialog2{
     display: flex;
     position: absolute;
-    top: 90px;
-    left: 470px;
+    top: 5.625rem;
+    left: 29.375rem;
     background-image: url('../img/Pages/1\ 主頁/f.PNG');
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 160px;
-    height: 100px;
+    width: 10rem;
+    height: 6.25rem;
     justify-content: center;
     align-items:center;
     margin: 0;
@@ -186,7 +204,7 @@
 
 .descriptions-container .dialog2 p{
     margin: 0;
-    margin-top: -10px;
+    margin-top: -0.625rem;
 }
 
 .descriptions-container .dialog3{
@@ -195,10 +213,10 @@
     justify-content:center;
     align-items:flex-start;
     position: absolute;
-    top: 25px;
-    left: 610px;
-    width: 300px;
-    height: 180px;
+    top: 1.5625rem;
+    left: 38.125rem;
+    width: 18.75rem;
+    height: 11.25rem;
     background-image: url('../img/Pages/1\ 主頁/j.gif');
     background-position: center;
     background-repeat: no-repeat;
@@ -209,7 +227,7 @@
 
 .descriptions-container .dialog3 p{
     margin: 0;
-    margin-left: 60px;
+    margin-left: 3.75rem;
 }
 
 .descriptions-container .dialog3::after{
@@ -218,18 +236,62 @@
     position: absolute;
     top: 20%;
     left: 85%;
-    width: 70px;
-    height: 70px;
+    width: 4.375rem;
+    height: 4.375rem;
     background-image: url('../img/Pages/1\ 主頁/k.gif');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
 }
 
+@media screen and (max-width: 992px){
+
+    .descriptions-container .dialog1{
+        left: calc(50vw - 9.38rem);
+    }
+
+    .descriptions-container .dialog2{
+        left: calc(50vw );
+    }
+
+    .descriptions-container .dialog3{
+        left: calc(50vw - 9.38rem);
+        top: 12.5rem;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .descriptions-container::before{
+        left: max(calc(-6.25rem - (768px - 100vw)), -12.5rem);
+    }
+
+    .descriptions-container::after{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 576px){
+    .descriptions-container{
+        height: calc(400px + 15.625rem);
+    }
+
+    .descriptions-container .dialog1{
+        top: 18.125rem;
+    }
+
+    .descriptions-container .dialog2{
+        top: 21.25rem;
+    }
+
+    .descriptions-container .dialog3{
+        top: 28.125rem;
+    }
+}
+
 /* Learn More styles */
 .learn-more-container{
     position: relative;
-    max-height: 300px;
+    height: fit-content;
     max-width: 889px;
     width: 80%;
     margin: 0 auto;
@@ -255,7 +317,8 @@
 }
 
 .learn-more-links .link-image{
-    width: 150px;
+    width: 9.375rem;
+    margin: 0 auto;
 }
 
 .learn-more-links .link-text{
@@ -268,4 +331,32 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+}
+
+@media screen and (max-width: 768px){
+    .learn-more-container .learn-more-links{
+        display: grid;
+        grid-template-columns: 24vw 24vw 24vw;
+        grid-template-rows: 50% 50%;
+        column-gap: 0px;
+    }
+
+    .learn-more-container .learn-more-links .link .link-image{
+        width: 24vw;
+    }
+
+    .learn-more-container .learn-more-links .link:first-child{
+        grid-column: 2 / span 1;
+        grid-row: 1 /span 1;
+    }
+
+    .learn-more-container .learn-more-links .link:nth-child(2){
+        grid-column: 1 / span 1;
+        grid-row: 2 / span 1;
+    }
+
+    .learn-more-container .learn-more-links .link:last-child{
+        grid-column: 3 / span 1;
+        grid-row: 2 / span 1;
+    }
 }

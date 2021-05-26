@@ -22,7 +22,7 @@ const NavBar  = (props) =>{
         </Link>
         <ul className="nav-items-container">
             <li className="nav-item mobile">
-                <a href="#" className="menu-btn fa fa-bars" onClick={openMobileMenu}></a>
+                <a href="#" className="nav-menu-btn fa fa-bars" onClick={openMobileMenu}></a>
             </li>
             <li className="nav-item">
                 <a href="#" className="chat-btn"></a>
