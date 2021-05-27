@@ -16,7 +16,7 @@ const FAQ = () =>{
                     </div>
                     <div className="question" style={{backgroundColor: "#e6eef6"}}>
                         <p className="question-text">對話過程是否保密？</p>
-                        <p className="answer-text">是的，我們承諾會每次對話內容絕對保密，對話後當義工和求助者雙方都關閉頁面後所有內容都不會留底，求助者亦會在對話開始前簽下保密協議和服務條款，以保障義工和求助者雙方。 （3）</p>
+                        <p className="answer-text">是的，我們承諾會每次對話內容絕對保密，對話後當義工和求助者雙方都關閉頁面後所有內容都不會留底，求助者亦會在對話開始前簽下保密協議和服務條款，以保障義工和求助者雙方。</p>
                     </div>
                     <div className="question" style={{backgroundColor: "#f6f6f6"}}>
                         <p className="question-text">HeartlineHK的服務同其他輔導服務有甚麼不同之處？</p>
