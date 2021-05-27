@@ -59,7 +59,7 @@ const SideMenu = () =>{
 
     return(
         <div className="side-menu-container">
-            <a href="#" className="menu-btn" onClick={openSideMenu}>
+            <a className="menu-btn" onClick={openSideMenu}>
                 <img src={menubtn} alt={menubtn} />
                 <img src={offbackground} alt={offbackground} className="background" />
             </a>
@@ -77,7 +77,7 @@ const SideMenu = () =>{
                     </Link>
                     <ul className="nav-items-container">
                         <li className="nav-item mobile">
-                            <a href="#" className="nav-menu-btn fa fa-times" onClick={closeSideMenu}></a>
+                            <a className="nav-menu-btn fa fa-times" onClick={closeSideMenu}></a>
                         </li>
                         <li className="nav-item">
                             <Link to="/" className="chat-btn" onClick={closeSideMenu}></Link>
@@ -91,7 +91,7 @@ const SideMenu = () =>{
                     </ul>
                 </div>
 
-                <a href="#" className="menu-btn" onClick={closeSideMenu}>
+                <a className="menu-btn" onClick={closeSideMenu}>
                     <img src={closemenubtn} alt={closemenubtn}/>
                     <img src={onbackground} alt={onbackground} className="background" />
                 </a>
@@ -102,7 +102,7 @@ const SideMenu = () =>{
                     <li className="link"><Link to="/" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
                         <Link to="/support-us" onClick={closeSideMenu}>支持我們<i className="fa fa-caret-down"></i></Link>
-                        <a href="#" className="mobile-dropdown-trigger fa fa-caret-down" onClick={openMobileDropdownMenu}></a>
+                        <a className="mobile-dropdown-trigger fa fa-caret-down" onClick={openMobileDropdownMenu}></a>
                         <ul ref={dropdownMenuUL} className="dropdown-menu">
                             <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#donation"}} onClick={closeSideMenu}>捐款</Link></li>
                             <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#partner"}} onClick={closeSideMenu}>成為合作夥伴</Link></li>

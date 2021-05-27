@@ -75,26 +75,29 @@
 }
 
 .support-methods-container .support-method img{
-    width: 200px;
+    width: 20%;
+    min-width: 6.25rem;
     position: absolute;
     top: 0;
+    padding-top: 3.8625rem;
 }
 
 .support-methods-container .support-method .sub-title{
-    margin: 0 0 25px 0;
+    margin: 0 0 1.5625rem 0;
     font-size: 2.3rem;
     font-weight: normal;
-    padding-left: 250px;
+    padding-left: max(25%, 6.5rem);
 }
 
 .support-methods-container .support-method .support-detail{
     position: relative;
+    width: 75%;
     font-family: 'GenJyuuGothic';
-    padding-left: 250px;
+    padding-left: max(25%, 6.5rem);
     line-height: 1.8;
     font-size: 0.95rem;
     display: grid;
-    grid-template-columns: 47.5% 47.5%;
+    grid-template-columns: 45% 42.5%;
     justify-content: space-evenly;
 }
 
@@ -134,6 +137,24 @@
     padding: 0 10%;
     background-color: #99d1c4;
     border-radius: 5px;
+}
+
+@media screen and (max-width: 768px){
+    .support-us .support-methods-container .support-method .support-detail{
+        display: flex;
+        flex-direction: column;
+        row-gap: 2rem;
+        width: 67.5%;
+    }
+
+    .support-methods-container .support-method .support-detail .detail-left{
+        text-align: start;
+    }
+
+    .support-methods-container .support-method .support-detail .detail-right{
+        width: calc(100% + max(14.81%, 3.125rem));
+        transform: translateX(min(-14.81%, -3.125rem));
+    }
 }
 
 /* Bottom contact method text styles */

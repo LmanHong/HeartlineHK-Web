@@ -34,9 +34,9 @@ const VolunteerRecruit = () =>{
                 <h1 className="sub-title">相關職責</h1>
                 <p>義工需要參加由<span>本會/xxx</span>主辦的心理輔導課程，並於完成訓練後，以輔導的角色透過熱線及<span>網上</span>訊息平台：</p>
                 <ul>
-                    <li>不帶任何立場<span>主動傾聽(Active Listening)</span>致電者心聲，讓其放心地表達想法</li>
-                    <li>引導致電者從不同角度探索自身處境</li>
-                    <li>陪同致電者尋找解決問題的方法，並鼓勵致電者主動尋找援助</li>
+                    <li>不帶任何立場<span>主動傾聽(Active Listening)</span>致電者心聲，讓其放心地表達想法。</li>
+                    <li>引導致電者從不同角度探索自身處境。</li>
+                    <li>陪同致電者尋找解決問題的方法，並鼓勵致電者主動尋找援助。</li>
                 </ul>
                 <p>主要服務對象為香港的年輕人。</p>
                 <img src={decoration} alt={decoration} />

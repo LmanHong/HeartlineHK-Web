@@ -8,22 +8,22 @@
       "type": "image/x-icon"
     },
     {
-      "src": "icon-70x70.png",
+      "src": "ms-icon-70x70.png",
       "type": "image/png",
       "sizes": "70x70"
     },
     {
-      "src": "icon-144x144.png",
+      "src": "ms-icon-144x144.png",
       "type": "image/png",
       "sizes": "144x144"
     },
     {
-      "src": "icon-150x150.png",
+      "src": "ms-icon-150x150.png",
       "type": "image/png",
       "sizes": "150x150"
     },
     {
-      "src": "icon-310x310.png",
+      "src": "ms-icon-310x310.png",
       "type": "image/png",
       "sizes": "310x310"
     }

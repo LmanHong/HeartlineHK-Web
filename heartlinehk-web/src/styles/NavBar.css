@@ -1,8 +1,8 @@
 nav {
     top: 0;
-    width: calc(100% - 40px);
-    height: 80px;
-    padding: 20px 20px 0 20px;
+    width: calc(100% - 2.5rem);
+    height: 5rem;
+    padding: 1.25rem 1.25rem 0 1.25rem;
 }
 
 nav a.nav-logo{
@@ -11,25 +11,25 @@ nav a.nav-logo{
     float: left;
     text-decoration: none;
     width: fit-content;
-    height: 80px;
+    height: 5rem;
     align-items: center;
-    margin: -15px 0 0 0;
+    margin: -0.9375rem 0 0 0;
 }
 
 nav .nav-logo .front{
     position: relative;
-    width: 80px;
-    height: 80px;
-    margin-left: 5px;
+    width: 5rem;
+    height: 5rem;
+    margin-left: 0.3125rem;
 }
 
 nav .nav-logo::after{
     content: " ";
     display: block;
     position: absolute;
-    width: 60px;
-    height: 60px;
-    top: 10px;
+    width: 3.75rem;
+    height: 3.75rem;
+    top: 0.625rem;
     left: 0;
     background-image: url('../img/header/flicker-box.gif');
     background-position: center;
@@ -57,13 +57,13 @@ nav .nav-items-container{
 nav .nav-items-container .nav-item{
     float: right;
     text-align: center;
-    margin-left: 10px;
+    margin-left: 0.625rem;
 }
 
 nav .nav-item .chat-btn{
     display: block;
-    width: 5.5rem;
-    height: 3.75rem;
+    width: 6rem;
+    height: 4rem;
     background-image: url('../img/header/chat-button.PNG');
     background-position: center;
     background-repeat: no-repeat;
@@ -82,6 +82,11 @@ nav .nav-item.mobile a{
 }
 
 @media screen and (max-width: 576px){
+    nav .nav-item .chat-btn{
+        width: 5.5rem;
+        height: 3.75rem;
+    }
+
     nav .nav-item.mobile a{
         display: block;
     }

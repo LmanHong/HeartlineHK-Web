@@ -333,6 +333,12 @@
     background-size: contain;
 }
 
+@media screen and (max-width: 576px){
+    .learn-more-container .sub-title{
+        text-align: center;
+    }
+}
+
 @media screen and (max-width: 768px){
     .learn-more-container .learn-more-links{
         display: grid;

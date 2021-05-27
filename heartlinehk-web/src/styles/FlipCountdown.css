@@ -21,6 +21,7 @@
     animation-name: rotate;
     animation-duration: 1s;
     animation-fill-mode: forwards;
+    animation-delay: 0.8s;
 }
 
 .card .card-front,

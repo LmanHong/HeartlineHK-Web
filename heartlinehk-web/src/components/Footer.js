@@ -3,13 +3,13 @@ import "../styles/Footer.css";
 const Footer = () =>{
 
     const scrollToTop = () =>{
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        let topNavBar = document.querySelector('nav');
+        topNavBar.scrollIntoView({behavior: "smooth"});
     }
 
     return (
         <div className="footer-container">
-            <a href="#" className="back-top-btn fa fa-chevron-up" onClick={scrollToTop}></a>
+            <a className="back-top-btn fa fa-chevron-up" onClick={scrollToTop}></a>
             <div className="left-column">
                 <div className="sponsor">
                     <p>捐助機構︰</p>
