@@ -40,9 +40,17 @@ const SideMenu = () =>{
     }
 
     useEffect(()=>{
+        const showMenuButton = (e) =>{
+            let sideMenuBtn = document.querySelector('.side-menu-container .menu-btn');
+            if (window.innerWidth - e.clientX <= 82) sideMenuBtn.classList.remove('hide-btn');
+            else if (window.scrollY > 100) sideMenuBtn.classList.add('hide-btn');
+        };
+
+        window.removeEventListener('mousemove' ,showMenuButton);
+        if (window.innerWidth > 576) window.addEventListener('mousemove', showMenuButton);
         if ("navbarObserver" in window) window.navbarObserver.disconnect();
         let options = {
-            rootMargin: "0px 0px 50px 0px"
+            rootMargin: "0px 0px 0px 0px"
         };
         const navbarObserver = new IntersectionObserver((entries, observer)=>{
             let sideMenuBtn = document.querySelector('.side-menu-container .menu-btn');
@@ -53,7 +61,10 @@ const SideMenu = () =>{
         }, options);
         navbarObserver.observe(document.querySelector('nav'));
         window.narbarObserver = navbarObserver;
-        return () => {window.navbarObserver.disconnect();}
+        return () => {
+            if ("navbarObserver" in window) window.navbarObserver.disconnect();
+            window.removeEventListener('mousemove' ,showMenuButton);
+        }
     });
 
 
@@ -67,7 +78,7 @@ const SideMenu = () =>{
             <div ref={menuContentDiv} className="menu-content">
 
                 <svg  className="menu-content-wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-                    <path ref={menuContentWave} className="wave-path" fill="#1a2c43" fill-opacity="1" d={menuWavePaths[0]}></path>
+                    <path ref={menuContentWave} className="wave-path" fill="#1a2c43" fillOpacity="1" d={menuWavePaths[0]}></path>
                 </svg>
 
                 <div className="menu-nav">

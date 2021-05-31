@@ -1,7 +1,7 @@
 import carouselimg1 from "../img/Pages/1 主頁/a1.png";
 import carouselimg2 from "../img/Pages/1 主頁/a2.png";
 import carouselimg3 from "../img/Pages/1 主頁/a3.png";
-import leftdecoration from "../img/Pages/1 主頁/e.PNG";
+import youtext from "../img/Pages/1 主頁/you.svg";
 import aboutus from "../img/Pages/1 主頁/h.PNG";
 import supportus from "../img/Pages/1 主頁/g.PNG";
 import chatroom from "../img/Pages/1 主頁/chat button.PNG";
@@ -90,7 +90,7 @@ const Home = () =>{
                         <li className="carousel-slide" style={{left: "200%"}}>
                             <img src={carouselimg3} alt={carouselimg3} className="carousel-image" />
                             <p className="super-text" >我們是</p>
-                            <p className="main-text" >一個聽你傾訴的平台</p>
+                            <p className="main-text" >一個聽<img src={youtext} alt={youtext}></img>傾訴的平台</p>
                         </li>
                     </ul>
                 </div>

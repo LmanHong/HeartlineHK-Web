@@ -61,6 +61,14 @@
     background-repeat: no-repeat;
 }
 
+.carousel-track .carousel-slide:nth-child(3) .main-text img{
+    display: inline-block;
+    position:relative;
+    top: 0.2rem;
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
 .carousel-track .carousel-slide:nth-child(2) .main-text{
     background-image: url('../img/Pages/1\ 主頁/i.PNG');
     background-position: center;
@@ -76,6 +84,12 @@
 @media screen and (max-width: 640px){
     .carousel-track .carousel-slide .main-text{
         font-size: 2rem;
+    }
+
+    .carousel-track .carousel-slide:nth-child(3) .main-text img{
+        top: 0.2rem;
+        width: 1.9rem;
+        height: 1.9rem;
     }
 
     .carousel-track .carousel-slide .super-text{

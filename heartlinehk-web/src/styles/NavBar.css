@@ -60,6 +60,105 @@ nav .nav-items-container .nav-item{
     margin-left: 0.625rem;
 }
 
+@keyframes jiggle{
+    0%{
+        transform: rotate(5deg);
+    }
+    0.1667%{
+        transform: rotate(-5deg);
+    }
+    0.3333%{
+        transform: rotate(5deg);
+    }
+    0.5%{
+        transform: rotate(-5deg);
+    }
+    0.6667%{
+        transform: rotate(5deg);
+    }
+    0.8333%{
+        transform: rotate(-5deg);
+    }
+    1%{
+        transform: rotate(5deg);
+    }
+    1.1667%{
+        transform: rotate(-5deg);
+    }
+    1.3333%{
+        transform: rotate(5deg);
+    }
+    1.5%{
+        transform: rotate(-5deg);
+    }
+    1.6667%{
+        transform: rotate(5deg);
+    }
+    1.8333%{
+        transform: rotate(-5deg);
+    }
+    2%{
+        transform: rotate(5deg);
+    }
+    2.1667%{
+        transform: rotate(-5deg);
+    }
+    2.3333%{
+        transform: rotate(-5deg);
+    }
+    2.5%{
+        transform: rotate(-5deg);
+    }
+    2.6667%{
+        transform: rotate(5deg);
+    }
+    2.8333%{
+        transform: rotate(-5deg);
+    }
+    3%{
+        transform: rotate(5deg);
+    }
+    3.1667%{
+        transform: rotate(-5deg);
+    }
+    3.3333%{
+        transform: rotate(5deg);
+    }
+    3.5%{
+        transform: rotate(-5deg);
+    }
+    3.6667%{
+        transform: rotate(5deg);
+    }
+    3.8333%{
+        transform: rotate(-5deg);
+    }
+    4%{
+        transform: rotate(5deg);
+    }
+    4.1667%{
+        transform: rotate(-5deg);
+    }
+    4.3333%{
+        transform: rotate(5deg);
+    }
+    4.5%{
+        transform: rotate(-5deg);
+    }
+    4.6667%{
+        transform: rotate(5deg);
+    }
+    4.8333%{
+        transform: rotate(-5deg);
+    }
+    5%{
+        transform: rotate(5deg);
+    }
+    5.0001%, 100%{
+        transform: rotate(0deg);
+    }
+}
+
 nav .nav-item .chat-btn{
     display: block;
     width: 6rem;
@@ -68,6 +167,7 @@ nav .nav-item .chat-btn{
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    animation: jiggle 20s normal infinite forwards;
 }
 
 nav .nav-item.mobile a{

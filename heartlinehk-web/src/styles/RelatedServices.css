@@ -41,7 +41,7 @@
     max-width: 960px;
     height: fit-content;
     margin: 0 auto;
-    padding: 50px 0;
+    padding: 3.125rem 0;
     color: var(--mainblue);
     list-style: none;
 }
@@ -50,13 +50,15 @@
     position: relative;
     width: 100%;
     height: fit-content;
-    min-height: 350px;
+    min-height: 21.875rem;
     margin: 20px auto;
 }
 
 .related-services .services-container .service:last-child{
-    width: 80%;
+    margin-top: 3.125rem;
+    width: 70%;
 }
+
 
 .related-services .services-container .service h1{
     color: #b79275;
@@ -75,8 +77,8 @@
     display: block;
     position: relative;
     float: right;
-    width: 400px;
-    height: 400px;
+    width: 25rem;
+    height: 25rem;
     background-image: url('../img/Pages/7\ 相關服務/在線文字輔導.png');
     background-position: center;
     background-repeat: no-repeat;
@@ -88,8 +90,8 @@
     display: block;
     position: relative;
     float: left;
-    width: 350px;
-    height: 350px;
+    width: 21.875rem;
+    height: 25rem;
     background-image: url('../img/Pages/7\ 相關服務/熱線服務.png');
     background-position: center;
     background-repeat: no-repeat;
@@ -101,10 +103,76 @@
     display: block;
     position: relative;
     float: right;
-    width: 400px;
-    height: 400px;
+    width: 25rem;
+    height: 25rem;
     background-image: url('../img/Pages/7\ 相關服務/電郵輔導.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+}
+
+@media screen and (max-width: 992px){
+    .related-services .services-container .service:last-child{
+        margin-top: 1.25rem;
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 768px){
+
+    .related-services .services-container .service:nth-child(n):before{
+        width: 12.5rem;
+        height: 13.875rem;
+        margin: 1.541rem auto;
+        float: none;
+    }
+
+    .related-services .services-container .service:nth-child(2n+1):before{
+        transform: translateX(2.3rem);
+    }
+
+    .related-services .services-container .service:nth-child(2n):before{
+        transform: translateX(-2.3rem);
+    }
+
+    .related-services .services-container .service{
+        width: fit-content;
+    }
+
+    .related-services .services-container .service h1{
+        position: absolute;
+        top: -1.541rem;
+        width: 2.3rem;
+    }
+
+    .related-services .services-container .service:nth-child(1) h1{
+        left: calc((100% - 12.5rem) / 2 - 2.3rem);
+        transform: translateX(2.3rem);
+    }
+
+    .related-services .services-container .service:nth-child(2) h1{
+        top: 0.7715rem;
+        left: calc(12.5rem + ((100% - 12.5rem) / 2));
+        transform: translateX(-2.3rem);
+    }
+
+    .related-services .services-container .service:nth-child(3) h1{
+        left: calc((100% - 12.5rem) / 2 - 2.3rem);
+        top: 0.7715rem;
+        transform: translateX(2.3rem);
+    }
+
+    .related-services .services-container .service ul{
+        width: fit-content;
+    }
+}
+
+@media screen and (max-width: 576px){
+    .related-services .services-container{
+        width: 100%;
+    }
+
+    .related-services .services-container .service ul{
+        padding-right: 1.5rem;
+    }
 }

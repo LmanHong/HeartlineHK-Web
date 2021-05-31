@@ -27,7 +27,7 @@
 }
 
 .latest-feed .main-text p{
-    margin: 50px auto;
+    margin: 3.125rem auto;
     font-size: 1.3rem;
     font-family: 'GenJyuuGothic';
     line-height: 1.6;
@@ -51,7 +51,7 @@
     grid-template-columns: 30% 30% 30%;
     grid-auto-rows: min-content;
     column-gap: 5%;
-    row-gap: 20px;
+    row-gap: 1.25rem;
 }
 
 .latest-feed .ig-posts-container .ig-post{
@@ -74,9 +74,8 @@
     left: 0;
     width: calc(100% - 20px);
     height: fit-content;
-    padding: 10px 10px 10px 10px;
     margin: 0 auto;
-    padding: calc(50% - 0.5rem - 3px) 10px;
+    padding: calc(50% - 0.6875rem) 0.625rem;
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -95,11 +94,12 @@
     width: 70%;
     max-width: 960px;
     height: fit-content;
-    margin: 20px auto;
+    margin: 0.8rem auto;
 }
 
 .latest-feed .date-selector-container .month-select,
-.latest-feed .date-selector-container .year-select{
+.latest-feed .date-selector-container .year-select,
+.latest-feed .date-selector-container .category-select{
     display: inline-block;
     position: relative;
     width: fit-content;
@@ -120,8 +120,14 @@
     appearance: none;
 }
 
+.latest-feed .date-selector-container .category-select select{
+    font-size: 1rem;
+    width: 13rem;
+}
+
 .latest-feed .date-selector-container .month-select::after,
-.latest-feed .date-selector-container .year-select::after{
+.latest-feed .date-selector-container .year-select::after,
+.latest-feed .date-selector-container .category-select::after{
     content: " ";;
     display: block;
     position: absolute;
@@ -135,4 +141,103 @@
     background-repeat: no-repeat;
     background-size: contain;
     pointer-events: none;
+}
+
+.latest-feed .post-popup-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1000;
+    display: block;
+}
+
+.latest-feed .post-popup-container.opened{
+    opacity: 1;
+    z-index: 100;
+}
+
+.latest-feed .post-popup-container .overlay{
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+}
+
+
+.latest-feed .post-popup-container.opened .post-content{
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.latest-feed .post-popup-container .post-content{
+    position: relative;
+    display:grid;
+    grid-template-columns: 60% 40%;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    opacity: 0;
+    width: 80%;
+    max-width: 960px;
+    height: 80%;
+    max-height: 566px;
+    z-index: 1;
+    background-color: black;
+    overflow: hidden;
+    align-items: center;
+}
+
+.latest-feed .post-popup-container .post-content img{
+    width: 100%;
+}
+
+.latest-feed .post-popup-container .post-content .post-text{
+    font-family: 'GenJyuuGothic';
+    background-color: white;
+    height: 100%;
+    overflow: hidden;
+}
+
+.latest-feed .post-popup-container .post-content .post-text p{
+    border-top: 0.5px solid lightgrey;
+    margin-block-end: 0;
+    margin-block-start: 0;
+    margin-top: 0.5rem;
+    height: calc(90% - 1rem);
+    padding: 0.5rem 1rem;
+    overflow-y: auto;
+}
+
+.latest-feed .post-popup-container .post-content .post-text a{
+    display: inline-block;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+    text-decoration: none;
+    text-align: center;
+    color: grey;
+}
+
+.latest-feed .post-popup-container .post-content .post-text a:hover{
+    color: black;
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 576px) {
+    .latest-feed .date-selector-container{
+        width: 100%;
+    }
+
+    .latest-feed .ig-posts-container{
+        width: 100%;
+        grid-template-columns: 33% 33% 33%;
+        column-gap: 0;
+        row-gap: 0;
+    }
 }

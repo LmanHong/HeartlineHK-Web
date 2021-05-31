@@ -4,6 +4,7 @@
     bottom: 0;
     width: calc(100vw - 4rem);
     padding: 1rem 2rem;
+    margin-top: 2.5rem;
     background-image: url('../img/footer/footer\ w\ pattern.PNG');
     background-repeat: repeat-x;
     height: calc(200px - 2rem);
@@ -13,7 +14,7 @@
     position: absolute;
     margin-left: 50%;
     left: -0.75rem;
-    bottom: 200px;
+    bottom: 215px;
     text-decoration: none;
     color: var(--mainblue);
     font-size: 1.5rem;

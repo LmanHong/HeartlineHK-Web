@@ -11,11 +11,16 @@
     transition: transform 0.5s ease-in-out;
 }
 
-/*
 .menu-btn.hide-btn{
-    transform: scaleX(0);
+    transform: scaleX(1);
 }
-*/
+
+@media (hover: hover){
+    .menu-btn.hide-btn{
+        transform: scaleX(0);
+    }
+}
+
 
 .menu-btn img:not(.background){
     position: absolute;
@@ -231,6 +236,7 @@ svg.menu-content-wave{
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    animation: jiggle 20s normal infinite forwards;
 }
 .menu-nav .nav-item a:not(.chat-btn){
     width: 2.5rem;
@@ -307,6 +313,7 @@ ul.menu-links{
 
 .menu-links .link{
     width: 3em;
+    height: 1em;
     padding: 0;
     margin: 0;
 }
