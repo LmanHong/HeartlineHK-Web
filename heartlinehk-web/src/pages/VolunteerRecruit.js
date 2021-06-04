@@ -26,9 +26,9 @@ const VolunteerRecruit = () =>{
                 <p>HeartlineHK希望透過培訓有心人成為義工，為年輕人提供一班願意聆聽他們心聲的朋輩，藉以舒緩他們生活裡難以宣洩的壓力與不安。成為我們的義工，為朋輩的心理健康出一分力吧！</p>
             </div>
             <div className="apply-deadline-container">
-                <h1>下一輪報名限期</h1>
-                <FlipCountdown day={21} month={5} year={2021}></FlipCountdown>
-                <a href="#">按此報名</a>
+                <h1>最新一輪簡介會</h1>
+                <FlipCountdown day={12} month={6} year={2021}></FlipCountdown>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScBHXRo13emjSJrHf3ZeA2UX5y34xyUyKQpd8Y_SPDRPWJS5A/viewform?usp=sf_link">按此報名</a>
             </div>
             <div className="responsibility-container">
                 <h1 className="sub-title">相關職責</h1>
@@ -111,7 +111,7 @@ const VolunteerRecruit = () =>{
             </div>
 
             <p className="contact-text">
-                感謝你考慮成為我們的義工，如對義工服務和招募有任何問題，請以電郵方式(<a href="mailto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>) 或在社交平台聯絡我們 (<a href="#">Facebook</a>/<a href="#">Instagram</a>)。
+                感謝你考慮成為我們的義工，如對義工服務和招募有任何問題，請以電郵方式(<a href="mailto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>) 或在社交平台聯絡我們 (<a href="https://www.facebook.com/heartlinehongkong">Facebook</a>/<a href="https://www.instagram.com/heartlinehk/">Instagram</a>)。
             </p>
             <Footer></Footer>
         </div>

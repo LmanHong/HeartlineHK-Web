@@ -19,9 +19,9 @@ const Footer = () =>{
                 <p className="copyright">&copy; 2021 Heartline HK</p>
             </div>
             <div className="right-column">
-                <a href="#" className="footer-item fa fa-linkedin-square"></a>
-                <a href="#" className="footer-item fa fa-facebook-square"></a>
-                <a href="#" className="footer-item fa fa-instagram"></a>
+                <a href="https://www.linkedin.com/company/mentalsos/" className="footer-item fa fa-linkedin-square"></a>
+                <a href="https://www.facebook.com/heartlinehongkong" className="footer-item fa fa-facebook-square"></a>
+                <a href="https://www.instagram.com/heartlinehk/" className="footer-item fa fa-instagram"></a>
                 <a href="tel:95074873" className="footer-item telephone">熱線:95074873</a>
             </div>
         </div>

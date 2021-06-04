@@ -61,7 +61,7 @@ const AboutUs = () =>{
                         <li><span>按右上角的按鈕</span>和我們的義工對話或</li>
                         <li>致電我們的<span>熱線</span>號碼(xxxxxxxx)</li>
                     </ul>
-                    <p>如果想知道更多心理學資訊和了解我們的最新消息，請關注我們的社交平台。(<a href="#">Facebook</a>/<a href="#">Instagram</a>: heartlinehk)</p>
+                    <p>如果想知道更多心理學資訊和了解我們的最新消息，請關注我們的社交平台。(<a href="https://www.facebook.com/heartlinehongkong">Facebook</a>/<a href="https://www.instagram.com/heartlinehk/">Instagram</a>: heartlinehk)</p>
                 </div>
             </div>
 

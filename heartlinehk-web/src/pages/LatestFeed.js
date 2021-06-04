@@ -89,7 +89,7 @@ const LatestFeed = () => {
             <div className="main-text">
                 <h1>最新動態</h1>
                 <p>如果想知道更加多心理學資訊、成為更好的傾訴對象、或者想投稿分享心事，就追蹤我們的Instagram或Facebook專頁了解更多啦！<br />
-                    <a href="#">IG</a>/<a href="#">FB</a>: heartlinehk
+                    <a href="https://www.instagram.com/heartlinehk/">IG</a>/<a href="https://www.facebook.com/heartlinehongkong">FB</a>: heartlinehk
                 </p>
             </div>
             <div className="date-selector-container">

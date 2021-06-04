@@ -14,7 +14,7 @@ const FAQ = () =>{
         <div className="faq">
             <div className="main-text">
                 <h1>常見問題</h1>
-                <p>以下是關於我們聆聽服務的常見問題，如有更多疑問，歡迎以電郵方式(<a href="mainto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>) 或在社交平台 (<a href="#">Facebook</a>/<a href="#">Instagram</a>)聯絡我們。</p>
+                <p>以下是關於我們聆聽服務的常見問題，如有更多疑問，歡迎以電郵方式(<a href="mainto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>) 或在社交平台 (<a href="https://www.facebook.com/heartlinehongkong">Facebook</a>/<a href="https://www.instagram.com/heartlinehk/">Instagram</a>)聯絡我們。</p>
             </div>
             <ul className="q-and-a-container">
                 <li className="question" style={{backgroundColor: "#f6f6f6"}} onClick={openQuestionBox}>

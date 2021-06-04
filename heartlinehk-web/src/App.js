@@ -17,9 +17,6 @@ function App() {
         <NavBar menuContentClass={"menu-content"}/>
         <SideMenu/>
         <Switch>
-          <Route exact path="/">
-            <Home/>
-          </Route>
           <Route exact path="/about-us">
             <AboutUs/>
           </Route>
@@ -37,6 +34,9 @@ function App() {
           </Route>
           <Route exact path="/latest-feed">
             <LatestFeed/>
+          </Route>
+          <Route path="/">
+            <Home/>
           </Route>
         </Switch>
       </div>

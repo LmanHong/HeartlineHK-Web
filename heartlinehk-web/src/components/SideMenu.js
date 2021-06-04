@@ -94,10 +94,10 @@ const SideMenu = () =>{
                             <Link to="/" className="chat-btn" onClick={closeSideMenu}></Link>
                         </li>
                         <li className="nav-item">
-                            <a href="#" className="nav-item fa fa-facebook"></a>
+                            <a href="https://www.facebook.com/heartlinehongkong" className="nav-item fa fa-facebook"></a>
                         </li>
                         <li className="nav-item">
-                            <a href="#" className="nav-item fa fa-instagram"></a>
+                            <a href="https://www.instagram.com/heartlinehk/" className="nav-item fa fa-instagram"></a>
                         </li>
                     </ul>
                 </div>
