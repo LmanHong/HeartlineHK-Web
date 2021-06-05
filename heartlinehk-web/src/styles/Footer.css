@@ -35,10 +35,10 @@
     padding: 0;
     position: relative;
     left: 0;
-    top: 40%;
+    top: 30%;
     color: white;
     font-weight: 600;
-    height: 60%
+    height: 70%;
 }
 
 .footer-container .right-column{
@@ -54,8 +54,7 @@
 
 .footer-container .left-column .sponsor p{
     margin: 0;
-    font-size: 1rem;
-    float: left;
+    font-size: 0.9rem;
 }
 
 .footer-container .left-column .terms-and-conditions{
@@ -64,14 +63,14 @@
     bottom: 1rem;
     text-decoration: none;
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
 
 .footer-container .left-column .copyright{
     position: absolute;
     left: 0;
     bottom: 0;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     margin: 0;
 }
 
@@ -83,10 +82,39 @@
 }
 
 .footer-container .right-column .telephone{
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
 .footer-container .right-column .fa{
-    font-size: 2rem;
+    font-size: 1.9rem;
+}
+
+@media screen and (max-width: 576px){
+    .footer-container .right-column{
+        display: grid;
+        grid-template-columns: auto auto auto;
+        bottom: 5%;
+        row-gap: 0.5rem;
+    }
+
+    .footer-container .right-column .fa-instagram{
+        grid-column: 1 / span 1;
+        grid-row: 1/ span 1;
+    }
+
+    .footer-container .right-column .fa-facebook-square{
+        grid-column: 2 / span 1;
+        grid-row: 1/ span 1;
+    }
+
+    .footer-container .right-column .fa-linkedin-square{
+        grid-column: 3 / span 1;
+        grid-row: 1/ span 1;
+    }
+
+    .footer-container .right-column .telephone{
+        grid-row: 2 / span 1;
+        grid-column: 1 / span 3;
+    }
 }

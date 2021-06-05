@@ -105,6 +105,10 @@
     margin: 0;
 }
 
+.support-method .support-detail a{
+    color: var(--mainblue);
+}
+
 .support-method .support-detail .detail-left{
     list-style-position: inside;
     text-align: end;

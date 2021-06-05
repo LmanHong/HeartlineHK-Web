@@ -109,10 +109,10 @@ const Home = () =>{
                     <p>嗯,碰巧我也是</p>
                 </div>
                 <div className="dialog3">
-                    <p>你好不好，也不要緊</p>
-                    <p>這樣巧合，你按進了這裏</p>
-                    <p>我們這群大學生，也在這兒</p>
-                    <p>關注精神健康，關心你</p>
+                    <p>滿腔情緒但無處可訴嗎？</p>
+                    <p>覺得沒人在乎你的感受和想法嗎？</p>
+                    <p>我們這群大學生在這兒</p>
+                    <p>願意用心聆聽，關注你的精神健康</p>
                 </div>
             </div>
             <div className="learn-more-container">
@@ -122,7 +122,7 @@ const Home = () =>{
                         <img src={aboutus} alt={aboutus} className="link-image" />
                         <p className="link-text">關於我們</p>
                     </Link>
-                    <Link to="/" className="link">
+                    <Link to="/under-construction" className="link">
                         <img src={chatroom} alt={chatroom} className="link-image" />
                         <p className="link-text">聯天室</p>
                     </Link>

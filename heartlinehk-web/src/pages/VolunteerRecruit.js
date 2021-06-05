@@ -27,16 +27,17 @@ const VolunteerRecruit = () =>{
             </div>
             <div className="apply-deadline-container">
                 <h1>最新一輪簡介會</h1>
-                <FlipCountdown day={12} month={6} year={2021}></FlipCountdown>
+                <FlipCountdown day={13} month={6} year={2021}></FlipCountdown>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScBHXRo13emjSJrHf3ZeA2UX5y34xyUyKQpd8Y_SPDRPWJS5A/viewform?usp=sf_link">按此報名</a>
             </div>
             <div className="responsibility-container">
                 <h1 className="sub-title">相關職責</h1>
-                <p>義工需要參加由<span>本會/xxx</span>主辦的心理輔導課程，並於完成訓練後，以輔導的角色透過熱線及<span>網上</span>訊息平台：</p>
+                <p>義工需要參加由<span>本會</span>主辦的心理輔導課程，並於完成訓練後，成爲聆聽者。透過熱線及<span>網上</span>訊息平台：</p>
                 <ul>
-                    <li>不帶任何立場<span>主動傾聽(Active Listening)</span>致電者心聲，讓其放心地表達想法。</li>
-                    <li>引導致電者從不同角度探索自身處境。</li>
-                    <li>陪同致電者尋找解決問題的方法，並鼓勵致電者主動尋找援助。</li>
+                    <li>應用主動聆聽技巧（Active Listening)，不帶任何立場地<span>傾聽</span>服務使用者心聲，讓服務使用者放心地表達想法。</li>
+                    <li>與服務使用者一同面對情緒困擾和自身處境。</li>
+                    <li>為服務使用者提供一個安全保密的溝通空間 。</li>
+                    <li>陪同服務使用者從不同角度探索自身處境、尋找解決問題的方法。</li>
                 </ul>
                 <p>主要服務對象為香港的年輕人。</p>
                 <img src={decoration} alt={decoration} />
@@ -50,7 +51,7 @@ const VolunteerRecruit = () =>{
                     <li>能夠放下個人意見和立場去聆聽</li>
                     <li>對心理健康抱有熱忱，有<span>同理心</span></li>
                     <li>每月至少當值2-3輪</li>
-                    <li>承諾至少持續服務六個月即可對心理健康抱有熱忱</li>
+                    <li>承諾至少持續服務六個月即可</li>
                 </ul>
             </div>
             <div className="benefits-container">

@@ -25,7 +25,7 @@ const NavBar  = (props) =>{
                 <a className="nav-menu-btn fa fa-bars" onClick={openMobileMenu}></a>
             </li>
             <li className="nav-item">
-                <a className="chat-btn"></a>
+                <Link to="/under-construction" className="chat-btn"></Link>
             </li>
         </ul>
 

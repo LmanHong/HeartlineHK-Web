@@ -42,11 +42,14 @@ const SupportUs = (props) => {
                             <p>捐款方法：</p>
                             <ul>
                                 <li>
+                                    <p>如果你有意支持我們機構，請以電郵查詢捐款詳情。</p>
+                                </li>
+                                <li style={{display: "none"}}>
                                     <p><span>1. 以銀行轉帳形式捐款</span></p>
                                     <p>銀行名稱：</p>
                                     <p>戶口名稱：</p>
                                 </li>
-                                <li>
+                                <li style={{display: "none"}}>
                                     <p><span>2. 把劃線支票抬頭及郵寄至</span></p>
                                     <p>Call centre address</p>
                                 </li>
@@ -62,12 +65,12 @@ const SupportUs = (props) => {
                         <div className="detail-left">
                             <p>我們積極尋求</p>
                             <ol type="1">
-                                <li>相關專業人士或機構(例如臨床心理學家)成為我們的顧問</li>
-                                <li>商業或慈善機構捐助</li>
+                                <li>相關專業人士或志願機構的合作</li>
+                                <li>商業或慈善機構的捐助</li>
                             </ol>
                         </div>
                         <div className="detail-right">
-                            <p>若你或你的團隊也關注精神健康，有意為年輕人的心理健康帶來正面的幫助，我們誠邀你和你的團隊成為HeartlineHK的合作夥伴。合作形式不限，歡迎以電郵方式和我們聯絡以探討具體合作方式。</p>
+                            <p>若你和你的團隊也關注精神健康，有意為年輕人的心理健康帶來正面的幫助，我們誠邀你和你的團隊成為HeartlineHK的合作夥伴。歡迎以電郵聯絡我們：<a href="mailto:heartlinehongkong@gmail.com">Heartlinehongkong@gmail.com</a></p>
                         </div>
                     </div>
                 </li>
@@ -77,11 +80,11 @@ const SupportUs = (props) => {
                     <div className="support-detail">
                         <div className="detail-left">
                             <p>成為我們的義工</p>
-                            <p><span>以輔導的角色傾聽致電者心聲，</span></p>
-                            <p><span>為改善青少年情緒健康出一分力</span></p>
+                            <p><span>以同行者的角色傾聽服務使用者心聲，</span></p>
+                            <p><span>為改善年輕人情緒健康出一分力</span></p>
                         </div>
                         <div className="detail-right">
-                            <p>義工是我們服務不可或缺的一部分，想知道更多有關相關職責及要求，請按以下連結。</p>
+                            <p>義工是我們服務不可或缺的一部分，想知道更多詳情，請按以下連結。</p>
                             <Link to="/volunteer-recruit" className="volunteer-recruit-btn">了解更多</Link>
                         </div>
                     </div>

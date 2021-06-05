@@ -91,7 +91,7 @@ const SideMenu = () =>{
                             <a className="nav-menu-btn fa fa-times" onClick={closeSideMenu}></a>
                         </li>
                         <li className="nav-item">
-                            <Link to="/" className="chat-btn" onClick={closeSideMenu}></Link>
+                            <Link to="/under-construction" className="chat-btn" onClick={closeSideMenu}></Link>
                         </li>
                         <li className="nav-item">
                             <a href="https://www.facebook.com/heartlinehongkong" className="nav-item fa fa-facebook"></a>

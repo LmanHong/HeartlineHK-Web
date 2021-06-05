@@ -95,6 +95,7 @@ const LatestFeed = () => {
             <div className="date-selector-container">
                 <div className="month-select">
                     <select name="month" id="month-select" onChange={selectPosts}>
+                        <option value="" disabled selected hidden>月份</option>
                         <option value="All">All</option>
                         {monthSelect.length>0 && monthSelect.map((month, index)=>{
                             return(
@@ -105,6 +106,7 @@ const LatestFeed = () => {
                 </div>
                 <div className="year-select">
                     <select name="year" id="year-select" onChange={selectPosts}>
+                        <option value="" disabled selected hidden>年份</option>
                         <option value="All">All</option>
                         {yearSelect.length>0 && yearSelect.map((year, index)=>{
                             return(
@@ -115,6 +117,7 @@ const LatestFeed = () => {
                 </div>
                 <div className="category-select">
                     <select name="category" id="category-select" onChange={selectPosts}>
+                        <option value="" disabled selected hidden>主題</option>
                         <option value="All">All</option>
                             {categorySelect.length>0 && categorySelect.map((category, index)=>{
                                 return(

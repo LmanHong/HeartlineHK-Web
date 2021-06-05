@@ -1,0 +1,35 @@
+.under-construction{
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    height: fit-content;
+}
+
+.under-construction .main-text{
+    width: 80%;
+    max-width: 960px;
+    height: 80vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    column-gap: 1rem;
+    font-family: 'GenJyuuGothic';
+    align-items: center;
+    justify-content: center;
+    color: var(--mainblue);
+}
+
+.under-construction .main-text i{
+    font-size: 20rem;
+    color: lightsalmon;
+}
+
+.under-construction .main-text p{
+    font-size: 2rem;
+}
+
+@media screen and (max-width: 768px){
+    .under-construction .main-text{
+        flex-direction: column;
+    }
+}

@@ -229,7 +229,7 @@
     position: absolute;
     top: 1.5625rem;
     left: 38.125rem;
-    width: 18.75rem;
+    width: 19rem;
     height: 11.25rem;
     background-image: url('../img/Pages/1\ 主頁/j.gif');
     background-position: center;
@@ -241,7 +241,7 @@
 
 .descriptions-container .dialog3 p{
     margin: 0;
-    margin-left: 3.75rem;
+    margin-left: 2.25rem;
 }
 
 .descriptions-container .dialog3::after{
