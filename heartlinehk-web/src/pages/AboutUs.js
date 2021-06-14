@@ -1,8 +1,8 @@
-import logo from "../img/Pages/2 關於我們/b.PNG";
-import anonymity from "../img/Pages/2 關於我們/c.PNG";
-import confidentiality from "../img/Pages/2 關於我們/e.PNG";
-import nonjudgemental from "../img/Pages/2 關於我們/h.PNG";
-import nondirective from "../img/Pages/2 關於我們/j.PNG";
+import logo from "../img/Pages/2 關於我們/b_349x250.png";
+import anonymity from "../img/Pages/2 關於我們/c_78x100.png";
+import confidentiality from "../img/Pages/2 關於我們/e_84x100.png";
+import nonjudgemental from "../img/Pages/2 關於我們/h_112x100.png";
+import nondirective from "../img/Pages/2 關於我們/j_147x100.png";
 import Footer from "../components/Footer.js";
 import "../styles/AboutUs.css";
 import { useEffect } from "react";

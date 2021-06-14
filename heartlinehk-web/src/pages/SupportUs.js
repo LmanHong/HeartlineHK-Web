@@ -1,6 +1,6 @@
-import donation from '../img/Pages/3 支持我們/b.PNG';
-import partner from '../img/Pages/3 支持我們/c.PNG';
-import volunteer from '../img/Pages/3 支持我們/d.PNG';
+import donation from '../img/Pages/3 支持我們/b_192x192.png';
+import partner from '../img/Pages/3 支持我們/c_192x192.png';
+import volunteer from '../img/Pages/3 支持我們/d_192x192.png';
 import Footer from '../components/Footer.js';
 import '../styles/SupportUs.css';
 import {Link} from 'react-router-dom';

@@ -55,7 +55,7 @@
 }
 
 .carousel-track .carousel-slide .main-text{
-    background-image: url('../img/Pages/1\ 主頁/b.png');
+    background-image: url('../img/Pages/1\ 主頁/b_140x40.png');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -70,7 +70,7 @@
 }
 
 .carousel-track .carousel-slide:nth-child(2) .main-text{
-    background-image: url('../img/Pages/1\ 主頁/i.PNG');
+    background-image: url('../img/Pages/1\ 主頁/i_271x40.png');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -134,7 +134,7 @@
     position: relative;
     margin-top: 50px;
     width: 100%;
-    height: 400px;
+    height: 400px;  
     font-family: 'GenJyuuGothic';
     font-size: 1.3rem;
     font-weight: 400;
@@ -149,7 +149,7 @@
     right: -178px;
     height: 20px;
     width: 533.5px;
-    background-image: url('../img/Pages/1\ 主頁/c.PNG');
+    background-image: url('../img/Pages/1\ 主頁/c_1067x20.png');
     background-repeat: no-repeat;
     background-size:200%;
 }
@@ -162,7 +162,7 @@
     left: -100px;
     width: 31.25rem;
     height: 15.625rem;
-    background-image: url('../img/Pages/1\ 主頁/e.PNG');
+    background-image: url('../img/Pages/1\ 主頁/e_500x250.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -177,7 +177,7 @@
     padding: 0 1.25rem;
     display: flex;
     flex-direction: column;
-    background-image: url('../img/Pages/1\ 主頁/d.PNG');
+    background-image: url('../img/Pages/1\ 主頁/d_154x100.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -205,7 +205,7 @@
     position: absolute;
     top: 5.625rem;
     left: 29.375rem;
-    background-image: url('../img/Pages/1\ 主頁/f.PNG');
+    background-image: url('../img/Pages/1\ 主頁/f_160x95.png');
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: contain;
@@ -231,7 +231,7 @@
     left: 38.125rem;
     width: 19rem;
     height: 11.25rem;
-    background-image: url('../img/Pages/1\ 主頁/j.gif');
+    background-image: url('../img/Pages/1\ 主頁/j_304x164.gif');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -252,7 +252,7 @@
     left: 85%;
     width: 4.375rem;
     height: 4.375rem;
-    background-image: url('../img/Pages/1\ 主頁/k.gif');
+    background-image: url('../img/Pages/1\ 主頁/k_63x70.gif');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -341,7 +341,7 @@
     color: var(--mainblue);
     font-family: 'GenJyuuGothic';
     font-size: 1.25rem;
-    background-image: url('../img/Pages/1\ 主頁/i.PNG');
+    background-image: url('../img/Pages/1\ 主頁/i_150x22.png');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

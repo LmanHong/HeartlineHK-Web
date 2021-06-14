@@ -1,8 +1,8 @@
-import menubtn from '../img/menu bar/menu-button.png';
-import closemenubtn from '../img/menu bar/cross.PNG';
+import menubtn from '../img/menu bar/menu-button_30x30.png';
+import closemenubtn from '../img/menu bar/cross_30x30.png';
 import offbackground from '../img/menu bar/with-pattern.svg';
 import onbackground from '../img/menu bar/with-pattern-opened.svg';
-import logo from '../img/header/logo.png';
+import logo from '../img/header/logo_80x80.png';
 import '../styles/SideMenu.css';
 import {Link} from 'react-router-dom';
 import {useEffect, useRef, useState} from 'react';

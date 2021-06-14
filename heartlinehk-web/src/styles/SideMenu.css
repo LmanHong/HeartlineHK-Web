@@ -172,7 +172,7 @@ svg.menu-content-wave{
     height: 3.75rem;
     top: 0.625rem;
     left: 0;
-    background-image: url('../img/header/flicker-box.gif');
+    background-image: url('../img/header/flicker-box_60x60.gif');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -232,7 +232,7 @@ svg.menu-content-wave{
     display: block;
     width: 5.5rem;
     height: 3.75rem;
-    background-image: url('../img/menu\ bar/chat-button-slide-menu.png');
+    background-image: url('../img/menu\ bar/chat-button-slide-menu_88x60.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

@@ -31,7 +31,7 @@ nav .nav-logo::after{
     height: 3.75rem;
     top: 0.625rem;
     left: 0;
-    background-image: url('../img/header/flicker-box.gif');
+    background-image: url('../img/header/flicker-box_60x60.gif');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -163,7 +163,7 @@ nav .nav-item .chat-btn{
     display: block;
     width: 6rem;
     height: 4rem;
-    background-image: url('../img/header/chat-button.PNG');
+    background-image: url('../img/header/chat-button_96x65.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

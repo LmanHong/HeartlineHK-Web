@@ -22,7 +22,7 @@
     height: fit-content;
     font-size: 2.5rem;
     font-weight: normal;
-    background-image: url('../img/Pages/4\ 義工招募/a.png');
+    background-image: url('../img/Pages/4\ 義工招募/a_140x40.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -71,7 +71,7 @@
     left: -4.5rem;
     top: -2.5rem;
     transform: rotate(210deg);
-    background-image: url('../img/Pages/4\ 義工招募/b.gif');
+    background-image: url('../img/Pages/4\ 義工招募/b_63x70.gif');
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
@@ -147,7 +147,7 @@
     height: 25%;
     max-height: 5.625rem;
     z-index: 1;
-    background-image: url('../img/Pages/4\ 義工招募/f.PNG');
+    background-image: url('../img/Pages/4\ 義工招募/f_150x89.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -166,7 +166,7 @@
     max-height: 5.625rem;
     opacity: 0.7;
     z-index: 1;
-    background-image: url('../img/Pages/4\ 義工招募/g.PNG');
+    background-image: url('../img/Pages/4\ 義工招募/g_139x90.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -213,7 +213,7 @@
     left: -18.75rem;
     width: 37.5rem;
     height: 15.625rem;
-    background-image: url('../img/Pages/4\ 義工招募/h.PNG');
+    background-image: url('../img/Pages/4\ 義工招募/h_500x250.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -310,9 +310,9 @@
     position: relative;
     top: 2rem;
     left: 50%;
-    width: 120rem;
+    width: 37.5rem;
     height: 2.1875rem;
-    background-image: url('../img/Pages/4\ 義工招募/i.PNG');
+    background-image: url('../img/Pages/4\ 義工招募/i_600x35.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size:contain;
@@ -341,7 +341,7 @@
         top: -5rem;
         height: 11rem;
         width: 28.125rem;
-        background-image: url('../img/Pages/4\ 義工招募/l.png');
+        background-image: url('../img/Pages/4\ 義工招募/l_352x176.png');
         background-position: center;
         background-repeat: no-repeat;
         background-size: contain;
@@ -389,7 +389,7 @@
     top: 11.675rem;
     width: 9.375rem;
     height: 11.375rem;
-    background-image: url('../img/Pages/4\ 義工招募/k.PNG');
+    background-image: url('../img/Pages/4\ 義工招募/k_150x181.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;

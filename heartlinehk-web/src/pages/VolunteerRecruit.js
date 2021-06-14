@@ -1,4 +1,4 @@
-import decoration from '../img/Pages/4 義工招募/e.PNG';
+import decoration from '../img/Pages/4 義工招募/e_150x198.png';
 import FlipCountdown from '../components/FlipCountdown.js';
 import Footer from '../components/Footer.js';
 import '../styles/VolunteerRecruit.css';
@@ -27,7 +27,7 @@ const VolunteerRecruit = () =>{
             </div>
             <div className="apply-deadline-container">
                 <h1>最新一輪簡介會</h1>
-                <FlipCountdown day={13} month={6} year={2021}></FlipCountdown>
+                <FlipCountdown day={18} month={6} year={2021}></FlipCountdown>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScBHXRo13emjSJrHf3ZeA2UX5y34xyUyKQpd8Y_SPDRPWJS5A/viewform?usp=sf_link">按此報名</a>
             </div>
             <div className="responsibility-container">
@@ -83,7 +83,7 @@ const VolunteerRecruit = () =>{
                             </li>
                             <li>
                                 <p className="question">我不是社工或心理學學生，亦沒有相關經驗，能否成為義工？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
-                                <p className="answer">成為義工毋須具備相關資歷和經驗，只需符合上述條件即可。義工在正式投入服務前會接受由<span>xxx/本會</span>提供的培訓，使其更有效幫助求助者。</p>
+                                <p className="answer">成為義工毋須具備相關資歷和經驗，只需符合上述條件即可。義工在正式投入服務前會接受由<span>本會</span>提供的培訓，使其更有效幫助求助者。</p>
                             </li>
                             <li>
                                 <p className="question">我會否有薪酬或交通津貼 (車馬費)？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>

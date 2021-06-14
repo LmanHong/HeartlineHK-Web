@@ -1,10 +1,10 @@
-import carouselimg1 from "../img/Pages/1 主頁/a1.png";
-import carouselimg2 from "../img/Pages/1 主頁/a2.png";
-import carouselimg3 from "../img/Pages/1 主頁/a3.png";
+import carouselimg1 from "../img/Pages/1 主頁/a1_889x500.png";
+import carouselimg2 from "../img/Pages/1 主頁/a2_889x500.png";
+import carouselimg3 from "../img/Pages/1 主頁/a3_889x500.png";
 import youtext from "../img/Pages/1 主頁/you.svg";
-import aboutus from "../img/Pages/1 主頁/h.PNG";
-import supportus from "../img/Pages/1 主頁/g.PNG";
-import chatroom from "../img/Pages/1 主頁/chat button.PNG";
+import aboutus from "../img/Pages/1 主頁/h_150x150.png";
+import supportus from "../img/Pages/1 主頁/g_150x150.png";
+import chatroom from "../img/Pages/1 主頁/chat_button_150x150.png";
 import Footer from "../components/Footer.js";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
