@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "heartlinehk-8e3ec"
+  },
+  "targets": {
+    "heartlinehk-8e3ec": {
+      "hosting": {
+        "web": [
+          "heartlinehk-8e3ec"
+        ],
+        "admin": [
+          "admin-heartlinehk-8e3ec"
+        ]
+      }
+    }
+  }
+}

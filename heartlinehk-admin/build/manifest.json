@@ -1,0 +1,35 @@
+{
+  "short_name": "HeartlineHKAdmin",
+  "name": "HeartlineHK Admin React App",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "ms-icon-70x70.png",
+      "type": "image/png",
+      "sizes": "70x70"
+    },
+    {
+      "src": "ms-icon-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "ms-icon-150x150.png",
+      "type": "image/png",
+      "sizes": "150x150"
+    },
+    {
+      "src": "ms-icon-310x310.png",
+      "type": "image/png",
+      "sizes": "310x310"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

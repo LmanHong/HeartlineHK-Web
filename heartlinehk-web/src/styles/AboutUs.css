@@ -72,7 +72,7 @@
 
 .principles-container .principles-list{
     margin:0 auto;
-    width: 80%;
+    width: 70%;
     list-style: none;
     padding: 0;
 }
@@ -131,6 +131,18 @@
     justify-self: end;
 }
 
+@media screen and (max-width: 992px){
+    .principles-container .principles-list{
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .principles-container .principles-list{
+        width: 90%;
+    }
+}
+
 @media screen and (max-width: 576px){
     .about-us .principles-container .principles-list{
         width: 100%;
@@ -161,7 +173,7 @@
 
 .how-to-use-container .use-cases-list{
     list-style: none;
-    width: 35;
+    width: 35%;
     font-family: 'GenJyuuGothic';
     font-size: 1.5rem;
     text-align: end;
@@ -186,7 +198,8 @@
 .how-to-use-container .methods-container{
     font-family: 'GenJyuuGothic';
     color: var(--mainblue);
-    width: 55%;
+    width: 45%;
+    padding-right: 10%;
     line-height: 1.6;
 }
 
@@ -205,6 +218,12 @@
 
 .how-to-use-container .methods-container a{
     color: var(--mainblue);
+}
+
+@media screen and (max-width: 768px){
+    .about-us .how-to-use-container .methods-container{
+        padding-right: 0;
+    }
 }
 
 @media screen and (max-width: 576px){

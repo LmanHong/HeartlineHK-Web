@@ -1,0 +1,40 @@
+{
+    "rules": {
+        "ig_posts":{
+            ".read": true,
+            ".write": false
+        },
+        "chat_queue":{
+            "$user_id":{
+                ".read":"auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id",
+                ".write":"(auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id && (newData.child('status').val() === 'inQueue' || !newData.exists())) || (auth.uid != null && auth.provider === 'password' && data.exists() && (newData.child('status').val() === 'inQueue' || newData.child('status').val() === 'roomAssigned' || !newData.exists()))",
+                ".validate":"newData.hasChildren(['status', 'time']) || !newData.exists()"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password'",
+            ".write": false,
+            ".indexOn": ["time"]
+        },
+        "room_assigned":{
+            "$user_id":{
+                ".read": "auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id",
+                ".write": "(auth.uid != null && auth.provider === 'password' && ((!data.exists() && newData.val() === auth.uid) || (data.val() === auth.uid && newData.val() === 'volunLeft') || (data.val() === auth.uid && !newData.exists()))) || (auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id && !newData.exists())",
+                ".validate": "newData.isString() || !newData.exists()"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password'",
+            ".write": false
+        },
+        "chat_log":{
+            "$volun_id":{
+                ".read": "auth.uid != null && ((auth.provider === 'password' && auth.uid === $volun_id) || (auth.provider === 'anonymous' && root.child('room_assigned').child(auth.uid).val() === $volun_id))",
+                ".write": "auth.uid != null && ((auth.provider === 'password' && auth.uid === $volun_id) || (auth.provider === 'anonymous' && root.child('room_assigned').child(auth.uid).val() === $volun_id))",
+                "$msg_id":{
+                    ".validate": "newData.hasChildren(['uid', 'time', 'msg']) || newData.hasChildren(['uid', 'time', 'spc'])"
+                }
+            },
+            ".read": false,
+            ".write": false
+        },
+        ".read": false,
+        ".write": false
+    }
+}

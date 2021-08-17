@@ -1,0 +1,205 @@
+.chatroom{
+    width: calc(100% - 15rem);
+    height: 100vh;
+    position: relative;
+    left: 0;
+    top: 0;
+    display: grid;
+    grid-template-columns: 18% 78%;
+    column-gap: 0.5rem;
+    justify-content: space-evenly;
+}
+
+.chatroom .chat-container{
+    position: relative;
+    grid-row: 1 /span 1;
+    grid-column: 2 / span 1;
+    height: calc(100% - 1rem);
+    width: 100%;
+    margin: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+
+.chatroom .chat-container .messages-container{
+    top: 0;
+    left: 0;
+    width: calc(100% - 1.5rem);
+    height: calc(100% - 5rem);
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0,0,0,0.05); 
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.chatroom .chat-container .messages-container .message{
+    width: fit-content;
+    height: fit-content;
+    max-width: 60%;
+    margin: 0.1rem 0;
+    padding: 0.5rem;
+    border-radius: 1rem;
+}
+
+.chatroom .chat-container .messages-container .message span::before{
+    content: "\A";
+    display: block;
+}
+
+.chatroom .chat-container .messages-container .message span{
+    display: block;
+    font-size: 0.5rem;
+    color: rgba(0,0,0,0.5);
+}
+
+.chatroom .chat-container .messages-container .message.right span{
+    text-align: end;
+}
+
+.chatroom .chat-container .messages-container .message.left span{
+    text-align: start;
+}
+
+.chatroom .chat-container .messages-container .message.right{
+    background-color: var(--honolulublue);
+    align-self: flex-end;
+}
+
+.chatroom .chat-container .messages-container .message.left{
+    background-color: var(--iceberg);
+    align-self: flex-start;
+}
+
+.chatroom .chat-container .input-container{
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.5rem;
+}
+
+.chatroom .chat-container .input-container #msg-input{
+    width: calc(100% - 3.5rem);
+    font-size: 1rem;
+    border-style: none;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 2rem;
+    padding: 0 1.5rem;
+}
+
+.chatroom .chat-container .input-container #msg-input:focus,
+.chatroom .chat-container .input-container #submit-btn:focus{
+    outline:none;
+}
+
+.chatroom .chat-container .input-container #submit-btn{
+    width: 3rem;
+    height: 3rem;
+    border-style: none;
+    background-color: transparent;
+    color: grey;
+    cursor: pointer;
+}
+
+.chatroom .chat-container .input-container #submit-btn span{
+    font-size: 2rem !important;
+}
+
+.chatroom .queue-container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    grid-row: 1 /span 1;
+    grid-column: 1 /span 1;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 1rem;
+    margin: 0.5rem 0;
+}
+
+.chatroom .queue-container .main-text{
+    width: 100%;
+    height: fit-content;
+    background-color: white;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    border-radius: 1rem;
+    text-align: center;
+    font-size: 1.3rem;
+    padding: 1rem 0;
+}
+
+.chatroom .queue-container .clients-container{
+    width: calc(100% - 1rem);
+    height: 100%;
+    margin: 0;
+    padding: 0.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.chatroom .queue-container .clients-container .queue-client{
+    width: 100%;
+    height: fit-content;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-bottom: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    background-color: greenyellow;
+    text-align: center;
+}
+
+.chatroom .queue-container .clients-container .queue-client.assigned{
+    background-color: var(--jonquil);
+}
+
+.chatroom .queue-container .buttons-container{
+    width: calc(100% - 1rem);
+    height: 4rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+}
+
+.chatroom .queue-container .buttons-container button{
+    height: 1.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+    background-color: white;
+    border: none;
+}
+
+.chatroom .queue-container .buttons-container #start-btn{
+    color: #43ff25;
+}
+
+.chatroom .queue-container .buttons-container #end-btn{
+    color: #ff6969;
+}
+
+.chatroom .queue-container .buttons-container #start-btn:hover{
+    color: black;
+    background-color: #76ff60;
+}
+
+.chatroom .queue-container .buttons-container #end-btn:hover{
+    color: black;
+    background-color: #ff6969;
+}
+
+.chatroom .queue-container .buttons-container #start-btn:disabled,
+.chatroom .queue-container .buttons-container #end-btn:disabled,
+.chatroom .queue-container .buttons-container #start-btn:disabled:hover,
+.chatroom .queue-container .buttons-container #end-btn:disabled:hover{
+    background-color: white;
+    color: lightgrey;
+    cursor: default;
+}
+
+

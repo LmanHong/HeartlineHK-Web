@@ -4,7 +4,6 @@ import './index.css';
 import App from './App';
 import firebase from 'firebase/app';
 import 'firebase/database';
-import 'firebase/storage';
 import 'firebase/auth';
 
 var firebaseConfig = {
@@ -21,9 +20,9 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-//firebase.auth().useEmulator("http://localhost:9099");
-//firebase.database().useEmulator("localhost", 9000);
-//firebase.storage().useEmulator("localhost", 9199);
+
+firebase.database().useEmulator("localhost", 9000);
+firebase.auth().useEmulator("http://localhost:9099");
 
 
 ReactDOM.render(
@@ -32,4 +31,5 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
+
 

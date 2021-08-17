@@ -26,12 +26,12 @@ const AboutUs = () =>{
                 <h1 className="sub-title">四大原則</h1>
                 <ul className="principles-list">
                     <li className="principle">
-                        <img src={anonymity} alt={anonymity} />
+                        <img src={anonymity} alt={anonymity} style={{padding:"0 17px"}}/>
                         <p className="name" style={{backgroundColor: "rgba(152, 209, 196, 0.3)"}} >匿名 (anonymity)</p>
                         <p className="description">求助者無需提供任何個人資料，以確保隱私。</p>
                     </li>
                     <li className="principle">
-                        <img src={confidentiality} alt={confidentiality} />
+                        <img src={confidentiality} alt={confidentiality} style={{padding: "0 31.5px"}}/>
                         <p className="name" style={{backgroundColor: "rgba(245, 211, 190, 0.8)"}}>保密 (confidentiality)</p>
                         <p className="description">對話内容絕對保密，亦不會被留底。</p>
                     </li>

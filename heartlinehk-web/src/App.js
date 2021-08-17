@@ -7,6 +7,7 @@ import VolunteerRecruit from './pages/VolunteerRecruit.js';
 import RelatedServices from './pages/RelatedServices.js';
 import FAQ from './pages/FAQ.js';
 import LatestFeed from './pages/LatestFeed.js';
+import Chatroom from "./pages/Chatroom.js";
 import UnderConstruction from './pages/UnderConstruction.js';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route exact path="/latest-feed">
             <LatestFeed/>
+          </Route>
+          <Route exact path="/chatroom">
+            <Chatroom/>
           </Route>
           <Route exact path="/under-construction">
             <UnderConstruction/>
