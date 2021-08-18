@@ -70,15 +70,35 @@
     border-radius: 1rem;
 }
 
-.chatroom .chat-container .message-container .loader{
-    width: fit-content;
-    height: fit-content;
-    margin: 0;
-    padding: 0;
-    border-radius: 1rem;
-    align-self: center;
-    justify-self: center;
-    background-color: pink;
+.chatroom .chat-container .messages-container .loader{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.chatroom .chat-container .messages-container .loader .spinning-circle{
+    position: absolute;
+    left: calc(50% - 3rem);
+    top: calc(50% - 3rem);
+    width: 5rem;
+    height: 5rem;
+    display: block;
+    border: 1rem solid darkgrey;
+    border-top: 1rem solid lightblue;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.chatroom .chat-container .messages-container .loader .queuing-text{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-45%) translateY(4rem); 
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
 }
 
 .chatroom .chat-container .messages-container .message{
@@ -117,6 +137,16 @@
 .chatroom .chat-container .messages-container .message.left{
     background-color: lightgrey;
     align-self: flex-start;
+}
+
+.chatroom .chat-container .messages-container .message.special{
+    background-color: darkgrey;
+    color: white;
+    align-self: center;
+}
+
+.chatroom .chat-container .messages-container .message.special span{
+    display: none;
 }
 
 .chatroom .chat-container .input-container{

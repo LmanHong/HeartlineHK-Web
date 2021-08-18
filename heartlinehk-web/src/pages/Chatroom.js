@@ -7,11 +7,18 @@ import "firebase/auth";
 
 const Chatroom = () =>{
 
+    const specialChatMessages = {
+        'clientLeft': "Client has left the chat",
+        'volunLeft': "Volunteer has left the chat",
+        'clientId': "Volunteer has started the chat with client"
+    }
+
+    const queueRef = firebase.database().ref('chat_queue');
+    const assignedRef = firebase.database().ref('room_assigned');
+
     const messageContainerDiv = useRef(null);
-    const [queueRef, setQueueRef] = useState(firebase.database().ref('chat_queue'));
-    const [assignedRef, setAssignedRef] = useState(firebase.database().ref('room_assigned'));
+    const [currentVolun, setCurrentVolun] = useState(sessionStorage.getItem('heartlinehk-currentVolun'));
     const [chatLog, setChatLog] = useState([]);
-    const [chatroomRef, setChatroomRef] = useState(null);
     const [isInQueue, setIsInQueue] = useState(false);
     const [isEnqueuing, setIsEnqueuing] = useState(false);
     const [isDequeuing, setIsDequeuing] = useState(false);
@@ -48,12 +55,21 @@ const Chatroom = () =>{
                 console.log("Room Assigned!");
                 //Remove queue entry when room is assigned
                 queueRef.child(currentUser.uid).remove();
+                queueRef.child(currentUser.uid).onDisconnect().cancel();
                 //Subscribe to chatroom changes
                 let tmpChatroomRef = firebase.database().ref('chat_log').child(snapshot.val());
                 tmpChatroomRef.on('value', handleChatLogChanges);
-                setChatroomRef(tmpChatroomRef);
+                //Set client left special message
+                tmpChatroomRef.child('clientdisconnect').onDisconnect().set({
+                    'uid': currentUser.uid,
+                    'time': firebase.database.ServerValue.TIMESTAMP,
+                    'spc': "clientLeft"
+                });
+                //Remove assigned room when client disconnects
+                assignedRef.child(currentUser.uid).onDisconnect().remove();
                 setIsInQueue(false);
                 sessionStorage.setItem('heartlinehk-currentVolun', snapshot.val());
+                setCurrentVolun(snapshot.val());
             }
         }
     };
@@ -64,7 +80,6 @@ const Chatroom = () =>{
             if (isEnqueuing) throw new Error("Already enqueuing!");
             setIsEnqueuing(true);
 
-            let currentVolun = sessionStorage.getItem('heartlinehk-currentVolun');
             let currentUser = firebase.auth().currentUser;
 
             //Check if the user is already in chat queue
@@ -91,11 +106,28 @@ const Chatroom = () =>{
                 throw new Error("CurrentUser is null!");
             }else{
                 //Enqueue to Chat Queue
-                await queueRef.child(currentUser.uid).set({
-                    'status': "inQueue",
-                    'time': firebase.database.ServerValue.TIMESTAMP
+                let enqueueTransaction = await queueRef.child(currentUser.uid).transaction((queueClient)=>{
+                    if (queueClient != null){
+                        console.error("ERROR: Queue Client is not Null!");
+                        return;
+                    }else{
+                        return({
+                            'status': "inQueue",
+                            'time': firebase.database.ServerValue.TIMESTAMP
+                        });
+                    }
                 });
+                if (enqueueTransaction.error){
+                    setIsEnqueuing(false);
+                    throw new Error(enqueueTransaction.error);
+                }else if (!enqueueTransaction.committed){
+                    setIsEnqueuing(false);
+                    throw new Error("Enqueue Transaction Aborted!");
+                }
                 setIsInQueue(true);
+
+                //Dequeue when client disconnects
+                await queueRef.child(currentUser.uid).onDisconnect().remove();
 
                 //Subscribe to listener of the room assigned changes
                 assignedRef.child(currentUser.uid).on('value', handleRoomAssignedChanges);
@@ -114,7 +146,6 @@ const Chatroom = () =>{
             if (isDequeuing) throw new Error("Already dequeuing!");
             setIsDequeuing(true);
 
-            let currentVolun = sessionStorage.getItem('heartlinehk-currentVolun');
             let currentUser = firebase.auth().currentUser;
 
             //Check if the user is in queue or not
@@ -142,6 +173,7 @@ const Chatroom = () =>{
             }else{
                 //Dequeue at Chat Queue
                 await queueRef.child(currentUser.uid).remove();
+                await queueRef.child(currentUser.uid).onDisconnect().cancel();
 
                 //Unsubscribe to listener of room assigned changes
                 assignedRef.child(currentUser.uid).off('value', handleRoomAssignedChanges);
@@ -164,7 +196,6 @@ const Chatroom = () =>{
             if (isEndingChat) throw new Error("A chat is already ending!");
             setIsEndingChat(true);
 
-            let currentVolun = sessionStorage.getItem('heartlinehk-currentVolun');
             let currentUser = firebase.auth().currentUser;
 
             //Check if a chat is ongoing
@@ -199,12 +230,16 @@ const Chatroom = () =>{
                 //Delete the room assigned
                 await assignedRef.child(currentUser.uid).remove();
 
+                //Remove all disconnect listeners (i.e. remove all OnDisconnects)
+                await firebase.database().ref(`chat_log/${currentVolun}`).child('clientdisconnect').onDisconnect().cancel();
+                await assignedRef.child(currentUser.uid).onDisconnect().cancel();
+
                 //Unsubscribe to Chatroom changes
                 firebase.database().ref(`chat_log/${currentVolun}`).off('value', handleChatLogChanges);
-                setChatroomRef(null);
 
                 //Reset the current volunteer
                 sessionStorage.removeItem('heartlinehk-currentVolun');
+                setCurrentVolun(null);
 
                 //End of procedure of ending a chat
                 setIsEndingChat(false);
@@ -215,17 +250,19 @@ const Chatroom = () =>{
     };
 
     const toggleEnqueueDequeue = async ()=>{
-        if (isInQueue) await dequeueChat();
-        else await enqueueChat();
+        if (currentVolun === null){
+            if (isInQueue) await dequeueChat();
+            else await enqueueChat();
+        }
     };
 
     const sendChatMessage = async (e)=>{
+        e.preventDefault();
         try{
             //Check if a message is already sending
             if (isSendingMessage) throw new Error("Already sending a message!");
             setIsSendingMessage(true);
 
-            let currentVolun = sessionStorage.getItem('heartlinehk-currentVolun');
             let currentUser = firebase.auth().currentUser;
 
             //Check if a chat is ongoing
@@ -238,7 +275,6 @@ const Chatroom = () =>{
                 setIsSendingMessage(false);
                 throw new Error("Current User is null!");
             }
-
             //Check if the message to be sent is empty
             let messageToBeSent = document.getElementById('msg-input').value;
             if (messageToBeSent == null || messageToBeSent == ""){
@@ -265,6 +301,16 @@ const Chatroom = () =>{
         }catch (error){
             console.error("ERROR: "+error.message);
         }
+    };
+
+    const getFormattedDateString = (msec) =>{
+        let targetDate = new Date(msec);
+        let hourString = (targetDate.getHours()<10?"0"+targetDate.getHours().toString():targetDate.getHours().toString());
+        let minuteString = (targetDate.getMinutes()<10?"0"+targetDate.getMinutes().toString():targetDate.getMinutes().toString());
+        let monthString = (targetDate.getMonth()<9?"0"+(targetDate.getMonth()+1).toString():(targetDate.getMonth()+1).toString());
+        let dayString = (targetDate.getDate()<10?"0"+targetDate.getDate().toString():targetDate.getDate().toString());
+
+        return (hourString+":"+minuteString+", "+dayString+"/"+monthString);
     };
 
 
@@ -320,21 +366,26 @@ const Chatroom = () =>{
             <div className="chat-container">
                 <p className="short-description">請按一下正下方的「按此對話」開始留言，然後按「送出」。</p>
                 <div ref={messageContainerDiv} className="messages-container">
-                    {chatroomRef === null && <p className="loader" onClick={toggleEnqueueDequeue}>{(isInQueue?"Now Queuing... Click again to dequeue":"Click to Enqueue")}</p>}
-                    {chatroomRef != null && chatLog.map((val, idx)=>{
+                    {isInQueue && 
+                        <div className="loader">
+                            <div className="spinning-circle"></div>
+                            <p className="queuing-text">Waiting for volunteer</p>
+                        </div>
+                    }
+                    {currentVolun != null && chatLog.map((val, idx)=>{
                         let currentUser = firebase.auth().currentUser;
                         return(
-                            <p key={val['chatId']} className={"message "+(val['uid'] === currentUser.uid?"right":"left")}>
-                                {(val['msg']?val['msg']:(val['spc']?val['spc']:"No message"))}
-                                <span>{val['time']}</span>
+                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(val['uid'] === currentUser.uid?"right":"left"))}>
+                                {(val['msg']?val['msg']:(specialChatMessages[val['spc']]?specialChatMessages[val['spc']]:specialChatMessages['clientId']))}
+                                <span>{getFormattedDateString(val['time'])}</span>
                             </p>
                         );
                     })}
                 </div>
-                <div className="input-container">
-                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" />
-                    <button type="submit" name="submit-btn" id="submit-btn" onClick={()=>{endChat();}}><span className="material-icons">send</span></button>
-                </div>
+                <form className="input-container" onSubmit={sendChatMessage}>
+                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" onClick={toggleEnqueueDequeue}/>
+                    <button type="submit" name="submit-btn" id="submit-btn"><span className="material-icons">send</span></button>
+                </form>
                 <p className="short-description">感謝你的留言，我們會根據留言的先後次序，儘快回覆你。</p>
                 <p className="short-description">如果你想立即收到回覆，歡迎致電[hotline number]，與我們一對一語音通話。</p>
             </div>

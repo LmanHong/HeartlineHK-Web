@@ -1,3 +1,4 @@
+import Loading from "../components/Loading.js";
 import "../styles/Chatroom.css";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -6,6 +7,11 @@ import { useEffect, useState } from "react";
 
 const Chatroom = (props) =>{
 
+    const specialChatMessages = {
+        'clientLeft': "Client has left the chat",
+        'volunLeft': "Volunteer has left the chat",
+        'clientId': "Volunteer has started the chat with client"
+    }
     //Chat Queue database reference
     const queueRef = firebase.database().ref('chat_queue');
     //Room Assigned database reference
@@ -332,6 +338,7 @@ const Chatroom = (props) =>{
     }
 
     const sendChatMessage = async (e)=>{
+        e.preventDefault();
         try{
             //Check if a message is already sending
             if (isSendingMessage) throw new Error("Already sending a message!");
@@ -344,7 +351,7 @@ const Chatroom = (props) =>{
             }
             //Check if the message to be sent is empty
             let messageToBeSent = document.getElementById('msg-input').value;
-            if (messageToBeSent == null || messageToBeSent == ""){
+            if (messageToBeSent === null || messageToBeSent === ""){
                 setIsSendingMessage(false);
                 throw new Error("Message to be sent is empty!");
             }else if (!chatroomRef){
@@ -369,6 +376,16 @@ const Chatroom = (props) =>{
         }
     };
 
+    const getFormattedDateString = (msec) =>{
+        let targetDate = new Date(msec);
+        let hourString = (targetDate.getHours()<10?"0"+targetDate.getHours().toString():targetDate.getHours().toString());
+        let minuteString = (targetDate.getMinutes()<10?"0"+targetDate.getMinutes().toString():targetDate.getMinutes().toString());
+        let monthString = (targetDate.getMonth()<9?"0"+(targetDate.getMonth()+1).toString():(targetDate.getMonth()+1).toString());
+        let dayString = (targetDate.getDate()<10?"0"+targetDate.getDate().toString():targetDate.getDate().toString());
+
+        return (hourString+":"+minuteString+", "+dayString+"/"+monthString);
+    };
+
     useEffect(()=>{
         
         console.log("Chatroom mounted!");
@@ -384,28 +401,32 @@ const Chatroom = (props) =>{
 
     return (
         <div className="chatroom">
+            {(isStartingChat || isEndingChat) && <Loading></Loading>}
             <div className="chat-container">
                 <div className="messages-container">
                     {chatLog.map((val, idx)=>{
                         return(
-                            <p key={val['chatId']} className={"message "+(val['uid'] === props.currentUser.uid?"right":"left")}>
-                                {(val['msg']?val['msg']:(val['spc']?val['spc']:"No message"))}
-                                <span>{val['time']}</span>
+                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(val['uid'] === props.currentUser.uid?"right":"left"))}>
+                                {(val['msg']?val['msg']:(specialChatMessages[val['spc']]?specialChatMessages[val['spc']]:specialChatMessages['clientId']))}
+                                <span>{getFormattedDateString(val['time'])}</span>
                             </p>
                         );
                     })}
                 </div>
-                <div className="input-container">
+                <form className="input-container" onSubmit={sendChatMessage}>
                     <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" />
-                    <button type="submit" name="submit-btn" id="submit-btn" onClick={sendChatMessage}><span className="material-icons">send</span></button>
-                </div>
+                    <button type="submit" name="submit-btn" id="submit-btn"><span className="material-icons">send</span></button>
+                </form>
             </div>
             <div className="queue-container">
                 <p className="main-text">Queue Count: <span className="queue-count">{clientQueue.length}</span></p>
                 <div className="clients-container">
                     {clientQueue.map((val, idx)=>{
                         return (
-                            <p key={val['userId']} className={"queue-client"+(val['status'] === "roomAssigned"?" assigned":"")}>Client <span className="client-id">{val['userId']}</span></p>
+                            <p key={val['userId']} className={"queue-client"+(val['status'] === "roomAssigned"?" assigned":"")}>
+                                Client <span className="client-id">{val['userId']}</span>
+                                <span className="enqueue-time">{(val["status"] === "roomAssigned"?"Assigned":"Enqueue")} Time: {getFormattedDateString(val['time'])}</span>
+                            </p>
                         );
                     })}
                 </div>

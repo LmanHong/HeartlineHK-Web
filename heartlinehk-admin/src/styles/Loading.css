@@ -1,0 +1,29 @@
+.loading{
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 50000;
+}
+
+.loading .spinning-circle{
+    position: fixed;
+    left: calc(50% - 3rem);
+    top: calc(50% - 3rem);
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    border: 1rem solid #f3f3f3;
+    border-top: 1rem solid lightblue;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+
