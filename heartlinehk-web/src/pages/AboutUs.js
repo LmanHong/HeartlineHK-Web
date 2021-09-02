@@ -19,7 +19,7 @@ const AboutUs = () =>{
             <div className="main-text">
                 <img src={logo} alt={logo} className="logo" />
                 <h1>關於我們</h1>
-                <p>HeartlineHK由一群大學生發起，希望爲受情緒困擾的香港青少年提供一個傾訴的空間。我們的義工受過專業訓練，會在每晚7pm至翌日7am致力聆聽和支援朋輩。我們相信有效的聆聽和對話能疏導求助者的情緒，讓對方感到被理解和被關懷，從而避免負面情緒的積壓。讓我們合力為心理健康帶來正面的幫助！</p>
+                <p>HeartlineHK由一群大學生發起，希望爲受情緒困擾的香港青少年提供一個傾訴的空間。我們的義工受過專業訓練，會在每晚7pm至翌日5am致力聆聽和支援朋輩。我們相信有效的聆聽和對話能疏導求助者的情緒，讓對方感到被理解和被關懷，從而避免負面情緒的積壓。讓我們合力為心理健康帶來正面的幫助！</p>
             </div>
 
             <div className="principles-container">
@@ -58,7 +58,7 @@ const AboutUs = () =>{
                 <div className="methods-container">
                     <p>你可以選擇</p>
                     <ul className="methods-list">
-                        <li><span>按右上角的按鈕</span>和我們的義工對話或</li>
+                        <li><span>按右上角的按鈕</span>和我們的義工對話</li>
                         <li style={{display: "none"}}>致電我們的<span>熱線</span>號碼(xxxxxxxx)</li>
                     </ul>
                     <p>如果想知道更多心理學資訊和了解我們的最新消息，請關注我們的社交平台。(<a href="https://www.facebook.com/heartlinehongkong">Facebook</a>/<a href="https://www.instagram.com/heartlinehk/">Instagram</a>: heartlinehk)</p>

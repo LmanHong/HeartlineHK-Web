@@ -1,11 +1,11 @@
-nav {
+nav.nav-container {
     top: 0;
     width: calc(100% - 2.5rem);
     height: 5rem;
     padding: 1.25rem 1.25rem 0 1.25rem;
 }
 
-nav a.nav-logo{
+nav.nav-container a.nav-logo{
     position: relative;
     display: inline-flex;
     float: left;
@@ -16,14 +16,14 @@ nav a.nav-logo{
     margin: -0.9375rem 0 0 0;
 }
 
-nav .nav-logo .front{
+nav.nav-container .nav-logo .front{
     position: relative;
     width: 5rem;
     height: 5rem;
     margin-left: 0.3125rem;
 }
 
-nav .nav-logo::after{
+nav.nav-container .nav-logo::after{
     content: " ";
     display: block;
     position: absolute;
@@ -38,7 +38,7 @@ nav .nav-logo::after{
     z-index: -1;
 }
 
-nav .nav-name{
+nav.nav-container .nav-name{
     position: relative;
     display: inline-block;
     font-size: 2rem;
@@ -47,14 +47,14 @@ nav .nav-name{
     margin: 0;
 }
 
-nav .nav-items-container{
+nav.nav-container .nav-items-container{
     float: right;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-nav .nav-items-container .nav-item{
+nav.nav-container .nav-items-container .nav-item{
     float: right;
     text-align: center;
     margin-left: 0.625rem;
@@ -159,7 +159,7 @@ nav .nav-items-container .nav-item{
     }
 }
 
-nav .nav-item .chat-btn{
+nav.nav-container .nav-item .chat-btn{
     display: block;
     width: 6rem;
     height: 4rem;
@@ -170,7 +170,7 @@ nav .nav-item .chat-btn{
     animation: jiggle 20s normal infinite forwards;
 }
 
-nav .nav-item.mobile a{
+nav.nav-container .nav-item.mobile a{
     position: relative;
     display: none;
     width: 2.5rem;
@@ -182,18 +182,18 @@ nav .nav-item.mobile a{
 }
 
 @media screen and (max-width: 576px){
-    nav .nav-item .chat-btn{
+    nav.nav-container .nav-item .chat-btn{
         width: 5.5rem;
         height: 3.75rem;
     }
 
-    nav .nav-item.mobile a{
+    nav.nav-container .nav-item.mobile a{
         display: block;
     }
 }
 
 @media screen and (max-width: 540px){
-    nav .nav-name{
+    nav.nav-container .nav-name{
         display: none;
     }
 }

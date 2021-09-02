@@ -15,7 +15,7 @@ const NavBar  = (props) =>{
     }
 
     return (
-    <nav>
+    <nav className="nav-container">
         <Link to="/" className="nav-logo">
             <img src={logo} alt={logo} className="front" />
             <p className="nav-name">HEARTLINEHK</p>
@@ -25,7 +25,7 @@ const NavBar  = (props) =>{
                 <a className="nav-menu-btn fa fa-bars" onClick={openMobileMenu}></a>
             </li>
             <li className="nav-item">
-                <Link to="/under-construction" className="chat-btn"></Link>
+                <Link to="/chatroom" className="chat-btn"></Link>
             </li>
         </ul>
 

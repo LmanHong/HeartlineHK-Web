@@ -3,7 +3,7 @@ import "../styles/Footer.css";
 const Footer = () =>{
 
     const scrollToTop = () =>{
-        let topNavBar = document.querySelector('nav');
+        let topNavBar = document.querySelector('nav.nav-container');
         topNavBar.scrollIntoView({behavior: "smooth"});
     }
 

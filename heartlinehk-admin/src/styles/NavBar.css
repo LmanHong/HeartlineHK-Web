@@ -1,4 +1,4 @@
-nav{
+nav.nav-container{
     position: relative;
     width: 15rem;
     height: 100vh;
@@ -6,7 +6,64 @@ nav{
     margin: 0;
 }
 
-nav .nav-logo{
+.nav-background{
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10000;
+}
+
+.nav-toggle-btn{
+    display: none;
+    position: absolute;
+    width: 2.5rem;
+    height: 5rem;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--darkskyblue);
+    border-top-right-radius: 2.5rem;
+    border-bottom-right-radius: 2.5rem;
+    border: hidden;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 0.4375rem 1.8125rem 0px;
+    outline: 0;
+    cursor: pointer;
+}
+
+.nav-toggle-btn span{
+    font-size: 1.5rem;
+}
+
+@media screen and (max-width:992px){
+    nav.nav-container{
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 20000;
+        transform: translateX(-100%);
+        transition: transform 0s ease-in-out;
+    }
+
+    nav.nav-container.opened{
+        transform: translateX(0);
+    }
+
+    .nav-background.opened{
+        display: block;
+        
+    }
+
+    .nav-toggle-btn{
+        display: block;
+        z-index: 10000;
+    }
+}
+
+nav.nav-container .nav-logo{
     display: flex;
     flex-direction: row;
     column-gap: 0.5rem;
@@ -18,24 +75,24 @@ nav .nav-logo{
     align-items: center;
 }
 
-nav .nav-logo img{
+nav.nav-container .nav-logo img{
     width: 5rem;
     height: 5rem;
 }
 
-nav .nav-logo .nav-name{
+nav.nav-container .nav-logo .nav-name{
     color: rgba(0,0,0,0.8);
     font-size: 1.3rem;
     font-weight: 600;
 }
 
-nav .nav-items-container{
+nav.nav-container .nav-items-container{
     list-style: none;
     padding-inline-start: 0;
     margin-top: 0;
 }
 
-nav .nav-items-container .nav-item{
+nav.nav-container .nav-items-container .nav-item{
     text-align: start;
     width: fit-content;
     height: fit-content;
@@ -43,21 +100,21 @@ nav .nav-items-container .nav-item{
     margin-top: 1rem;
 }
 
-nav .nav-items-container .nav-item .nav-link{
+nav.nav-container .nav-items-container .nav-item .nav-link{
     text-decoration: none;
     color: rgba(0,0,0,0.5);
     line-height: 1;
 }
 
-nav .nav-items-container .nav-item .nav-link:hover{
+nav.nav-container .nav-items-container .nav-item .nav-link:hover{
     color: rgba(0,0,0,0.8);
 }
 
-nav .nav-items-container .nav-item .nav-link span{
+nav.nav-container .nav-items-container .nav-item .nav-link span{
     transform: translateY(0.3rem);
 }
 
-nav .nav-user{
+nav.nav-container .nav-user{
     width: 14rem;
     height: fit-content;
     position: absolute;
@@ -68,15 +125,16 @@ nav .nav-user{
     column-gap: 1rem;
     align-items: center;
     background-color: lightgrey;
+    cursor: pointer;
 }
 
-nav .nav-user img{
+nav.nav-container .nav-user img{
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
 }
 
-nav .nav-user .username{
+nav.nav-container .nav-user .username{
     text-decoration: none;
     font-size: 1.3rem;
     color: black;

@@ -19,7 +19,7 @@ const FAQ = () =>{
             <ul className="q-and-a-container">
                 <li className="question" style={{backgroundColor: "#f6f6f6"}} onClick={openQuestionBox}>
                     <p className="question-text">HeartlineHK 是個甚麼團體？</p>
-                    <p className="answer-text">HeartlineHK由一群大學生發起，希望爲受情緒困擾的香港大學生提供一個傾訴的空間。我們的義工受過專業訓練，會在每晚7pm至翌日7am致力聆聽和支援朋輩。我們相信有效的聆聽和對話能疏導求助者的情緒，讓對方感到被理解和被關懷，從而避免負面情緒的積壓。讓我們合力為心理健康帶來正面的幫助！</p>
+                    <p className="answer-text">HeartlineHK由一群大學生發起，希望爲受情緒困擾的香港大學生提供一個傾訴的空間。我們的義工受過專業訓練，會在每晚7pm至翌日5am致力聆聽和支援朋輩。我們相信有效的聆聽和對話能疏導求助者的情緒，讓對方感到被理解和被關懷，從而避免負面情緒的積壓。讓我們合力為心理健康帶來正面的幫助！</p>
                 </li>
                 <li className="question" style={{backgroundColor: "#e6eef6"}} onClick={openQuestionBox}>
                     <p className="question-text">對話過程是否保密？</p>
@@ -31,7 +31,7 @@ const FAQ = () =>{
                 </li>
                 <li className="question" style={{backgroundColor: "#f6f2ef"}} onClick={openQuestionBox}>
                     <p className="question-text">如何使用HeartlineHK的服務？</p>
-                    <p className="answer-text">每晚7pm至翌日7am間，你可以按右上角的按鈕和我們的義工對話，或致電我們的熱線號碼。如果想知道更多心理學資訊和了解我們的最新消息，請關注我們的社交平台！(Facebook/Instagram: heartlinehk)</p>
+                    <p className="answer-text">每晚7pm至翌日5am間，你可以按右上角的按鈕和我們的義工對話，或致電我們的熱線號碼。如果想知道更多心理學資訊和了解我們的最新消息，請關注我們的社交平台！(Facebook/Instagram: heartlinehk)</p>
                 </li>
                 <li className="question" style={{backgroundColor: "#fffbf4"}} onClick={openQuestionBox}>
                     <p className="question-text">甚麼人可以使用HeartlineHK的服務？</p>

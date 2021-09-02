@@ -47,6 +47,46 @@
     }
 }
 
+.chatroom .t-and-c-container{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto 6.5rem auto;
+    padding: 1rem 2rem;
+    color: var(--mainblue);
+    background-color: #ECE8DF;
+    border-radius: 1rem;
+    font-family: 'GenJyuuGothic';
+}
+
+.chatroom .t-and-c-container a{
+    color: var(--mainblue);
+}
+
+.chatroom .t-and-c-container label{
+    font-weight: 500;
+}
+
+.chatroom .t-and-c-container .start-chat-btn{
+    position: absolute;
+    left: 50%;
+    bottom: -3rem;
+    transform: translateX(-50%);
+    background-color: #99D1C4;
+    border-style: none;
+    border-radius: 0.3rem;
+    font-size: 1.3rem;
+    padding: 0.2rem 2rem;
+    cursor: pointer;
+}
+
+.chatroom .t-and-c-container .start-chat-btn:disabled{
+    background-color: lightgrey;
+    color: grey;
+    cursor: default;
+}
+
 .chatroom .chat-container{
     position: relative;
     width: 80%;
@@ -56,6 +96,34 @@
     color: var(--mainblue);
     font-family: "GenJyuuGothic";
     font-size: 1rem;
+}
+
+@media screen and (max-width: 576px){
+    .chatroom .chat-container{
+        width: 90%;
+    }
+}
+
+.chatroom .chat-container aside.emoji-picker-react{
+    position: absolute !important;
+    left: 0.5rem !important;
+    bottom: 25% !important;
+}
+
+.chatroom .chat-container #endchat-btn{
+    position: absolute;
+    left: calc(100% - 3rem);
+    width: 3rem;
+    height: 3rem;
+    border-style: none;
+    background-color: transparent;
+    color: grey;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.chatroom .chat-container #endchat-btn span{
+    font-size: 2rem !important;
 }
 
 .chatroom .chat-container .messages-container{
@@ -74,6 +142,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .chatroom .chat-container .messages-container .loader .spinning-circle{
@@ -89,11 +158,13 @@
     animation: spin 1.5s linear infinite;
 }
 
-.chatroom .chat-container .messages-container .loader .queuing-text{
+.chatroom .chat-container .messages-container .loader .queuing-text,
+.chatroom .chat-container .messages-container .loader .connecting-text{
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translateX(-45%) translateY(4rem); 
+    text-align:center;
 }
 
 @keyframes spin {
@@ -108,6 +179,7 @@
     margin: 0.1rem 0;
     padding: 0.5rem;
     border-radius: 1rem;
+    overflow-wrap: break-word;
 }
 
 .chatroom .chat-container .messages-container .message span::before{
@@ -150,11 +222,23 @@
 }
 
 .chatroom .chat-container .input-container{
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: row;
     column-gap: 0.5rem;
     margin: 1rem 0;
+}
+
+.chatroom .chat-container .input-container .typing-msg{
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    top: -3.5rem;
+    left: 0;
+    padding: 0.5rem 1rem;
+    color: grey;
 }
 
 .chatroom .chat-container .input-container #msg-input{
@@ -167,11 +251,13 @@
 }
 
 .chatroom .chat-container .input-container #msg-input:focus,
-.chatroom .chat-container .input-container #submit-btn:focus{
+.chatroom .chat-container .input-container #submit-btn:focus,
+.chatroom .chat-container .input-container #emoji-btn:focus{
     outline:none;
 }
 
-.chatroom .chat-container .input-container #submit-btn{
+.chatroom .chat-container .input-container #submit-btn,
+.chatroom .chat-container .input-container #emoji-btn{
     width: 3rem;
     height: 3rem;
     border-style: none;
@@ -180,7 +266,8 @@
     cursor: pointer;
 }
 
-.chatroom .chat-container .input-container #submit-btn span{
+.chatroom .chat-container .input-container #submit-btn span,
+.chatroom .chat-container .input-container #emoji-btn span{
     font-size: 2rem !important;
 }
 

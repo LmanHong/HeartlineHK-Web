@@ -122,7 +122,7 @@ const Home = () =>{
                         <img src={aboutus} alt={aboutus} className="link-image" />
                         <p className="link-text">關於我們</p>
                     </Link>
-                    <Link to="/under-construction" className="link">
+                    <Link to="/chatroom" className="link">
                         <img src={chatroom} alt={chatroom} className="link-image" />
                         <p className="link-text">聯天室</p>
                     </Link>

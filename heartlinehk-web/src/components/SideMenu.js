@@ -91,7 +91,7 @@ const SideMenu = () =>{
                             <a className="nav-menu-btn fa fa-times" onClick={closeSideMenu}></a>
                         </li>
                         <li className="nav-item">
-                            <Link to="/under-construction" className="chat-btn" onClick={closeSideMenu}></Link>
+                            <Link to="/chatroom" className="chat-btn" onClick={closeSideMenu}></Link>
                         </li>
                         <li className="nav-item">
                             <a href="https://www.facebook.com/heartlinehongkong" className="nav-item fa fa-facebook"></a>
@@ -110,7 +110,7 @@ const SideMenu = () =>{
 
                 <ul className="menu-links">
                     <li className="link"><Link to="/about-us" onClick={closeSideMenu}>關於我們</Link></li>
-                    <li className="link"><Link to="/" onClick={closeSideMenu}>聊天室</Link></li>
+                    <li className="link"><Link to="/chatroom" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
                         <Link to="/support-us" onClick={closeSideMenu}>支持我們<i className="fa fa-caret-down"></i></Link>
                         <a className="mobile-dropdown-trigger fa fa-caret-down" onClick={openMobileDropdownMenu}></a>

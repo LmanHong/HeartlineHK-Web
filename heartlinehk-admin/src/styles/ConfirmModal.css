@@ -1,0 +1,65 @@
+.modal-container{
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 50000;
+}
+
+.modal-container.opened{
+    display: block;
+}
+
+.modal-container .confirm-modal{
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 15rem;
+    height: fit-content;
+    border-radius: 1rem;
+    border: 0.1rem solid grey;
+    background-color: white;
+}
+
+.modal-container .confirm-modal .confirm-btn{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--starcommandblue);
+    width: 50%;
+    height: 2.5rem;
+    cursor: pointer;
+    background-color: transparent;
+    border-bottom: none;
+    border-left: none;
+    border-top: 0.1rem solid lightgrey;
+    border-right: 0.05rem solid lightgrey;
+}
+
+.modal-container .confirm-modal .cancel-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--indianred);
+    width: 50%;
+    height: 2.5rem;
+    cursor: pointer;
+    background-color: transparent;
+    border-bottom: none;
+    border-right: none;
+    border-top: 0.1rem solid lightgrey;
+    border-left: 0.05rem solid lightgrey;
+} 
+
+.modal-container .confirm-modal .confirm-text{
+    margin: 1rem 1rem 3.5rem 1rem;
+    text-align: center;
+}

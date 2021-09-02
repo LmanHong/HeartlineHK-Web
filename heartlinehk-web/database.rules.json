@@ -4,6 +4,22 @@
             ".read": true,
             ".write": false
         },
+        "supervisors":{
+            ".read": true,
+            ".write": false,
+            "$supervisor_id":{
+                ".validate":"data.isNumber()"
+            }
+        },
+        "online_time":{
+            "$volun_id":{
+                ".read": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
+                ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
+                ".validate": "(newData.isNumber() && newData.val() <= now) || !newData.exists()"
+            },
+            ".read":"auth.uid != null && auth.provider === 'password' && root.child('supervisors').child(auth.uid).exists()",
+            ".write":false
+        },
         "chat_queue":{
             "$user_id":{
                 ".read":"auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id",
@@ -31,7 +47,25 @@
                     ".validate": "newData.hasChildren(['uid', 'time', 'msg']) || newData.hasChildren(['uid', 'time', 'spc'])"
                 }
             },
-            ".read": false,
+            ".read": "auth.uid != null && auth.provider === 'password' && root.child('supervisors').child(auth.uid).exists()",
+            ".write": false
+        },
+        "disconnect_time":{
+            "$user_id":{
+                ".read": "auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id",
+                ".write": "auth.uid != null && auth.provider === 'anonymous' && auth.uid === $user_id",
+                ".validate": "(newData.isNumber() && newData.val() <= now) || !newData.exists()"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password'",
+            ".write": false
+        },
+        "typing_status":{
+            "$user_id":{
+                ".read": "auth.uid != null && auth.provider === 'anonymous' && root.child('room_assigned').child(auth.uid).val() === $user_id",
+                ".write": "auth.uid != null && (auth.provider === 'anonymous' || auth.provider === 'password') && auth.uid === $user_id",
+                ".validate": "newData.isBoolean() || !newData.exists()"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password'",
             ".write": false
         },
         ".read": false,

@@ -10,23 +10,70 @@
     justify-content: space-evenly;
 }
 
+@media screen and (max-width: 992px){
+    .chatroom{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .chatroom{
+        grid-template-columns: 98%;
+    }
+}
+
 .chatroom .chat-container{
     position: relative;
+    height: calc(100vh - 1rem);
     grid-row: 1 /span 1;
     grid-column: 2 / span 1;
-    height: calc(100% - 1rem);
     width: 100%;
     margin: 0.5rem 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: calc(100% - 7rem) 3rem 3rem;
     row-gap: 0.5rem;
 }
 
+.chatroom .chat-container aside.emoji-picker-react{
+    position: absolute !important;
+    left: 0.5rem !important;
+    bottom: 4rem !important;
+}
+
+.chatroom .chat-container .disconnect-msg{
+    position: absolute;
+    width: calc(100% - 2rem);
+    height: fit-content;
+    margin: 0;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    z-index: 10;
+}
+
+@media screen and (max-width: 600px){
+    .chatroom.queue-opened .chat-container{
+        display: none;
+    }
+    
+    .chatroom .chat-container{
+        display: grid;
+        grid-column: 1 /span 1;
+    }
+}
+
 .chatroom .chat-container .messages-container{
+    position: relative;
     top: 0;
     left: 0;
     width: calc(100% - 1.5rem);
-    height: calc(100% - 5rem);
+    height: calc(100% - 1rem);
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 1;
     padding: 0.5rem 0.75rem;
     background-color: rgba(0,0,0,0.05); 
     border-radius: 1rem;
@@ -43,6 +90,7 @@
     margin: 0.1rem 0;
     padding: 0.5rem;
     border-radius: 1rem;
+    overflow-wrap: break-word;
 }
 
 .chatroom .chat-container .messages-container .message span::before{
@@ -84,13 +132,79 @@
     display: none;
 }
 
+.chatroom .chat-container .special-char-container{
+    position: relative;
+    width: 99%;
+    height: 3rem;
+    grid-row: 2 / span 1;
+    grid-column: 1 / span 1;
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.3rem;
+    overflow-y: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.chatroom .chat-container .special-char-container::-webkit-scrollbar{
+    display: none;
+}
+
+.chatroom .chat-container .special-char-container button{
+    border-style: none;
+    font-size: 1rem;
+    width: fit-content;
+    cursor: pointer;
+    color: grey;
+}
+
+.chatroom .chat-container .special-char-container .back-arrow{
+    position: sticky;
+    width: 1.5rem;
+    left: 0;
+    transform: translateY(0.1rem);
+    padding: 0;
+}
+
+.chatroom .chat-container .special-char-container .forward-arrow{
+    position: sticky;
+    width: 1.5rem;
+    right: 0;
+    transform: translateY(0.1rem);
+    padding: 0;
+}
+
+.chatroom .chat-container .special-char-container .back-arrow span{
+    transform: translateX(0.3rem);
+}
+
+.chatroom .chat-container .special-char-container .forward-arrow span{
+    transform: translateX(-0.15rem);
+}
+
 .chatroom .chat-container .input-container{
+    position: relative;
     width: 100%;
     height: 3rem;
+    grid-row: 3 / span 1;
+    grid-column: 1 / span 1;
     display: flex;
     flex-direction: row;
     column-gap: 0.5rem;
 }
+
+.chatroom .chat-container .input-container .typing-msg{
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    margin: 0;
+    top: -6.5rem;
+    left: 0;
+    padding: 0.5rem 1rem;
+    color: grey;
+}
+
+
 
 .chatroom .chat-container .input-container #msg-input{
     width: calc(100% - 3.5rem);
@@ -102,11 +216,13 @@
 }
 
 .chatroom .chat-container .input-container #msg-input:focus,
-.chatroom .chat-container .input-container #submit-btn:focus{
+.chatroom .chat-container .input-container #submit-btn:focus,
+.chatroom .chat-container .input-container #emoji-btn:focus{
     outline:none;
 }
 
-.chatroom .chat-container .input-container #submit-btn{
+.chatroom .chat-container .input-container #submit-btn,
+.chatroom .chat-container .input-container #emoji-btn{
     width: 3rem;
     height: 3rem;
     border-style: none;
@@ -115,14 +231,16 @@
     cursor: pointer;
 }
 
-.chatroom .chat-container .input-container #submit-btn span{
+.chatroom .chat-container .input-container #submit-btn span,
+.chatroom .chat-container .input-container #emoji-btn span{
     font-size: 2rem !important;
 }
 
 .chatroom .queue-container{
     position: relative;
-    display: flex;
-    flex-direction: column;
+    height: calc(100vh - 1rem);
+    display: grid;
+    grid-template-rows: 4rem calc(100% - 9rem) 5rem;
     grid-row: 1 /span 1;
     grid-column: 1 /span 1;
     background-color: rgba(0,0,0,0.3);
@@ -130,9 +248,21 @@
     margin: 0.5rem 0;
 }
 
+@media screen and (max-width: 600px){
+    .chatroom .queue-container{
+        display: none;
+    }
+    
+    .chatroom.queue-opened .queue-container{
+        display: grid;
+    }
+}
+
 .chatroom .queue-container .main-text{
     width: 100%;
     height: fit-content;
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 1;
     background-color: white;
     margin-block-start: 0;
     margin-block-end: 0;
@@ -142,9 +272,16 @@
     padding: 1rem 0;
 }
 
+.chatroom .queue-container .main-text .material-icons{
+    font-size: 1.7rem;
+    transform: translateY(0.3rem);
+}
+
 .chatroom .queue-container .clients-container{
     width: calc(100% - 1rem);
-    height: 100%;
+    height: calc(100% - 1rem);
+    grid-row: 2 / span 1;
+    grid-column: 1 / span 1;
     margin: 0;
     padding: 0.5rem;
     overflow-x: hidden;
@@ -179,6 +316,8 @@
 .chatroom .queue-container .buttons-container{
     width: calc(100% - 1rem);
     height: 4rem;
+    grid-row: 3 / span 1;
+    grid-column: 1 / span 1;
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
@@ -219,6 +358,34 @@
     background-color: white;
     color: lightgrey;
     cursor: default;
+}
+
+.chatroom .queue-toggle{
+    position: absolute;
+    display: none;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 5rem;
+    background-color: var(--darkskyblue);
+    border-top-left-radius: 2.5rem;
+    border-bottom-left-radius: 2.5rem;
+    border: hidden;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 0.4375rem 1.8125rem 0px;
+    outline: 0;
+    cursor: pointer;
+
+}
+
+.chatroom .queue-toggle span{
+    font-size: 1.5rem;
+}
+
+@media screen and (max-width: 600px){
+    .chatroom .queue-toggle{
+        display: block;
+    }
 }
 
 
