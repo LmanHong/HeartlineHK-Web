@@ -1,5 +1,6 @@
 import Footer from "../components/Footer.js";
 import ConfirmModal from "../components/ConfirmModal.js";
+import PopupModal from "../components/PopupModal.js";
 import "../styles/Chatroom.css";
 import Picker from "emoji-picker-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -341,8 +342,8 @@ const Chatroom = () =>{
                 //Stop last login timer
                 if ("loginTimer" in window) clearInterval(window.loginTimer);
 
-                //Open popup window for chat record form
-                let popupWindowRef = window.open(recordFormUrl, "ChatRecordForm", 'resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
+                //Open popup modal for chat record form
+                document.getElementById('recordform-modal').classList.add("opened");
 
                 //End of procedure of ending a chat
                 setIsEndingChat(false);
@@ -592,15 +593,16 @@ const Chatroom = () =>{
 
     return (
         <div className="chatroom">
+
             <div className="main-text">
                 <h1>聊天室</h1>
-                <p>你好，歡迎進入HeartlineHK聊天室，<span>我們堅守匿名、保密、不批判、非指導性的四大原則，請放心和我們聊天。</span></p>
+                <p>你好，歡迎進入HeartlineHK聊天室，我們每天由7pm至5am提供服務。<span>我們堅守匿名、保密、不批判、非指導性的四大原則，請放心和我們聊天。</span></p>
             </div>
             {!isTandCRead &&
             <div className="t-and-c-container">
                 <h3 className="title">警告</h3>
                 <p>請在使用我們的服務前仔細閱讀以下條款。若您使用我們的服務，即表示您同意我們的條款。如果您不同意這些條款，則不得使用服務。 您可以在“相關服務”頁面找到其他熱線列表。</p>
-                <p>我們的服務不是諮詢服務。 我們不能替代任何專業醫療保健服務或由持牌專業人員提供的任何其他服務。 如果您對醫療或心理健康狀況有任何疑問，或者正在經歷醫療上的緊急情況，我們誠摯敦促您尋求醫生或其他合資格執業人士的專業幫助和建議。</p>
+                <p>我們的服務不是諮詢服務。 我們不能替代任何專業醫療保健服務或由持牌專業人員提供的任何其他服務。<b>如果您對醫療或心理健康狀況有任何疑問，或者正在經歷醫療上的緊急情況，我們誠摯敦促您尋求醫生或其他合資格執業人士的專業幫助和建議。</b></p>
 
                 <h3 className="title">服務條款</h3>
                 <p>
@@ -699,6 +701,7 @@ const Chatroom = () =>{
             }
             {isTandCRead && 
             <div className="chat-container">
+                <PopupModal modalId={"recordform-modal"} iframeSrc={recordFormUrl}></PopupModal>
                 <ConfirmModal modalId={"endchat-modal"} confirmText={"你確定要結束對話嗎？"} formSubmitHandler={endChatFormHandler}></ConfirmModal>
                 {currentVolun && <button type="button" name="endchat-btn" id="endchat-btn" onClick={()=>{document.getElementById("endchat-modal").classList.add("opened")}}><span className="material-icons">cancel</span></button>}
                 <div ref={messageContainerDiv} className="messages-container">

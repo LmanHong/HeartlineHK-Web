@@ -17,6 +17,8 @@ const Chatroom = (props) =>{
         'clientId': "義工已開啟聊天室"
     }
 
+    //Chat Records database reference
+    const recordRef = firebase.database().ref('chat_records');
     //Chat Queue database reference
     const queueRef = firebase.database().ref('chat_queue');
     //Room Assigned database reference
@@ -62,8 +64,7 @@ const Chatroom = (props) =>{
     //Flag indicating the emoji picker is opened
     const [isPickerOpened, setIsPickerOpened] = useState(false);
 
-
-    //Callback for handling new chat messages
+    //Callback for handling chat log changes
     const handleChatLogChanges = (snapshot)=>{
         let tmpChatLog = [];
         console.log(snapshot.val());
@@ -359,6 +360,9 @@ const Chatroom = (props) =>{
             }else if (!typingRef){
                 setIsEndingChat(false);
                 throw new ReferenceError("Typing Status reference not available!");
+            }else if (!recordRef){
+                setIsEndingChat(false);
+                throw new ReferenceError("Chat Records reference not available!");
             }
             //Check if current client is null or not
             else if (currentClient == null){
@@ -416,6 +420,14 @@ const Chatroom = (props) =>{
                 }
                 setChatLog([]);
                 progress += 1;
+
+                //Update the chat record
+                let currentRecordRef = await recordRef.push();
+                await currentRecordRef.set({
+                    'uid': props.currentUser.uid,
+                    'start': startChatMsec,
+                    'end': endChatMsec
+                });
 
                 //Remove Typing Status
                 await typingRef.child(props.currentUser.uid).remove();

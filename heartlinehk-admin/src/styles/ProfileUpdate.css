@@ -1,9 +1,12 @@
 .profile-update{
     width: calc(100% - 15rem);
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: relative;
     left: 0;
     top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 @media screen and (max-width: 992px){

@@ -9,8 +9,11 @@ const Supervisor = (props)=>{
     const specialChatMessages = {
         'clientLeft': "使用者已離開聊天室",
         'volunLeft': "義工已離開聊天室",
-        'clientId': "義工已開啟聊天室"
+        'clientId': "義工已開啟聊天室",
+        'noChatStarted': "此義工未有開啟聊天室"
     }
+    //Volunteer Online Time database reference
+    const onlineTimeRef = firebase.database().ref('online_time');
     //Room Assigned database reference
     const assignedRef = firebase.database().ref('room_assigned');
     //Disconnect Time database reference
@@ -21,8 +24,8 @@ const Supervisor = (props)=>{
     const messageContainerDiv = useRef(null);
     //Disconnect time of current client
     const [disconnectTime, setDisconnectTime] = useState(null);
-    //Room Assigned local list copy
-    const [roomAssigned, setRoomAssigned] = useState([]);
+    //Online Time local list copy
+    const [onlineTime, setOnlineTime] = useState([]);
     //Chat Log local list copy
     const [chatLog, setChatLog] = useState([]);
     //Flag indicating the current user is supervisor
@@ -46,19 +49,14 @@ const Supervisor = (props)=>{
         setChatLog(tmpChatLog);
     };
 
-    //Callback for handling room assigned
-    const handleRoomAssignedChanges = (snapshot)=>{
-        let tmpRoomAssigned = [];
+    //Callback for handling online time changes
+    const handleOnlineTimeChanges = (snapshot)=>{
+        let tmpOnlineTime = [];
         if (snapshot.val() != null){
-            for (const clientId in snapshot.val()){
-                if (snapshot.val()[clientId] != 'volunLeft') tmpRoomAssigned.push({
-                    'clientId': clientId,
-                    'volunId': snapshot.val()[clientId]
-                });
-            }
+            for (const volunId in snapshot.val()) tmpOnlineTime.push(volunId);
         }
-        console.log(tmpRoomAssigned);
-        setRoomAssigned(tmpRoomAssigned);
+        console.log(tmpOnlineTime);
+        setOnlineTime(tmpOnlineTime);
     }
 
     //Callback for handling disconnect/reconnect changes
@@ -67,21 +65,36 @@ const Supervisor = (props)=>{
     };
 
     //Function for handling the selection of volunteer
-    const selectVolun = (e)=>{
-        const clientId = e.target.value;
+    const selectVolun = async (e)=>{
         const volunId = e.target.innerHTML;
-        console.log(clientId);
+        let clientId = null;
+        let assignedClient = (await assignedRef.once('value')).val();
+        for (const tmpClientId in assignedClient){
+            if (assignedClient[tmpClientId] === volunId){
+                clientId = tmpClientId;
+                break;
+            }
+        }
         console.log(volunId);
-        
+        console.log(clientId);
+
         const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
         const localCurrentClient = sessionStorage.getItem('heartlinehk-supervisor-currentClient');
         if (localCurrentVolun) chatroomRef.child(localCurrentVolun).orderByChild('time').off('value');
         if (localCurrentClient) disconnectRef.child(localCurrentClient).off('value'); 
         
-        sessionStorage.setItem('heartlinehk-supervisor-currentClient', clientId);
         sessionStorage.setItem('heartlinehk-supervisor-currentVolun', volunId);
-        chatroomRef.child(volunId).orderByChild('time').on('value', handleChatLogChanges);
-        disconnectRef.child(clientId).on('value', handleConnectionChanges);
+        sessionStorage.setItem('heartlinehk-supervisor-currentClient', clientId);
+        setDisconnectTime(null);
+        if (clientId != null){
+            chatroomRef.child(volunId).orderByChild('time').on('value', handleChatLogChanges);
+            disconnectRef.child(clientId).on('value', handleConnectionChanges);
+        }else setChatLog([{
+            'chatId': "nochatstarted",
+            'uid': volunId,
+            'time': Date.now(),
+            'spc': "noChatStarted"
+        }]);
     }
 
     const getFormattedDateString = (msec) =>{
@@ -100,13 +113,13 @@ const Supervisor = (props)=>{
             if (snapshot.val() != null) setIsSupervisor(true);
             else setIsSupervisor(false);
         });
-        assignedRef.on('value', handleRoomAssignedChanges);
+        onlineTimeRef.on('value', handleOnlineTimeChanges);
 
 
         return()=>{
             //Unsubscribe events when unmount component
             console.log("Supervisor Unmounted!");
-            assignedRef.off('value');
+            onlineTimeRef.off('value');
             const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
             const localCurrentClient = sessionStorage.getItem('heartlinehk-supervisor-currentClient');
             if (localCurrentVolun){
@@ -129,10 +142,10 @@ const Supervisor = (props)=>{
     return (
         <div className="supervisor">
             <div className="volunteers-container">
-                {roomAssigned.map((val, idx)=>{
+                {onlineTime.map((val, idx)=>{
                     const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
                     return (
-                        <button key={val['clientId']} className={"volun-btn"+(localCurrentVolun === val['volunId']?" selected":"")} onClick={selectVolun} value={val['clientId']}>{val['volunId']}</button>
+                        <button key={"online-volun-"+idx} className={"volun-btn"+(localCurrentVolun === val?" selected":"")} value={val} onClick={selectVolun}>{val}</button>
                     );
                 })}
             </div>

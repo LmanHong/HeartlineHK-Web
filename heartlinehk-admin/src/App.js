@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ConfirmModal from "./components/ConfirmModal.js";
+import NoticeModal from "./components/NoticeModal.js";
 import NavBar from "./components/NavBar.js";
 import ProfileUpdate from "./pages/ProfileUpdate.js";
 import Supervisor from "./pages/Supervisor.js";
@@ -18,6 +19,17 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [auth, setAuth] = useState(firebase.auth());
 
+  const handleOnlineTimeChanges = (snapshot)=>{
+    if (snapshot.val() != null){
+      const loggedInUid = snapshot.val()['uid'];
+      const agentUid = sessionStorage.getItem('heartlinehk-agentUid');
+      if (loggedInUid != agentUid){
+        document.getElementById('auto-logout-modal').classList.add('opened');
+        handleLogout(true);
+      }
+    }
+  };
+
   const handleLogin = async (e) =>{
     e.preventDefault();
     if (!isLoggingIn){
@@ -28,15 +40,15 @@ function App() {
           await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
           await auth.signInWithEmailAndPassword(currentEmail, currentPassword);
           console.log(auth.currentUser);
-  
-          //const onlineTime = (await onlineTimeRef.child(auth.currentUser.uid).once('value')).val();
-          //if (onlineTime != null){
-          //  await handleLogout();
-          //  throw new Error("User already signed in elsewhere");
-          //}else{
-          //  await onlineTimeRef.child(auth.currentUser.uid).set(firebase.database.ServerValue.TIMESTAMP);
-
-          //}
+          if (sessionStorage.getItem('heartlinehk-agentUid') === null){
+            console.log("No UID found, generate now!");
+            sessionStorage.setItem('heartlinehk-agentUid', generateId(12));
+          }
+          const agentUid = sessionStorage.getItem('heartlinehk-agentUid');
+          await onlineTimeRef.child(auth.currentUser.uid).set({
+            'uid': agentUid,
+            'time': firebase.database.ServerValue.TIMESTAMP
+          });
         }catch (error){
           console.error(error.message);
           alert(error.message);
@@ -48,8 +60,10 @@ function App() {
     }
   }
 
-  const handleLogout = async (e) =>{
+  const handleLogout = async (isAutoLogout=false) =>{
     try{
+      onlineTimeRef.child(auth.currentUser.uid).off('value');
+      if (!isAutoLogout) await onlineTimeRef.child(auth.currentUser.uid).remove();
       await auth.signOut();
       console.log("Signed out!");
     }catch(error){
@@ -69,17 +83,56 @@ function App() {
     }else console.error("ERROR: Parent Element is not a logout modal!");
   }
 
+  //Callback for handling form submission of aut logout notice modal
+  const autoLogoutFormHandler = (e)=>{
+    e.preventDefault();
+    const modalContainerDiv = e.target.parentElement.parentElement;
+    if (modalContainerDiv.id === "auto-logout-modal") modalContainerDiv.classList.remove("opened");
+    else console.error("ERROR: Parent Element is not a logout modal!");
+  }
+
+  //Function for generating short ID
+  const generateId = (length)=>{
+    let tmpId = "";
+    let charType = 0;
+    let numOfChar = 26;
+    let asciiStart = 97
+    for (let i=0; i<length; i++){
+      charType = Math.floor(Math.random() * 3);
+      numOfChar = (charType === 0 || charType === 1?26:10);
+      asciiStart = (charType === 0?97:(charType === 1?65:48));
+      tmpId = tmpId + String.fromCharCode(Math.floor(Math.random() * numOfChar) + asciiStart);
+    }
+    return tmpId;
+  };
+
   useEffect(()=>{
     const authChangeListener = firebase.auth().onAuthStateChanged((user)=>{
-      if (user) setCurrentUser(user);
-      else setCurrentUser(null);
+      if (user){
+        setCurrentUser(user);
+        onlineTimeRef.child(user.uid).off('value');
+        onlineTimeRef.child(user.uid).on('value', handleOnlineTimeChanges);
+      }else setCurrentUser(null);
     });
     return authChangeListener;
   });
 
+  useEffect(()=>{
+    const setViewHeight = ()=>{
+      let vh = window.innerHeight * 0.01;
+      console.log(vh);
+      console.log(window.innerHeight);
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    setViewHeight();
+    window.addEventListener('resize', setViewHeight);
+  }, []);
+
   return (
     <Router>
-      <div className="App" style={{width: "100vw", minHeight: "100vh", position: "relative", backgroundColor: "rgba(0,0,0,0.05)", display: "flex", flexDirection:"row", overflow: "hidden"}}>
+      <div className="App" style={{width: "100vw", minHeight: "calc(100 * var(--vh, 1vh))", position: "relative", backgroundColor: "rgba(0,0,0,0.05)", display: "flex", flexDirection:"row", overflow: "hidden"}}>
+        <NoticeModal modalId={"auto-logout-modal"} noticeText={"由於此帳號已於另一裝置/視窗上登入，此視窗將會登出帳號。"} formSubmitHandler={autoLogoutFormHandler}></NoticeModal>
         {!currentUser && <Login handleLogin={handleLogin}/>}
         {currentUser && 
           <>

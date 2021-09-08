@@ -1,6 +1,6 @@
 .chatroom{
     width: calc(100% - 15rem);
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: relative;
     left: 0;
     top: 0;
@@ -24,7 +24,7 @@
 
 .chatroom .chat-container{
     position: relative;
-    height: calc(100vh - 1rem);
+    height: calc(var(--vh, 1vh) * 100 - 1rem);
     grid-row: 1 /span 1;
     grid-column: 2 / span 1;
     width: 100%;
@@ -238,7 +238,7 @@
 
 .chatroom .queue-container{
     position: relative;
-    height: calc(100vh - 1rem);
+    height: calc(var(--vh, 1vh) * 100 - 1rem);
     display: grid;
     grid-template-rows: 4rem calc(100% - 9rem) 5rem;
     grid-row: 1 /span 1;

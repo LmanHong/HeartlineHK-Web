@@ -3,7 +3,7 @@
     height: 20rem;
     display: flex;
     flex-direction: column;
-    margin: calc(50vh - 10rem) auto;
+    margin: calc(var(--vh, 1vh) * 50 - 10rem) auto;
     background-color: white;
     border-radius: 1rem;
 }

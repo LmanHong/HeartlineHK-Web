@@ -1,6 +1,6 @@
 .supervisor{
     width: calc(100% - 15rem);
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
     position: relative;
     left: 0;
     top: 0;
@@ -18,7 +18,7 @@
 
 @media screen and (max-width: 600px){
     .supervisor{
-        height: calc(100vh - 1rem);
+        height: calc(var(--vh, 1vh) * 100 - 1rem);
         margin: 0.5rem 0;
         grid-template-columns: 98%;
         grid-template-rows: 3rem calc(100% - 3.5rem);
@@ -52,7 +52,7 @@
 
 .supervisor .volunteers-container{
     position: relative;
-    height: calc(100vh - 1rem);
+    height: calc(var(--vh, 1vh) * 100 - 1rem);
     width: 100%;
     grid-row: 1 / span 1;
     grid-column: 1 / span 1;
@@ -111,7 +111,7 @@
 
 .supervisor .chat-container{
     position: relative;
-    height: calc(100vh - 2rem);
+    height: calc(var(--vh, 1vh) * 100 - 2rem);
     width: calc(100% - 1.5rem);
     grid-row: 1 /span 1;
     grid-column: 2 / span 1;

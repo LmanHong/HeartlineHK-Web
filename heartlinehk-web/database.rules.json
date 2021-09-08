@@ -11,11 +11,20 @@
                 ".validate":"data.isNumber()"
             }
         },
+        "chat_records":{
+            "$chat_id":{
+                ".read": false,
+                ".write": "auth.uid != null && auth.provider === 'password' && !data.exists()",
+                ".validate": "newData.hasChildren(['start', 'end', 'uid'])"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password' && root.child('supervisors').child(auth.uid).exists()",
+            ".write": false
+        },
         "online_time":{
             "$volun_id":{
                 ".read": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
                 ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
-                ".validate": "(newData.isNumber() && newData.val() <= now) || !newData.exists()"
+                ".validate": "newData.hasChildren(['uid', 'time']) || !newData.exists()"
             },
             ".read":"auth.uid != null && auth.provider === 'password' && root.child('supervisors').child(auth.uid).exists()",
             ".write":false
