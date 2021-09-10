@@ -1,5 +1,7 @@
 import Loading from "../components/Loading.js";
 import ConfirmModal from "../components/ConfirmModal.js";
+import DropdownModal from "../components/DropdownModal.js";
+import NoticeModal from "../components/NoticeModal.js";
 import Picker from "emoji-picker-react";
 import "../styles/Chatroom.css";
 import newClientSound from "../sound/pristine-609.mp3"
@@ -17,6 +19,8 @@ const Chatroom = (props) =>{
         'clientId': "義工已開啟聊天室"
     }
 
+    //Volunteer Online Time database reference
+    const onlineTimeRef = firebase.database().ref('online_time');
     //Chat Records database reference
     const recordRef = firebase.database().ref('chat_records');
     //Chat Queue database reference
@@ -29,6 +33,8 @@ const Chatroom = (props) =>{
     const typingRef = firebase.database().ref('typing_status');
     //Chatroom database reference
     const chatroomRef = firebase.database().ref(`chat_log/${props.currentUser.uid}`);
+    //Transfer Requests database reference
+    const transferRef = firebase.database().ref(`transfer_requests/${props.currentUser.uid}`);
     //Chat record Google Form
     const recordFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSdsD_qLU51OC9UY0Rrx_Ht52aU0TgPU-LUu5yNp4ta8cYu0yQ/viewform?usp=pp_url";    
     //Chat record Google Form field entries
@@ -49,6 +55,10 @@ const Chatroom = (props) =>{
     const [disconnectTime, setDisconnectTime] = useState(null);
     //Chat Log local list copy
     const [chatLog, setChatLog] = useState([]);
+    //Free volunteer local list copy
+    const [freeVolun, setFreeVolun] = useState([]);
+    //VolunId of transfer chat initiator
+    const [transferFromVolunId, setTransferFromVolunId] = useState(null);
     //Flag indicating a start-chat is in progress
     const [isStartingChat, setIsStartingChat] = useState(false);
     //Flag indicating an end-chat is in progress
@@ -63,6 +73,8 @@ const Chatroom = (props) =>{
     const [isUserTyping, setIsUserTyping] = useState(false);
     //Flag indicating the emoji picker is opened
     const [isPickerOpened, setIsPickerOpened] = useState(false);
+    //Flag indicating a transfer chat request is ongoing
+    const [isTransferringChat, setIsTransferringChat] = useState(false);
 
     //Callback for handling chat log changes
     const handleChatLogChanges = (snapshot)=>{
@@ -120,6 +132,73 @@ const Chatroom = (props) =>{
         setClientQueue(tmpClientQueue);
     }
 
+    //Callback for handling incoming transfer chat request changes
+    const handleIncomingTransferChanges = (snapshot)=>{
+        console.log(snapshot.val());
+        if (snapshot.val() != null){
+            if (snapshot.val()['status'] === "pending"){
+                setTransferFromVolunId(snapshot.val()['from']);
+                document.getElementById('transferrequest-modal').classList.add("opened");
+            }
+        }
+    }
+
+    //Callback for handling outgoing transfer chat request changes
+    const handleOutgoingTransferChanges = async (snapshot)=>{
+        if (snapshot.val() != null){
+            const targetVolunId = sessionStorage.getItem('heartlinehk-targetVolun');
+            if (snapshot.val()['status'] === 'accepted'){
+                if (targetVolunId != null){
+                    //Copy all previous chat logs to target volunteer's chatroom
+                    const tmpChatLog = (await chatroomRef.once('value')).val();
+                    await firebase.database().ref(`chat_log/${targetVolunId}`).set(tmpChatLog);
+
+                    //Unsubscribe to transfer request listener
+                    firebase.database().ref(`transfer_requests/${targetVolunId}`).off('value');
+
+                    //Remove transfer request
+                    await firebase.database().ref(`transfer_requests/${targetVolunId}`).remove();
+
+                    //Remove target volunteer
+                    sessionStorage.removeItem('heartlinehk-targetVolun');
+
+                    //Clear Chat Log
+                    await chatroomRef.remove();
+                    setChatLog([]);
+
+                    //Remove Typing Status
+                    await typingRef.child(props.currentUser.uid).remove();
+
+                    let localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
+                    //Unsubscribe to current client's disconnect time and typing status
+                    disconnectRef.child(localCurrentClient).off('value');
+                    setDisconnectTime(null);
+                    typingRef.child(localCurrentClient).off('value');
+                    setIsClientTyping(false);
+
+                    //Reset current client
+                    sessionStorage.removeItem('heartlinehk-currentClient');
+                    setCurrentClient(null);
+
+                    //Set End of Transfer
+                    setIsTransferringChat(false);
+                }else console.error("ERROR: Target Volunteer ID is null!");
+            }else if (snapshot.val()['status'] === 'rejected'){
+                //Remove transfer request
+                await firebase.database().ref(`transfer_requests/${targetVolunId}`).remove();
+
+                //Remove target volunteer
+                sessionStorage.removeItem('heartlinehk-targetVolun');
+
+                //Set End of Transfer
+                setIsTransferringChat(false);
+
+                //Warn the user about the rejection
+                alert("該義工已拒絕了你的轉移對話要求!");
+            }
+        }
+    }
+
     //Callback for handling disconnect/reconnect changes
     const handleConnectionChanges = (snapshot)=>{
         setDisconnectTime(snapshot.val());
@@ -135,6 +214,7 @@ const Chatroom = (props) =>{
         try{
             queueRef.orderByChild('time').on('value', handleQueueChanges);
             chatroomRef.orderByChild('time').on('value', handleChatLogChanges);
+            transferRef.on('value', handleIncomingTransferChanges);
             let localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
             let assignedSnapshot = await assignedRef.once('value');
             for (let clientId in assignedSnapshot.val()){
@@ -592,6 +672,88 @@ const Chatroom = (props) =>{
         }else console.error("ERROR: Parent Element is not a start chat modal!");
     }
 
+    //Callback for handling the form submission of the transfer chat dropdown modal
+    const trasnferChatFormHandler = (e)=>{
+        e.preventDefault();
+        const modalContainerDiv = e.target.parentElement.parentElement;
+        if (modalContainerDiv.id === "transferchat-modal"){
+            const isConfirmed = (e.target.className === "confirm-btn");
+            if (isConfirmed){
+                const volunDropdownList = document.getElementById("volun-dropdown-list");
+                const targetVolunId = volunDropdownList.value;
+                const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
+                setIsTransferringChat(true);
+                
+                //Set the target transfer volunteer ID
+                sessionStorage.setItem('heartlinehk-targetVolun', targetVolunId);
+
+                //Publish the transfer request
+                firebase.database().ref(`transfer_requests/${targetVolunId}`).set({
+                    'time': firebase.database.ServerValue.TIMESTAMP,
+                    'from': props.currentUser.uid,
+                    'client': localCurrentClient,
+                    'status': "pending"
+                });
+
+                //Subscribe to the transfer request listener
+                firebase.database().ref(`transfer_requests/${targetVolunId}`).on('value', handleOutgoingTransferChanges);
+                
+            }
+            modalContainerDiv.classList.remove("opened");
+        }else console.error("ERROR: Parent Element is not a transfer chat modal!");
+    }
+
+    //Callback for handling the form submission of the transfer request from initiated volunteer
+    const resolveRequestFormHandler = async (e)=>{
+        e.preventDefault();
+        const modalContainerDiv = e.target.parentElement.parentElement;
+        if (modalContainerDiv.id === "transferrequest-modal"){
+            const isConfirmed = (e.target.className === "confirm-btn");
+            if (isConfirmed){
+                try{
+                    const transferDetails = (await transferRef.once('value')).val();
+                    //Get the client ID to be transferred
+                    let tmpClientId = transferDetails['client'];
+                    let fromVolunId = transferDetails['from'];
+                    console.log("Client: "+tmpClientId);
+                    console.log("Target Volun: "+fromVolunId);
+
+                    //Change the status of transfer request to 'accepted'
+                    let requestStatusTransaction = await transferRef.child('status').transaction((oldStatus)=>{
+                        if (oldStatus === 'pending') return 'accepted';
+                        else{
+                            console.error("ERROR: Old Status of the transfer request is not pending!");
+                            return;
+                        }
+                    });
+                    if (requestStatusTransaction.error) throw new Error(requestStatusTransaction.error);
+                    else if (!requestStatusTransaction.committed) throw new Error("Transfer Request Status Transaction Aborted!");
+
+                    //Change the room assigned of the client to current user's ID
+                    const oldVolunId = (await assignedRef.child(tmpClientId).once('value')).val();
+                    if (oldVolunId != fromVolunId) throw new Error("Old assigned volunteer is not the same as transfer initiator!");
+                    else await assignedRef.child(tmpClientId).set(props.currentUser.uid);
+
+                    //Set current client
+                    sessionStorage.setItem('heartlinehk-currentClient', tmpClientId);
+                    setCurrentClient(tmpClientId);
+
+                    //Subscribe to current client's disconnect time and typing status
+                    disconnectRef.child(tmpClientId).on('value', handleConnectionChanges);
+                    typingRef.child(tmpClientId).on('value', handleTypingStatusChanges);
+
+                    alert("對話轉移完成!");
+                }catch(error){
+                    console.error("ERROR: "+error.message);
+                    alert(error.message);
+                }
+
+            }else await transferRef.child('status').set('rejected');
+            setTransferFromVolunId(null);
+            modalContainerDiv.classList.remove("opened");
+        }else console.error("ERROR: Parent Element is not a transfer request modal!");
+    }
+
     //Callback for handling selection of emoji in the emoji picker
     const emojiPickerHandler = (e, emojiObject)=>{
         console.log(emojiObject.emoji);
@@ -638,6 +800,29 @@ const Chatroom = (props) =>{
         else setIsPickerOpened(true);
     }
 
+    //Function for opening the transfer chat modal
+    const openTransferChatModal = async ()=>{
+        const modalContainerDiv = document.getElementById("transferchat-modal");
+        const onlineVoluns = (await onlineTimeRef.once('value')).val();
+        const roomAssigned = (await assignedRef.once('value')).val();
+        let tmpFreeVolun = [];
+        for (const onlineVolunId in onlineVoluns){
+            if (onlineVolunId != props.currentUser.uid){
+                let isChatting = false;
+                for (const clientId in roomAssigned){
+                    if (roomAssigned[clientId] == onlineVolunId){
+                        isChatting = true;
+                        break;
+                    }
+                }
+                if (!isChatting) tmpFreeVolun.push(onlineVolunId);
+            }
+        } 
+        console.log(tmpFreeVolun);
+        setFreeVolun(tmpFreeVolun);
+        modalContainerDiv.classList.add("opened");
+    }
+
     //Function for side-scrolling the special chinese character container
     const scrollSpecialChar = (e)=>{
         const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -667,6 +852,8 @@ const Chatroom = (props) =>{
             let localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
             queueRef.orderByChild('time').off('value');
             chatroomRef.orderByChild('time').off('value');
+            transferRef.off('value');
+            transferRef.off('value');
             if (localCurrentClient){
                 disconnectRef.child(localCurrentClient).off('value');
                 typingRef.child(localCurrentClient).off('value');
@@ -683,17 +870,20 @@ const Chatroom = (props) =>{
 
     return (
         <div className="chatroom">
+            <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolunId}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
+            <DropdownModal modalId={"transferchat-modal"} dropdownId={"volun-dropdown-list"} descriptionText={"請選擇要接手對話的義工。"} dropdownOptions={freeVolun} formSubmitHandler={trasnferChatFormHandler}></DropdownModal>
             <ConfirmModal modalId={"endchat-modal"} confirmText={"你確定要結束對話嗎？"} formSubmitHandler={endChatFormHandler}></ConfirmModal>
             <ConfirmModal modalId={"startchat-modal"} confirmText={"你確定要開啟新對話嗎？"} formSubmitHandler={startChatFormHandler}></ConfirmModal>
-            {(isStartingChat || isEndingChat) && <Loading></Loading>}
+            {(isStartingChat || isEndingChat || isTransferringChat) && <Loading></Loading>}
             <div className="chat-container">
                 {disconnectTime != null &&
                     <p className="disconnect-msg">使用者已於{getFormattedDateString(disconnectTime)}開始離線。</p>
                 }
                 <div ref={messageContainerDiv} className="messages-container">
                     {chatLog.map((val, idx)=>{
+                        const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
                         return(
-                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(val['uid'] === props.currentUser.uid?"right":"left"))}>
+                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(localCurrentClient === null?(val['uid'] === props.currentClient.uid?"right":"left"):(val['uid'] === localCurrentClient?"left":"right")))}>
                                 {(val['msg']?val['msg']:(specialChatMessages[val['spc']]?specialChatMessages[val['spc']]:specialChatMessages['clientId']))}
                                 <span>{getFormattedDateString(val['time'])}</span>
                             </p>
@@ -733,6 +923,7 @@ const Chatroom = (props) =>{
                     })}
                 </div>
                 <div className="buttons-container">
+                    <button type="submit" name="trasnsfer-btn" id="transfer-btn" disabled={currentClient == null} onClick={openTransferChatModal}>轉移對話</button>
                     <button type="submit" name="start-btn" id="start-btn" disabled={currentClient != null || clientQueue.length <= 0} onClick={()=>{document.getElementById("startchat-modal").classList.add("opened")}}>開始對話</button>
                     <button type="submit" name="end-btn" id="end-btn" disabled={currentClient == null} onClick={()=>{document.getElementById("endchat-modal").classList.add("opened")}}>結束對話</button>
                 </div>

@@ -13,7 +13,7 @@ const Footer = () =>{
             <div className="left-column">
                 <div className="sponsor">
                     <p>捐助機構︰</p>
-                    <p>International Chamber of Sustainable Development</p>
+                    <p><a href="https://www.icsd-global.org">International Chamber of Sustainable Development</a></p>
                     <p>CUHK Psy-connection Award</p>
                 </div>
                 <a href="#" className="terms-and-conditions">條款和條件</a>

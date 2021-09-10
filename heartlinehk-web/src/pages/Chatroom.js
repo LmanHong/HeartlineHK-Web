@@ -114,8 +114,6 @@ const Chatroom = () =>{
                 let assignedVolun = assignedSnapshot.val();
                 if (assignedVolun === null) throw new Error(`No volunteer is assigned to user ${currentUser.uid}!`);
                 else if (assignedVolun === "volunLeft"){
-                    await typingRef.child(currentUser.uid).remove();
-                    await disconnectRef.child(currentUser.uid).remove();
                     await assignedRef.child(currentUser.uid).remove();
                     alert("Previous chat was ended by volunteer!");
                     throw new Error("Previous chat was ended by volunteer!");
@@ -355,7 +353,7 @@ const Chatroom = () =>{
 
     const toggleEnqueueDequeue = async ()=>{
         let localCurrentVolun = (currentVolun?currentVolun:sessionStorage.getItem('heartlinehk-currentVolun'));
-        if (localCurrentVolun === null && isTandCChecked){
+        if (firebase.auth().currentUser && localCurrentVolun === null && isTandCChecked){
             if (isInQueue){
                 setIsTandCRead(false);
                 await dequeueChat();
@@ -501,33 +499,32 @@ const Chatroom = () =>{
 
     useEffect(()=>{
         console.log("Chatroom mounted!");
-
-        //Check if an anonymous user exists
-        if (firebase.auth().currentUser != null){
-            const currentUid = firebase.auth().currentUser.uid;
-            //Clear any unnecessary items in Web Storage
-            let i = 0;
-            while (i != localStorage.length){
-                if (localStorage.key(i) != `heartlinehk-${currentUid}`) localStorage.removeItem(localStorage.key(i));
-                else i = i+1;
-            }
-            //If no valid last login time or the last login time is more than 10 minutes ago,
-            //the old anonymous user should be deleted
-            const lastLoginTime = Number(localStorage.getItem(`heartlinehk-${currentUid}`));
-            const currentTime = Date.now();
-            if (isNaN(lastLoginTime) || ((currentTime - lastLoginTime) > 600000)){
-                localStorage.removeItem(`heartlinehk-${currentUid}`);
-                typingRef.child(currentUid).remove();
-                disconnectRef.child(currentUid).remove();
-                firebase.auth().currentUser.delete();
-            }
-        }
-
         //Login anonymously
         //Note that if an anonymous user is already logged in, 
         //this signin will return the old anonymous user
         firebase.auth().signInAnonymously()
-            .then((userCredential)=>{
+            .then(async (userCredential)=>{
+                const currentUid = firebase.auth().currentUser.uid;
+                //Clear any unnecessary items in Web Storage
+                let i = 0;
+                while (i != localStorage.length){
+                    if (localStorage.key(i) != `heartlinehk-${currentUid}`){
+                        console.log(localStorage.key(i));
+                        localStorage.removeItem(localStorage.key(i));
+                    }else i = i+1;
+                }
+                //If no valid last login time or the last login time is more than 10 minutes ago,
+                //the old anonymous user should be deleted
+                const lastLoginTime = Number(localStorage.getItem(`heartlinehk-${currentUid}`));
+                const currentTime = Date.now();
+                if (isNaN(lastLoginTime) || ((currentTime - lastLoginTime) > 600000)){
+                    localStorage.removeItem(`heartlinehk-${currentUid}`);
+                    await typingRef.child(currentUid).remove();
+                    await disconnectRef.child(currentUid).remove();
+                    await firebase.auth().currentUser.delete();
+                    await firebase.auth().signInAnonymously();
+                }
+
                 //Set Timer to update the last login time every 3 seconds
                 if ("loginTimer" in window) clearInterval(window.loginTimer);
                 window.loginTimer = setInterval(()=>{

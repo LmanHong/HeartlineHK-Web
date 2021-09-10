@@ -19,6 +19,34 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [auth, setAuth] = useState(firebase.auth());
 
+  const handleConnectionChanges = async (snapshot)=>{
+    if (auth.currentUser){
+      if (snapshot.val() === true){
+        if (onlineTimeRef){
+          const onlineTimeInfo = (await onlineTimeRef.child(auth.currentUser.uid).once('value')).val();
+          const agentUid = sessionStorage.getItem('heartlinehk-agentUid');
+          const isReconnected = sessionStorage.getItem('heartlinehk-disconnected');
+
+          if (onlineTimeInfo === null || isReconnected === null){
+            await onlineTimeRef.child(auth.currentUser.uid).onDisconnect().remove();
+            await onlineTimeRef.child(auth.currentUser.uid).set({
+              'uid': agentUid,
+              'time': firebase.database.ServerValue.TIMESTAMP
+            });
+            onlineTimeRef.child(auth.currentUser.uid).off('value');
+            onlineTimeRef.child(auth.currentUser.uid).on('value', handleOnlineTimeChanges);
+          }else if (onlineTimeRef['uid'] != agentUid){
+            document.getElementById('auto-logout-modal').classList.add('opened');
+            handleLogout(true);
+          }
+        }else console.error("ERROR: Online Time Reference not availabl!");
+      }else{
+        console.warn("WARNING: Current User is disconnected!");
+        sessionStorage.setItem('heartlinehk-disconnected', Date.now());
+      }
+    }else console.error("ERROR: Current User is null!");
+  }
+
   const handleOnlineTimeChanges = (snapshot)=>{
     if (snapshot.val() != null){
       const loggedInUid = snapshot.val()['uid'];
@@ -40,15 +68,6 @@ function App() {
           await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
           await auth.signInWithEmailAndPassword(currentEmail, currentPassword);
           console.log(auth.currentUser);
-          if (sessionStorage.getItem('heartlinehk-agentUid') === null){
-            console.log("No UID found, generate now!");
-            sessionStorage.setItem('heartlinehk-agentUid', generateId(12));
-          }
-          const agentUid = sessionStorage.getItem('heartlinehk-agentUid');
-          await onlineTimeRef.child(auth.currentUser.uid).set({
-            'uid': agentUid,
-            'time': firebase.database.ServerValue.TIMESTAMP
-          });
         }catch (error){
           console.error(error.message);
           alert(error.message);
@@ -63,6 +82,8 @@ function App() {
   const handleLogout = async (isAutoLogout=false) =>{
     try{
       onlineTimeRef.child(auth.currentUser.uid).off('value');
+      firebase.database().ref('.info/connected').off('value');
+      onlineTimeRef.child(auth.currentUser.uid).onDisconnect().cancel();
       if (!isAutoLogout) await onlineTimeRef.child(auth.currentUser.uid).remove();
       await auth.signOut();
       console.log("Signed out!");
@@ -109,10 +130,14 @@ function App() {
   useEffect(()=>{
     const authChangeListener = firebase.auth().onAuthStateChanged((user)=>{
       if (user){
+        console.log("User is logged in!");
         setCurrentUser(user);
-        onlineTimeRef.child(user.uid).off('value');
-        onlineTimeRef.child(user.uid).on('value', handleOnlineTimeChanges);
-      }else setCurrentUser(null);
+        firebase.database().ref('.info/connected').off('value');
+        firebase.database().ref('.info/connected').on('value', handleConnectionChanges);
+      }else{
+        sessionStorage.removeItem('heartlinehk-disconnected');
+        setCurrentUser(null);
+      }
     });
     return authChangeListener;
   });
@@ -125,6 +150,7 @@ function App() {
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
     
+    sessionStorage.setItem('heartlinehk-agentUid', generateId(12));
     setViewHeight();
     window.addEventListener('resize', setViewHeight);
   }, []);
