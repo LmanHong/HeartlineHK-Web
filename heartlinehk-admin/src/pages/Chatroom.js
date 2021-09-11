@@ -137,10 +137,10 @@ const Chatroom = (props) =>{
         console.log(snapshot.val());
         if (snapshot.val() != null){
             if (snapshot.val()['status'] === "pending"){
+                //Open a confirm modal when a pending transfer request is received
                 setTransferFromVolunId(snapshot.val()['from']);
-                document.getElementById('transferrequest-modal').classList.add("opened");
             }
-        }
+        }else setTransferFromVolunId(null);
     }
 
     //Callback for handling outgoing transfer chat request changes
@@ -149,6 +149,9 @@ const Chatroom = (props) =>{
             const targetVolunId = sessionStorage.getItem('heartlinehk-targetVolun');
             if (snapshot.val()['status'] === 'accepted'){
                 if (targetVolunId != null){
+                    //Cancel onDisconnect listener of the transfer request
+                    firebase.database().ref(`transfer_requests/${targetVolunId}`).onDisconnect().cancel();
+
                     //Copy all previous chat logs to target volunteer's chatroom
                     const tmpChatLog = (await chatroomRef.once('value')).val();
                     await firebase.database().ref(`chat_log/${targetVolunId}`).set(tmpChatLog);
@@ -182,8 +185,14 @@ const Chatroom = (props) =>{
 
                     //Set End of Transfer
                     setIsTransferringChat(false);
+
+                    //Notify the user about the finish of transfer
+                    alert("轉移對話成功!");
                 }else console.error("ERROR: Target Volunteer ID is null!");
             }else if (snapshot.val()['status'] === 'rejected'){
+                //Cancel onDisconnect listener of the transfer request
+                firebase.database().ref(`transfer_requests/${targetVolunId}`).onDisconnect().cancel();
+
                 //Remove transfer request
                 await firebase.database().ref(`transfer_requests/${targetVolunId}`).remove();
 
@@ -673,31 +682,73 @@ const Chatroom = (props) =>{
     }
 
     //Callback for handling the form submission of the transfer chat dropdown modal
-    const trasnferChatFormHandler = (e)=>{
+    const trasnferChatFormHandler = async (e)=>{
         e.preventDefault();
         const modalContainerDiv = e.target.parentElement.parentElement;
         if (modalContainerDiv.id === "transferchat-modal"){
             const isConfirmed = (e.target.className === "confirm-btn");
             if (isConfirmed){
-                const volunDropdownList = document.getElementById("volun-dropdown-list");
-                const targetVolunId = volunDropdownList.value;
-                const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
-                setIsTransferringChat(true);
-                
-                //Set the target transfer volunteer ID
-                sessionStorage.setItem('heartlinehk-targetVolun', targetVolunId);
+                let localTransferringChat = false;
+                try{
+                    const volunDropdownList = document.getElementById("volun-dropdown-list");
+                    const targetVolunId = volunDropdownList.value;
+                    const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
+    
+                    if (isTransferringChat) throw new Error("Already Transferring a chat!");
+                    setIsTransferringChat(true);
+                    localTransferringChat = true;
 
-                //Publish the transfer request
-                firebase.database().ref(`transfer_requests/${targetVolunId}`).set({
-                    'time': firebase.database.ServerValue.TIMESTAMP,
-                    'from': props.currentUser.uid,
-                    'client': localCurrentClient,
-                    'status': "pending"
-                });
+                    if (targetVolunId === null || targetVolunId === ""){
+                        setIsTransferringChat(false);
+                        throw new Error("Target Volunteer is null!");
+                    }else if (localCurrentClient === null){
+                        setIsTransferringChat(false);
+                        throw new Error("Current Client is null!");
+                    }
 
-                //Subscribe to the transfer request listener
-                firebase.database().ref(`transfer_requests/${targetVolunId}`).on('value', handleOutgoingTransferChanges);
-                
+                    //Check if the target volunteer is free currently (i.e. target volun is online and not chatting)
+                    let isTargetFree = false;
+                    const onlineVoluns = (await onlineTimeRef.once('value')).val();
+                    const roomAssigned = (await assignedRef.once('value')).val();
+                    for (const onlineVolunId in onlineVoluns){
+                        if (onlineVolunId === targetVolunId){
+                            let isTargetChatting = false;
+                            for (const clientId in roomAssigned){
+                                if (roomAssigned[clientId] === targetVolunId){
+                                    isTargetChatting = true;
+                                    break;
+                                }
+                            }
+                            isTargetFree = (!isTargetChatting);
+                            break;
+                        }
+                    }
+                    if (!isTargetFree){
+                        setIsTransferringChat(false);
+                        throw new Error("Target Volunteer is either offline or chatting currently!");
+                    }
+    
+                    //Publish the transfer request
+                    await firebase.database().ref(`transfer_requests/${targetVolunId}`).set({
+                        'time': firebase.database.ServerValue.TIMESTAMP,
+                        'from': props.currentUser.uid,
+                        'client': localCurrentClient,
+                        'status': "pending"
+                    });
+
+                    //Remove transfer request on disconnect
+                    firebase.database().ref(`transfer_requests/${targetVolunId}`).onDisconnect().remove();
+
+                    //Set the target transfer volunteer ID
+                    sessionStorage.setItem('heartlinehk-targetVolun', targetVolunId);
+    
+                    //Subscribe to the transfer request listener
+                    firebase.database().ref(`transfer_requests/${targetVolunId}`).on('value', handleOutgoingTransferChanges);
+                }catch(error){
+                    if (localTransferringChat) setIsTransferringChat(false);
+                    console.error("ERROR: "+error.message);
+                    alert(error.message);
+                }
             }
             modalContainerDiv.classList.remove("opened");
         }else console.error("ERROR: Parent Element is not a transfer chat modal!");
@@ -712,6 +763,8 @@ const Chatroom = (props) =>{
             if (isConfirmed){
                 try{
                     const transferDetails = (await transferRef.once('value')).val();
+                    if (transferDetails === null) throw new Error("No Transfer Request!");
+
                     //Get the client ID to be transferred
                     let tmpClientId = transferDetails['client'];
                     let fromVolunId = transferDetails['from'];
@@ -868,6 +921,12 @@ const Chatroom = (props) =>{
         }
     }, [chatLog]);
 
+    useEffect(()=>{
+        const transferRequestModal = document.getElementById('transferrequest-modal');
+        if (transferFromVolunId) transferRequestModal.classList.add("opened");
+        else if (transferRequestModal != null) transferRequestModal.classList.remove("opened");
+    }, [transferFromVolunId]);
+
     return (
         <div className="chatroom">
             <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolunId}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
@@ -883,7 +942,7 @@ const Chatroom = (props) =>{
                     {chatLog.map((val, idx)=>{
                         const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
                         return(
-                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(localCurrentClient === null?(val['uid'] === props.currentClient.uid?"right":"left"):(val['uid'] === localCurrentClient?"left":"right")))}>
+                            <p key={val['chatId']} className={"message "+(val['spc']?"special":(localCurrentClient === null?(val['uid'] === props.currentUser.uid?"right":"left"):(val['uid'] === localCurrentClient?"left":"right")))}>
                                 {(val['msg']?val['msg']:(specialChatMessages[val['spc']]?specialChatMessages[val['spc']]:specialChatMessages['clientId']))}
                                 <span>{getFormattedDateString(val['time'])}</span>
                             </p>

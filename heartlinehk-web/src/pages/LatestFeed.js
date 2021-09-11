@@ -15,6 +15,9 @@ const LatestFeed = () => {
     const [monthSelect, setMonthSelect] = useState([]);
     const [yearSelect, setYearSelect] = useState([]);
     const [categorySelect, setCategorySelect] = useState([]);
+    const [currentMonth, setCurrentMonth] = useState("");
+    const [currentYear, setCurrentYear] = useState("");
+    const [currentCategory, setCurrentCategory] = useState("");
 
     useEffect(()=>{
         database.ref('ig_posts').once('value').then(async (snapshot)=>{
@@ -46,6 +49,18 @@ const LatestFeed = () => {
         let yearSelected = document.querySelector('#year-select').value;
         let categorySelected = document.querySelector('#category-select').value;
         let postsRef = document.querySelectorAll('.ig-post');
+
+        console.log("Month: "+monthSelected);
+        console.log("Year: "+yearSelected);
+        console.log("Category: "+categorySelected);
+
+        setCurrentMonth(monthSelected);
+        setCurrentYear(yearSelected);
+        setCurrentCategory(categorySelected);
+
+        if (monthSelected === '') monthSelected = "All";
+        if (yearSelected === '') yearSelected = "All";
+        if (categorySelected === '') categorySelected = "All";
 
         let monthsInYearAndCategorySelected = [];
         let yearsInMonthAndCategorySelected = [];
@@ -84,6 +99,28 @@ const LatestFeed = () => {
         document.querySelector('.post-popup-container').classList.remove('opened');
     }
 
+    useEffect(()=>{
+        const images = document.querySelectorAll("[data-src]");
+
+        const imgObserver = new IntersectionObserver((entries, imgObserver)=>{
+            entries.forEach((entry)=>{
+                if (!entry.isIntersecting) return;
+                else{
+                    console.log("Intersecting!");
+                    const src = entry.target.getAttribute("data-src");
+                    if (!src) return;
+                    else entry.target.src = src;
+                    imgObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        images.forEach((image)=>{
+            imgObserver.unobserve(image);
+            if (!image.src) imgObserver.observe(image);
+        });
+    }, [posts]);
+
     return (
         <div className="latest-feed">
             <div className="main-text">
@@ -94,8 +131,8 @@ const LatestFeed = () => {
             </div>
             <div className="date-selector-container">
                 <div className="month-select">
-                    <select name="month" id="month-select" onChange={selectPosts}>
-                        <option value="" disabled selected hidden>月份</option>
+                    <select value={currentMonth} name="month" id="month-select" onChange={selectPosts}>
+                        <option value="" disabled hidden>月份</option>
                         <option value="All">All</option>
                         {monthSelect.length>0 && monthSelect.map((month, index)=>{
                             return(
@@ -105,8 +142,8 @@ const LatestFeed = () => {
                     </select>
                 </div>
                 <div className="year-select">
-                    <select name="year" id="year-select" onChange={selectPosts}>
-                        <option value="" disabled selected hidden>年份</option>
+                    <select value={currentYear} name="year" id="year-select" onChange={selectPosts}>
+                        <option value="" disabled hidden>年份</option>
                         <option value="All">All</option>
                         {yearSelect.length>0 && yearSelect.map((year, index)=>{
                             return(
@@ -116,7 +153,7 @@ const LatestFeed = () => {
                     </select>
                 </div>
                 <div className="category-select">
-                    <select name="category" id="category-select" onChange={selectPosts}>
+                    <select value={currentCategory} name="category" id="category-select" onChange={selectPosts}>
                         <option value="" disabled selected hidden>主題</option>
                         <option value="All">All</option>
                             {categorySelect.length>0 && categorySelect.map((category, index)=>{
@@ -144,7 +181,7 @@ const LatestFeed = () => {
                 {posts.length>0 && posts.map((post, index)=>{
                     return (
                         <a className="ig-post" id={"post-"+index} key={"post-"+index} style={{display: "inline-block"}} onClick={openPopup}>
-                            <img src={post.imgUrl}/>
+                            <img data-src={post.imgUrl}/>
                             <p>{post.caption}</p>
                             <input type="hidden" name="category" value={post.category} />
                             <time dateTime={post.dateTime}></time>

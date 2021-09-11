@@ -11,6 +11,14 @@
                 ".validate":"data.isNumber()"
             }
         },
+        "preferred_names":{
+            "$volun_id":{
+                ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
+                ".validate": "newData.isString() || !newData.exists()"
+            },
+            ".read": "auth.uid != null && auth.provider === 'password'",
+            ".write": false
+        },
         "chat_records":{
             "$chat_id":{
                 ".read": false,
@@ -32,7 +40,7 @@
         "transfer_requests":{
             "$dest_volun_id":{
                 ".read": "auth.uid != null && auth.provider === 'password' && (auth.uid === $dest_volun_id || auth.uid === data.child('from').val())",
-                ".write": "auth.uid != null && auth.provider === 'password' && ((newData.child('from').val() === auth.uid && root.child('room_assigned').child(newData.child('client').val()).val() === auth.uid && newData.child('status').val() === 'pending') || ($dest_volun_id === auth.uid && data.child('status').val() === 'pending' && (newData.child('status').val() === 'accepted' || newData.child('status').val() === 'rejected')) || (data.child('from').val() === auth.uid && (data.child('status').val() === 'accepted' || data.child('status').val() === 'rejected') && !newData.exists()))",
+                ".write": "auth.uid != null && auth.provider === 'password' && ((newData.child('from').val() === auth.uid && root.child('room_assigned').child(newData.child('client').val()).val() === auth.uid && newData.child('status').val() === 'pending') || ($dest_volun_id === auth.uid && data.child('status').val() === 'pending' && (newData.child('status').val() === 'accepted' || newData.child('status').val() === 'rejected')) || (data.child('from').val() === auth.uid && (data.child('status').val() === 'accepted' || data.child('status').val() === 'rejected' || data.child('status').val() === 'pending') && !newData.exists()))",
                 ".validate": "newData.hasChildren(['time', 'client', 'from' ,'status']) || !newData.exists()"
             },
             ".read": "auth.uid != null && auth.provider === 'password' && root.child('supervisors').child(auth.uid).exists()",

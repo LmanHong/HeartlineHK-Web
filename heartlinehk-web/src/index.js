@@ -21,8 +21,8 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.auth().useEmulator("http://localhost:9099");
-firebase.database().useEmulator("localhost", 9000);
+//firebase.auth().useEmulator("http://localhost:9099");
+//firebase.database().useEmulator("localhost", 9000);
 //firebase.storage().useEmulator("localhost", 9199);
 
 
