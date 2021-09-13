@@ -3,7 +3,8 @@ import "../styles/Dashboard.css";
 const Dashboard = () =>{
     return(
         <div className="dashboard">
-            <h1>WORK IN PROGRESS</h1>
+            <h1 className="welcome-text">WORK IN PROGRESS</h1>
+
         </div>
     );
 }

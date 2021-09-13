@@ -118,13 +118,23 @@ const Chatroom = () =>{
                     alert("Previous chat was ended by volunteer!");
                     throw new Error("Previous chat was ended by volunteer!");
                 }else{
+                    //Unsubscribe to previous chatroom listener if previous assigned volunteer exists
+                    let previousAssignedVolun = sessionStorage.getItem('heartlinehk-currentVolun');
+                    if (previousAssignedVolun != null){
+                        firebase.database().ref(`chat_log/${previousAssignedVolun}`).off('value');
+                        typingRef.child(previousAssignedVolun).off('value');
+                    }
+
                     //Subscribe to the chatroom listener
-                    let tmpChatroomRef = firebase.database().ref('chat_log').child(assignedVolun);
-                    tmpChatroomRef.on('value', handleChatLogChanges);
+                    firebase.database().ref(`chat_log/${assignedVolun}`).on('value', handleChatLogChanges);
+
                     //Subscribe to connection listener
                     firebase.database().ref('.info/connected').on('value', handleConnectionChanges);
+
                     //Subscribe to volunteer's typing status listener
                     typingRef.child(assignedVolun).on('value', handleTypingStatusChanges);
+
+                    //Set the current volunteer
                     sessionStorage.setItem('heartlinehk-currentVolun', assignedVolun);
                     console.log("Subscribed to chatroom listener!");
                     setCurrentVolun(assignedVolun);
@@ -522,6 +532,7 @@ const Chatroom = () =>{
                     await typingRef.child(currentUid).remove();
                     await disconnectRef.child(currentUid).remove();
                     await firebase.auth().currentUser.delete();
+                    //Re-signin a new anonymous user
                     await firebase.auth().signInAnonymously();
                 }
 
