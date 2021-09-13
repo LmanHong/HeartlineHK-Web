@@ -104,7 +104,7 @@ function App() {
     }else console.error("ERROR: Parent Element is not a logout modal!");
   }
 
-  //Callback for handling form submission of aut logout notice modal
+  //Callback for handling form submission of auto logout notice modal
   const autoLogoutFormHandler = (e)=>{
     e.preventDefault();
     const modalContainerDiv = e.target.parentElement.parentElement;

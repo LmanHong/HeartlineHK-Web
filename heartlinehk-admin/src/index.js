@@ -5,6 +5,7 @@ import App from './App';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
+import 'firebase/functions';
 
 var firebaseConfig = {
   apiKey: "AIzaSyD-gB_LHwUq2qiUXdDt2CAxGCYQQla4hMo",
@@ -23,6 +24,7 @@ firebase.initializeApp(firebaseConfig);
 
 //firebase.database().useEmulator("localhost", 9000);
 //firebase.auth().useEmulator("http://localhost:9099");
+//firebase.functions().useEmulator("localhost", 5001);
 
 
 ReactDOM.render(

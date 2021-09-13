@@ -8,6 +8,7 @@ import newClientSound from "../sound/pristine-609.mp3"
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
+import "firebase/functions";
 import { useEffect, useState, useRef } from "react";
 
 const Chatroom = (props) =>{
@@ -224,6 +225,7 @@ const Chatroom = (props) =>{
             queueRef.orderByChild('time').on('value', handleQueueChanges);
             chatroomRef.orderByChild('time').on('value', handleChatLogChanges);
             transferRef.on('value', handleIncomingTransferChanges);
+            //Check if a client is already assigned to the current volunteer
             let localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
             let assignedSnapshot = await assignedRef.once('value');
             for (let clientId in assignedSnapshot.val()){
@@ -238,7 +240,56 @@ const Chatroom = (props) =>{
                 typingRef.child(localCurrentClient).on('value', handleTypingStatusChanges);
                 setCurrentClient(localCurrentClient);
                 sessionStorage.setItem('heartlinehk-currentClient', localCurrentClient);
-            }else console.warn("WARNING: No client is assigned to the current volunteer!");
+            }else{
+                console.warn("WARNING: No client is assigned to the current volunteer!");
+                //Check if the previous chat is not ended properly
+                let tmpChatLog = (await chatroomRef.orderByChild('time').once('value')).val();
+                if (tmpChatLog != null) {
+                    let startChatTime = null;
+                    let endChatTime = null;
+                    for (let msgId in tmpChatLog){
+                        if (startChatTime === null || tmpChatLog[msgId]['time'] < startChatTime) startChatTime = tmpChatLog[msgId]['time'];
+                        if (endChatTime === null || tmpChatLog[msgId]['time'] > endChatTime) endChatTime = tmpChatLog[msgId]['time'];
+                    }
+                    console.log("Start: "+startChatTime);
+                    console.log("End: "+endChatTime)
+                    try{
+                        const checkChatRecord = firebase.functions().httpsCallable('checkChatRecord');
+                        let result = await checkChatRecord({'startChatTime': startChatTime});
+                        if (!result.data.isRecordExists){
+                            //Update the chat record if it does not exists
+                            let currentRecordRef = await recordRef.push();
+                            await currentRecordRef.set({
+                                'uid': props.currentUser.uid,
+                                'start': startChatTime,
+                                'end': endChatTime
+                            });
+                        }
+                        //Delete the chat log
+                        let chatroomTransaction = await chatroomRef.transaction((chatLog)=>{
+                            if (chatLog != null){
+                                return null;
+                            }else{
+                                console.error("ERROR: Chat Log in Chatroom already null!");
+                                return;
+                            }
+                        });
+                        if (chatroomTransaction.error){
+                            setIsEndingChat(false);
+                            throw new Error(chatroomTransaction.error);
+                        }else if (!chatroomTransaction.committed){
+                            setIsEndingChat(false);
+                            throw new Error("Chatrom Transaction Aborted!");
+                        }
+                        setChatLog([]);
+                        document.getElementById('auto-clearchat-modal').classList.add("opened");
+                        openChatRecordPopupWindow(startChatTime, endChatTime);
+                    }catch(error){
+                        console.error("ERROR: "+error.message);
+                    }
+
+                }
+            }
         }catch(error){
             console.error("ERROR: "+error.message);
         }
@@ -535,16 +586,7 @@ const Chatroom = (props) =>{
                 setIsEndingChat(false);
 
                 //Open popup window for chat record form
-                let startChatTime = new Date(startChatMsec);
-                const startChatHour = (startChatTime.getHours()<10?"0"+startChatTime.getHours().toString():startChatTime.getHours().toString());
-                const startChatMinutes = (startChatTime.getMinutes()<10?"0"+startChatTime.getMinutes().toString():startChatTime.getMinutes().toString());
-                let endChatTime = new Date(endChatMsec);
-                const endChatHour = (endChatTime.getHours()<10?"0"+endChatTime.getHours().toString():endChatTime.getHours().toString());
-                const endChatMinutes = (endChatTime.getMinutes()<10?"0"+endChatTime.getMinutes().toString():endChatTime.getMinutes().toString());
-                const currentMonth = (endChatTime.getMonth()+1<10?"0"+(endChatTime.getMonth()+1).toString():(endChatTime.getMonth()+1).toString());
-                const currentDay = (endChatTime.getDate()<10?"0"+endChatTime.getDate().toString():endChatTime.getDate().toString());
-                const prefilledRecordFormUrl = recordFormUrl+'&'+recordFormEntries['date']+'='+endChatTime.getFullYear()+'-'+currentMonth+'-'+currentDay+'&'+recordFormEntries['startTime']+'='+startChatHour+":"+startChatMinutes+'&'+recordFormEntries['endTime']+'='+endChatHour+":"+endChatMinutes;
-                let popupWindowRef = window.open(prefilledRecordFormUrl, "ChatRecordForm", 'resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
+                openChatRecordPopupWindow(startChatMsec, endChatMsec);
                 
             }
         }catch(error){
@@ -564,16 +606,7 @@ const Chatroom = (props) =>{
                 sessionStorage.removeItem('heartlinehk-currentClient');
                 setCurrentClient(null);
 
-                let startChatTime = new Date(startChatMsec);
-                const startChatHour = (startChatTime.getHours()<10?"0"+startChatTime.getHours().toString():startChatTime.getHours().toString());
-                const startChatMinutes = (startChatTime.getMinutes()<10?"0"+startChatTime.getMinutes().toString():startChatTime.getMinutes().toString());
-                let endChatTime = new Date(endChatMsec);
-                const endChatHour = (endChatTime.getHours()<10?"0"+endChatTime.getHours().toString():endChatTime.getHours().toString());
-                const endChatMinutes = (endChatTime.getMinutes()<10?"0"+endChatTime.getMinutes().toString():endChatTime.getMinutes().toString());
-                const currentMonth = (endChatTime.getMonth()+1<10?"0"+(endChatTime.getMonth()+1).toString():(endChatTime.getMonth()+1).toString());
-                const currentDay = (endChatTime.getDate()<10?"0"+endChatTime.getDate().toString():endChatTime.getDate().toString());
-                const prefilledRecordFormUrl = recordFormUrl+'&'+recordFormEntries['date']+'='+endChatTime.getFullYear()+'-'+currentMonth+'-'+currentDay+'&'+recordFormEntries['startTime']+'='+startChatHour+":"+startChatMinutes+'&'+recordFormEntries['endTime']+'='+endChatHour+":"+endChatMinutes;
-                let popupWindowRef = window.open(prefilledRecordFormUrl, "ChatRecordForm", 'resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
+                openChatRecordPopupWindow(startChatMsec, endChatMsec);
             }
             alert(error.message);
         }
@@ -807,6 +840,14 @@ const Chatroom = (props) =>{
         }else console.error("ERROR: Parent Element is not a transfer request modal!");
     }
 
+    //Callback for handling the form submission of the auto clear chat notice modal
+    const autoClearChatFormHandler = (e)=>{
+        e.preventDefault();
+        const modalContainerDiv = e.target.parentElement.parentElement;
+        if (modalContainerDiv.id === "auto-clearchat-modal") modalContainerDiv.classList.remove("opened");
+        else console.error("ERROR: Parent Element is not an auto clear chat modal!");
+    }
+
     //Callback for handling selection of emoji in the emoji picker
     const emojiPickerHandler = (e, emojiObject)=>{
         console.log(emojiObject.emoji);
@@ -885,6 +926,21 @@ const Chatroom = (props) =>{
         else if (arrowButton === "forward-arrow") spcCharDiv.scrollBy((1.3 * rem + 12), 0);
     }
 
+    const openChatRecordPopupWindow = (startChatMsec, endChatMsec)=>{
+        let startChatTime = new Date(startChatMsec);
+        const startChatHour = (startChatTime.getHours()<10?"0"+startChatTime.getHours().toString():startChatTime.getHours().toString());
+        const startChatMinutes = (startChatTime.getMinutes()<10?"0"+startChatTime.getMinutes().toString():startChatTime.getMinutes().toString());
+
+        let endChatTime = new Date(endChatMsec);
+        const endChatHour = (endChatTime.getHours()<10?"0"+endChatTime.getHours().toString():endChatTime.getHours().toString());
+        const endChatMinutes = (endChatTime.getMinutes()<10?"0"+endChatTime.getMinutes().toString():endChatTime.getMinutes().toString());
+        const currentMonth = (endChatTime.getMonth()+1<10?"0"+(endChatTime.getMonth()+1).toString():(endChatTime.getMonth()+1).toString());
+        const currentDay = (endChatTime.getDate()<10?"0"+endChatTime.getDate().toString():endChatTime.getDate().toString());
+
+        const prefilledRecordFormUrl = recordFormUrl+'&'+recordFormEntries['date']+'='+endChatTime.getFullYear()+'-'+currentMonth+'-'+currentDay+'&'+recordFormEntries['startTime']+'='+startChatHour+":"+startChatMinutes+'&'+recordFormEntries['endTime']+'='+endChatHour+":"+endChatMinutes;
+        let popupWindowRef = window.open(prefilledRecordFormUrl, "ChatRecordForm", 'resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no,status=yes');
+    }
+
     const getFormattedDateString = (msec) =>{
         let targetDate = new Date(msec);
         let hourString = (targetDate.getHours()<10?"0"+targetDate.getHours().toString():targetDate.getHours().toString());
@@ -929,6 +985,7 @@ const Chatroom = (props) =>{
 
     return (
         <div className="chatroom">
+            <NoticeModal modalId={"auto-clearchat-modal"} noticeText={"系統已自動結束了你上次沒有結束的對話，請謹記要在對話完結時按「結束對話」。"} formSubmitHandler={autoClearChatFormHandler}></NoticeModal>
             <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolunId}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
             <DropdownModal modalId={"transferchat-modal"} dropdownId={"volun-dropdown-list"} descriptionText={"請選擇要接手對話的義工。"} dropdownOptions={freeVolun} formSubmitHandler={trasnferChatFormHandler}></DropdownModal>
             <ConfirmModal modalId={"endchat-modal"} confirmText={"你確定要結束對話嗎？"} formSubmitHandler={endChatFormHandler}></ConfirmModal>
