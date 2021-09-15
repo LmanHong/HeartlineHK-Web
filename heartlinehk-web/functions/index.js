@@ -129,13 +129,23 @@ const parseDatetime = (dateString, timeslotString)=>{
 
     return {
         'startDateTime': startDateTime.getTime(),
-        'endDateTime': endDateTime.getTime()
+        'endDateTime': endDateTime.getTime(),
+        'dateTimeString': `${timeslotString},${dateString}`
     }
 
 }
 
-const getShiftsByVolunteers = (shiftSheet)=>{
-    let shiftsByVolun = {};
+const getShiftsByVolunteer = (shiftSheet, preferredName, lastName, firstName)=>{
+    let shiftsByVolun = [];
+
+    if (shiftSheet === null) throw new Error("Shift Sheet is null!");
+    else if (preferredName === "") throw new Error("Preferred Name is empty string!");
+    else if (lastName === "") throw new Error("Last Name is empty string!");
+    else if (firstName === "") throw new Error("First Name is empty string!");
+
+    const preferredNameRegEx = new RegExp(preferredName.toLowerCase());
+    const lastNameRegEx = new RegExp(lastName.toLowerCase());
+    const firstNameRegEx = new RegExp(firstName.toLowerCase());
 
     const dateRegEx = new RegExp('Date');
     const timeslotRegEx = new RegExp('[0-9]{4} - [0-9]{4}');
@@ -159,34 +169,46 @@ const getShiftsByVolunteers = (shiftSheet)=>{
             for (let colIdx=0; colIdx<colCount; colIdx++){
                 if (colIdx != dateCol){
                     const rowDate = shiftSheet[rowIdx][dateCol];
-                    const volunName = (colIdx < rowLength?shiftSheet[rowIdx][colIdx]:'');
+                    const volunName = (colIdx < rowLength?shiftSheet[rowIdx][colIdx]:'').toLowerCase();
                     const volunShift = timeslotByCol[colIdx];
-    
-                    if (!shiftsByVolun[volunName]) shiftsByVolun[volunName] = [];
-                    shiftsByVolun[volunName].push(parseDatetime(rowDate, volunShift));
+
+                    if (volunName != '' && ((volunName.match(firstNameRegEx) && volunName.match(lastNameRegEx)) || volunName.match(preferredNameRegEx))) shiftsByVolun.push(parseDatetime(rowDate, volunShift));
                 }
             }
         }
     }
     console.log(shiftsByVolun);
+    return shiftsByVolun;
 }
 
 exports.getVolunShifts = functions.region('asia-east2').https.onCall(async (data, context)=>{
-    const auth = new google.auth.GoogleAuth({
-        'keyFile': "./secrets.json",
-        'scopes': "https://www.googleapis.com/auth/spreadsheets.readonly"
-    });
-    const client = await auth.getClient();
-    const googleSheets = google.sheets({version: "v4", auth: client});
+    const auth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']});
+    const googleSheets = google.sheets({version: "v4", auth: auth});
+    const shiftSpreadsheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
 
-    const shiftSheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
+    const monthAbbreviations = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-    const metaData = await googleSheets.spreadsheets.get({
-        'auth': auth,
-        'spreadsheetId': shiftSheetId
-    });
-    console.log(metaData.data);
+    const requiredMonth = data.month;
+    const requiredYear = data.year;
+    const volunId = context.auth.uid;
 
+    if (requiredMonth === null || !(typeof requiredMonth === 'number') || requiredMonth < 0 || requiredMonth > 11) throw new functions.https.HttpsError('invalid-argument', "Required Month is either null or not a valid number!");
+    else if (requiredYear === null || !(typeof requiredYear === 'number')) throw new functions.https.HttpsError('invalid-argument', "Required Year is either null or not a number!");
+    else if (volunId === null) throw new functions.https.HttpsError('unauthenticated', "User is not logged in!");
+
+    const sheetTitle = `${monthAbbreviations[requiredMonth]} ${requiredYear}`;
+    try{
+        const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': shiftSpreadsheetId, 'range': sheetTitle})).data.values;
+        const volunName = (await admin.database().ref(`preferred_names/${volunId}`).once('value')).val();
+        if (volunName === null) throw new Error("No record of volunteer's name!");
+        const volunShifts = getShiftsByVolunteer(sheetContents, volunName['preferredName'], volunName['lastName'], volunName['firstName']);
+        return {
+            'volunShifts': volunShifts
+        };
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        throw new functions.https.HttpsError('unavailable', error.message);
+    }
 });
 
 exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(async (req, res)=>{
@@ -195,7 +217,7 @@ exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(asy
     const isDevelopment = true;
 
     //Sheet ID for the Volunteer shifts
-    const shiftSheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
+    const shiftSpreadsheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
 
     //Development auth
     const devAuth = new google.auth.GoogleAuth({
@@ -210,29 +232,25 @@ exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(asy
 
     const auth = (isDevelopment?client:productionAuth);
 
-    let sheetTitles = [];
-    const metaData = await googleSheets.spreadsheets.get({
-        'auth': auth,
-        'spreadsheetId': shiftSheetId
-    });
-    for (let sheetIdx in metaData.data.sheets) sheetTitles.push(metaData.data.sheets[sheetIdx].properties.title);
+    const monthAbbreviations = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-    let sheetContents = {};
-    for (let sheetIdx in sheetTitles){
-        const shiftContents = await googleSheets.spreadsheets.values.get({
-            'auth': auth,
-            'spreadsheetId': shiftSheetId,
-            'range': sheetTitles[sheetIdx]
-        });
-        //console.log("Sheet Title: "+sheetTitles[sheetIdx]);
-        sheetContents[sheetTitles[sheetIdx]] = shiftContents.data.values;
-        //console.log("----END----");
+    const requiredMonth = 8;
+    const requiredYear = 2021;
+    const volunId = "3mdl1mXjOVP0zjBtSUihLnS8KMz2";
+
+    if (requiredMonth === null || !(typeof requiredMonth === 'number') || requiredMonth < 0 || requiredMonth > 11) throw new functions.https.HttpsError('invalid-argument', "Required Month is either null or not a valid number!");
+    else if (requiredYear === null || !(typeof requiredYear === 'number')) throw new functions.https.HttpsError('invalid-argument', "Required Year is either null or not a number!");
+    else if (volunId === null) throw new functions.https.HttpsError('unauthenticated', "User is not logged in!");
+
+    const sheetTitle = `${monthAbbreviations[requiredMonth]} ${requiredYear}`;
+    try{
+        const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': shiftSpreadsheetId, 'range': sheetTitle})).data.values;
+        const volunName = (await admin.database().ref(`preferred_names/${volunId}`).once('value')).val();
+        if (volunName === null) throw new Error("No record of volunteer's name!");
+        const volunShifts = getShiftsByVolunteer(sheetContents, volunName['preferredName'], volunName['lastName'], volunName['firstName']);
+        res.send(volunShifts);
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        res.send("ERROR: "+error.message);
     }
-
-    //console.log(sheetContents);
-
-    getShiftsByVolunteers(sheetContents['SEP 2021']);
-
-    //console.log(sheetContents);
-    res.send("finished");
 });
