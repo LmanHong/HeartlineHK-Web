@@ -1,5 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
+const { google } = require('googleapis');
+const serviceAccount = require('./secrets.json');
 admin.initializeApp();
 
 // // Create and Deploy Your First Cloud Functions
@@ -97,4 +99,122 @@ exports.checkChatRecord = functions.region('asia-east2').https.onCall(async (dat
         'isRecordExists': isRecordExists,
         'recordId': targetRecordId
     }
+});
+
+const parseDatetime = (dateString, timeslotString)=>{
+    //Example:
+    //dateString = '24/9/2021(FRI)'
+    //timeslotString = '1900 - 0100'
+
+    const dateRegEx = new RegExp('(([1-9])|(2[0-9])|(3[0-1]))/((1[0-2])|([1-9]))/[0-9]{4}');
+    const dateMatch = dateString.match(dateRegEx);
+    
+
+}
+
+const getShiftsByVolunteers = (shiftSheet)=>{
+    let shiftsByVolun = {};
+
+    const dateRegEx = new RegExp('Date');
+    const timeslotRegEx = new RegExp('[0-9]{4} - [0-9]{4}');
+    const supervisorRegEx = new RegExp('Team');
+
+    let dateCol = null;
+    let timeslotByCol = {};
+    for (let rowIdx in shiftSheet){
+        if (rowIdx === '0'){
+            for (let colIdx in shiftSheet[rowIdx]){
+                let dateMatch = shiftSheet[rowIdx][colIdx].match(dateRegEx);
+                let timeslotMatch = shiftSheet[rowIdx][colIdx].match(timeslotRegEx);
+                let supervisorMatch = shiftSheet[rowIdx][colIdx].match(supervisorRegEx);
+                if (dateMatch) dateCol = colIdx;
+                else if (timeslotMatch) timeslotByCol[colIdx] = timeslotMatch[0];
+                else if (supervisorMatch) timeslotByCol[colIdx] = "1900 - 0500";
+            }
+        }else{
+            const colCount = Object.keys(timeslotByCol).length + 1;
+            const rowLength = shiftSheet[rowIdx].length;
+            for (let colIdx=0; colIdx<colCount; colIdx++){
+                if (colIdx != dateCol){
+                    const rowDate = shiftSheet[rowIdx][dateCol];
+                    const volunName = (colIdx < rowLength?shiftSheet[rowIdx][colIdx]:'');
+                    const volunShift = timeslotByCol[colIdx];
+    
+                    const fullDateShift = `${volunShift},${rowDate}`;
+                    if (!shiftsByVolun[volunName]) shiftsByVolun[volunName] = [];
+                    shiftsByVolun[volunName].push(fullDateShift);
+                }
+            }
+        }
+    }
+    console.log(shiftsByVolun);
+}
+
+exports.getVolunShifts = functions.region('asia-east2').https.onCall(async (data, context)=>{
+    const auth = new google.auth.GoogleAuth({
+        'keyFile': "./secrets.json",
+        'scopes': "https://www.googleapis.com/auth/spreadsheets.readonly"
+    });
+    const client = await auth.getClient();
+    const googleSheets = google.sheets({version: "v4", auth: client});
+
+    const shiftSheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
+
+    const metaData = await googleSheets.spreadsheets.get({
+        'auth': auth,
+        'spreadsheetId': shiftSheetId
+    });
+    console.log(metaData.data);
+
+});
+
+exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(async (req, res)=>{
+
+    //Flag indicating if this is in development
+    const isDevelopment = true;
+
+    //Sheet ID for the Volunteer shifts
+    const shiftSheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
+
+    //Development auth
+    const devAuth = new google.auth.GoogleAuth({
+        'keyFile': "./secrets.json",
+        'scopes': "https://www.googleapis.com/auth/spreadsheets.readonly"
+    });
+    const client = await devAuth.getClient();
+
+    //Production auth
+    const productionAuth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']});
+    const googleSheets = google.sheets({version: "v4", auth: (isDevelopment?client:productionAuth)});
+
+    const auth = (isDevelopment?client:productionAuth);
+
+    let sheetTitles = [];
+    const metaData = await googleSheets.spreadsheets.get({
+        'auth': auth,
+        'spreadsheetId': shiftSheetId
+    });
+    for (let sheetIdx in metaData.data.sheets) sheetTitles.push(metaData.data.sheets[sheetIdx].properties.title);
+
+    let sheetContents = {};
+    for (let sheetIdx in sheetTitles){
+        const shiftContents = await googleSheets.spreadsheets.values.get({
+            'auth': auth,
+            'spreadsheetId': shiftSheetId,
+            'range': sheetTitles[sheetIdx]
+        });
+        //console.log("Sheet Title: "+sheetTitles[sheetIdx]);
+        sheetContents[sheetTitles[sheetIdx]] = {};
+        const shiftRows = shiftContents.data.values;
+        for (let rowIdx in shiftRows){
+            //console.log(shiftRows[rowIdx]);
+            sheetContents[sheetTitles[sheetIdx]][rowIdx] = shiftRows[rowIdx];
+        }
+        //console.log("----END----");
+    }
+
+    getShiftsByVolunteers(sheetContents['SEP 2021']);
+
+    //console.log(sheetContents);
+    res.send("finished");
 });

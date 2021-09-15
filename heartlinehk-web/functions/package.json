@@ -16,6 +16,7 @@
   "dependencies": {
     "firebase-admin": "9.11.1",
     "firebase-functions": "^3.15.5",
+    "googleapis": "^85.0.0",
     "puppeteer": "^9.1.1"
   },
   "devDependencies": {
