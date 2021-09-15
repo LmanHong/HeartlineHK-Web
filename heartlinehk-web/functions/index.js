@@ -1,7 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { google } = require('googleapis');
-const serviceAccount = require('./secrets.json');
 admin.initializeApp();
 
 // // Create and Deploy Your First Cloud Functions
@@ -106,9 +105,32 @@ const parseDatetime = (dateString, timeslotString)=>{
     //dateString = '24/9/2021(FRI)'
     //timeslotString = '1900 - 0100'
 
-    const dateRegEx = new RegExp('(([1-9])|(2[0-9])|(3[0-1]))/((1[0-2])|([1-9]))/[0-9]{4}');
+    const dateRegEx = new RegExp('(([1-9])|((1|2)[0-9])|(3[0-1]))/((1[0-2])|([1-9]))/[0-9]{4}');
+    const timeRegEx = new RegExp('[0-9]{4}', 'g');
     const dateMatch = dateString.match(dateRegEx);
-    
+    const timeMatch = timeslotString.match(timeRegEx);
+    if (!dateMatch) throw new Error('Not a valid date string! '+dateString);
+    if (!timeMatch || timeMatch.length != 2) throw new Error('Not a valid timeslot string! '+timeslotString);
+
+    const firstSlash = dateMatch[0].indexOf('/');
+    const secondSlash = dateMatch[0].indexOf('/', (firstSlash+1));
+
+    const dateMatchDate = parseInt(dateMatch[0].substring(0, firstSlash));
+    const dateMatchMonth = parseInt(dateMatch[0].substring(firstSlash+1, secondSlash)) - 1;
+    const dateMatchYear = parseInt(dateMatch[0].substring(secondSlash+1, dateMatch[0].length));
+
+    const startHour = parseInt(timeMatch[0].substring(0, 2));
+    const startMinute = parseInt(timeMatch[0].substring(2, 4));
+    const endHour = parseInt(timeMatch[1].substring(0,2));
+    const endMinute = parseInt(timeMatch[1].substring(2,4));
+
+    const startDateTime = new Date(dateMatchYear, dateMatchMonth, (startHour < 12 ?dateMatchDate+1:dateMatchDate), startHour, startMinute);
+    const endDateTime = new Date(dateMatchYear, dateMatchMonth, (endHour < 12 ?dateMatchDate+1:dateMatchDate), endHour, endMinute);
+
+    return {
+        'startDateTime': startDateTime.getTime(),
+        'endDateTime': endDateTime.getTime()
+    }
 
 }
 
@@ -140,9 +162,8 @@ const getShiftsByVolunteers = (shiftSheet)=>{
                     const volunName = (colIdx < rowLength?shiftSheet[rowIdx][colIdx]:'');
                     const volunShift = timeslotByCol[colIdx];
     
-                    const fullDateShift = `${volunShift},${rowDate}`;
                     if (!shiftsByVolun[volunName]) shiftsByVolun[volunName] = [];
-                    shiftsByVolun[volunName].push(fullDateShift);
+                    shiftsByVolun[volunName].push(parseDatetime(rowDate, volunShift));
                 }
             }
         }
@@ -204,14 +225,11 @@ exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(asy
             'range': sheetTitles[sheetIdx]
         });
         //console.log("Sheet Title: "+sheetTitles[sheetIdx]);
-        sheetContents[sheetTitles[sheetIdx]] = {};
-        const shiftRows = shiftContents.data.values;
-        for (let rowIdx in shiftRows){
-            //console.log(shiftRows[rowIdx]);
-            sheetContents[sheetTitles[sheetIdx]][rowIdx] = shiftRows[rowIdx];
-        }
+        sheetContents[sheetTitles[sheetIdx]] = shiftContents.data.values;
         //console.log("----END----");
     }
+
+    //console.log(sheetContents);
 
     getShiftsByVolunteers(sheetContents['SEP 2021']);
 
