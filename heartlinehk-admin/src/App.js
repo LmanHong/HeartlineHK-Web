@@ -14,6 +14,7 @@ import "firebase/database";
 
 function App() {
 
+  const transferRef = firebase.database().ref('transfer_requests');
   const onlineTimeRef = firebase.database().ref('online_time');
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -39,7 +40,7 @@ function App() {
             document.getElementById('auto-logout-modal').classList.add('opened');
             handleLogout(true);
           }
-        }else console.error("ERROR: Online Time Reference not availabl!");
+        }else console.error("ERROR: Online Time Reference not available!");
       }else{
         console.warn("WARNING: Current User is disconnected!");
         sessionStorage.setItem('heartlinehk-disconnected', Date.now());
@@ -57,6 +58,12 @@ function App() {
       }
     }
   };
+
+  const handleIncomingTransferChanges = (snapshot)=>{
+    if (snapshot.val() != null && snapshot.val()['status'] === 'pending'){
+      document.getElementById('transferrequest-notice-modal').classList.add('opened');
+    }else document.getElementById('transferrequest-notice-modal').classList.remove('opened');
+  }
 
   const handleLogin = async (e) =>{
     e.preventDefault();
@@ -112,6 +119,14 @@ function App() {
     else console.error("ERROR: Parent Element is not a logout modal!");
   }
 
+  //Callback for handling form submission of transfer request notice modal
+  const transferRequestNoticeFormHandler = (e)=>{
+    e.preventDefault();
+    const modalContainerDiv = e.target.parentElement.parentElement;
+    if (modalContainerDiv.id === "transferrequest-notice-modal") modalContainerDiv.classList.remove("opened");
+    else console.error("ERROR: Parent Element is not a transfer request notice modal!");
+  }
+
   //Function for generating short ID
   const generateId = (length)=>{
     let tmpId = "";
@@ -162,6 +177,7 @@ function App() {
         {!currentUser && <Login handleLogin={handleLogin}/>}
         {currentUser && 
           <>
+          {false && <NoticeModal modalId={"transferrequest-notice-modal"} noticeText={"你收到一個接手對話的邀請，請進入「聊天室」接受或拒絕。"} formSubmitHandler={transferRequestNoticeFormHandler}></NoticeModal>}
           <ConfirmModal modalId={"logout-modal"} confirmText={"你確定要登出嗎？"} formSubmitHandler={logoutFormHandler}></ConfirmModal>
           <NavBar currentUser={currentUser} handleLogout={()=>{document.getElementById("logout-modal").classList.add('opened')}}/>
           <Switch>

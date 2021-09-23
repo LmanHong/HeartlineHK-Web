@@ -12,6 +12,8 @@ const Supervisor = (props)=>{
         'clientId': "義工已開啟聊天室",
         'noChatStarted': "此義工未有開啟聊天室"
     }
+    //Volunteer Preferred Name database reference
+    const preferredNameRef = firebase.database().ref('preferred_names');
     //Volunteer Online Time database reference
     const onlineTimeRef = firebase.database().ref('online_time');
     //Room Assigned database reference
@@ -49,11 +51,67 @@ const Supervisor = (props)=>{
         setChatLog(tmpChatLog);
     };
 
+    //Callback for handling room assigned changes
+    const handleRoomAssignedChanges = (snapshot)=>{
+        console.log('In room assigned handler');
+        const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
+        const localCurrentClient = sessionStorage.getItem('heartlinehk-supervisor-currentClient');
+        const volunBtns = document.querySelectorAll('.supervisor .volunteers-container button.volun-btn');
+        volunBtns.forEach((volunBtn, key)=>{
+            let isChatting = false;
+            console.log(volunBtn);
+            if (snapshot.val() != null){
+                for (const clientId in snapshot.val()){
+                    if (snapshot.val()[clientId] === volunBtn.value){
+                        console.log("localVolun: "+localCurrentVolun+" assignedVolun: "+snapshot.val()[clientId]);
+                        console.log(localCurrentClient === "null");
+                        if (localCurrentVolun === snapshot.val()[clientId] && localCurrentClient === "null"){
+                            console.log("Inside!");
+                            setDisconnectTime(null);
+                            chatroomRef.child(localCurrentVolun).orderByChild('time').on('value', handleChatLogChanges);
+                            disconnectRef.child(clientId).on('value', handleConnectionChanges);
+                            sessionStorage.setItem('heartlinehk-supervisor-currentClient', clientId);
+                        }
+                        volunBtn.classList.add('chatting');
+                        isChatting = true;
+                        break;
+                    }
+                }
+            }
+            if (!isChatting) volunBtn.classList.remove('chatting');
+        });
+    }
+
     //Callback for handling online time changes
-    const handleOnlineTimeChanges = (snapshot)=>{
+    const handleOnlineTimeChanges = async (snapshot)=>{
         let tmpOnlineTime = [];
+        let isSelectedOnline = false;
+        const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
+        const localCurrentClient = sessionStorage.getItem('heartlinehk-supervisor-currentClient');
         if (snapshot.val() != null){
-            for (const volunId in snapshot.val()) tmpOnlineTime.push(volunId);
+            const roomsAssigned = (await assignedRef.once('value')).val();
+            for (const volunId in snapshot.val()){
+                if (localCurrentVolun && volunId === localCurrentVolun) isSelectedOnline = true;
+                const preferredName = (await preferredNameRef.child(volunId).once('value')).val();
+                let isChatting = false;
+                for (const clientId in roomsAssigned) 
+                    if (roomsAssigned[clientId] === volunId){
+                        isChatting = true;
+                        break;
+                    }
+                tmpOnlineTime.push({
+                    'volunId': volunId,
+                    'preferredName': (preferredName?preferredName['preferredName']:volunId),
+                    'chatting': isChatting
+                });
+            }
+        }
+        if (localCurrentVolun && !isSelectedOnline){
+            chatroomRef.child(localCurrentVolun).orderByChild('time').off('value');
+            if (localCurrentClient) disconnectRef.child(localCurrentClient).off('value'); 
+            sessionStorage.removeItem('heartlinehk-supervisor-currentVolun');
+            sessionStorage.removeItem('heartlinehk-supervisor-currentClient');
+            setChatLog([]);
         }
         console.log(tmpOnlineTime);
         setOnlineTime(tmpOnlineTime);
@@ -66,7 +124,7 @@ const Supervisor = (props)=>{
 
     //Function for handling the selection of volunteer
     const selectVolun = async (e)=>{
-        const volunId = e.target.innerHTML;
+        const volunId = e.target.value;
         let clientId = null;
         let assignedClient = (await assignedRef.once('value')).val();
         for (const tmpClientId in assignedClient){
@@ -114,12 +172,13 @@ const Supervisor = (props)=>{
             else setIsSupervisor(false);
         });
         onlineTimeRef.on('value', handleOnlineTimeChanges);
-
+        assignedRef.on('value', handleRoomAssignedChanges);
 
         return()=>{
             //Unsubscribe events when unmount component
             console.log("Supervisor Unmounted!");
             onlineTimeRef.off('value');
+            assignedRef.off('value');
             const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
             const localCurrentClient = sessionStorage.getItem('heartlinehk-supervisor-currentClient');
             if (localCurrentVolun){
@@ -134,9 +193,7 @@ const Supervisor = (props)=>{
     }, []);
 
     useEffect(()=>{
-        if (chatLog.length > 0){
-            messageContainerDiv.current.scrollTo(0, messageContainerDiv.current.scrollHeight);
-        }
+        if (chatLog.length > 0) messageContainerDiv.current.scrollTo(0, messageContainerDiv.current.scrollHeight);
     }, [chatLog]);
 
     return (
@@ -145,7 +202,7 @@ const Supervisor = (props)=>{
                 {onlineTime.map((val, idx)=>{
                     const localCurrentVolun = sessionStorage.getItem('heartlinehk-supervisor-currentVolun');
                     return (
-                        <button key={"online-volun-"+idx} className={"volun-btn"+(localCurrentVolun === val?" selected":"")} value={val} onClick={selectVolun}>{val}</button>
+                        <button id={"online-volun-"+idx} key={"online-volun-"+idx} className={"volun-btn"+(localCurrentVolun === val['volunId']?" selected":"")+(val['chatting']?" chatting":"")} value={val['volunId']} onClick={selectVolun}>{val['preferredName']}</button>
                     );
                 })}
             </div>

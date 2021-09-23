@@ -15,7 +15,7 @@ const DropdownModal = (props)=>{
                 <p className="description-text">{(props.descriptionText?props.descriptionText:"Choose from the list below.")}</p>
                 <select id={(props.dropdownId?props.dropdownId:"default-dropdown-list")} name="dropdown-list" className="dropdown-list">
                     {dropdownOptions.map((val, idx)=>{
-                        return <option key={idx} value={val} className="dropdown-option">{val}</option>
+                        return <option key={idx} value={(val['value']?val['value']:val)} className="dropdown-option">{(val['display']?val['display']:val)}</option>
                     })}
                 </select>
                 <button type="submit" name="confirm-btn" className="confirm-btn" onClick={props.formSubmitHandler}>確定</button>

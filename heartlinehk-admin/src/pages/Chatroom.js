@@ -13,13 +13,19 @@ import { useEffect, useState, useRef } from "react";
 
 const Chatroom = (props) =>{
 
+    const stockPhrases = {
+        'opening': "你好，我哋係Heartline HK，你可以叫我XXX。今晚上到嚟係咪有嘢想同我哋傾吓？",
+        'ending': "多謝你信任我哋搵我哋傾偈呀，歡迎您日後有需要嘅時候再次搵我哋！喺您閂咗個對話視窗之後系統會自動彈一份問卷畀你，麻煩你幫手答幾條問題，話俾我哋知有咩要改善嘅地方！再見～"
+    };
     const specialChineseChars = ['啲','咁','嗰','咗','喺','係','哋','唔','咩','咪','嘅','㗎','喎','嘢','嚟','囉','乜','叻','呢','啱','睇','諗','噏','嘥','晒','咋','瞓','唞','氹','攰','俾','閂','呀','啦','冧','晏','嬲','喇'];
     const specialChatMessages = {
         'clientLeft': "使用者已離開聊天室",
         'volunLeft': "義工已離開聊天室",
         'clientId': "義工已開啟聊天室"
-    }
+    };
 
+    //Volunteer Preferred Name database reference
+    const preferredNameRef = firebase.database().ref('preferred_names');
     //Volunteer Online Time database reference
     const onlineTimeRef = firebase.database().ref('online_time');
     //Chat Records database reference
@@ -58,8 +64,8 @@ const Chatroom = (props) =>{
     const [chatLog, setChatLog] = useState([]);
     //Free volunteer local list copy
     const [freeVolun, setFreeVolun] = useState([]);
-    //VolunId of transfer chat initiator
-    const [transferFromVolunId, setTransferFromVolunId] = useState(null);
+    //Preferred Name of the transfer chat initiator
+    const [transferFromVolun, setTransferFromVolun] = useState(null);
     //Flag indicating a start-chat is in progress
     const [isStartingChat, setIsStartingChat] = useState(false);
     //Flag indicating an end-chat is in progress
@@ -76,19 +82,28 @@ const Chatroom = (props) =>{
     const [isPickerOpened, setIsPickerOpened] = useState(false);
     //Flag indicating a transfer chat request is ongoing
     const [isTransferringChat, setIsTransferringChat] = useState(false);
+    //Flag indicating the previous chat is autto-clearing
+    const [isClearingChat, setIsClearingChat] = useState(false);
+    //Flag indicating if the current chat is transferrable
+    const [isTransferrable, setIsTransferrable] = useState(false);
 
     //Callback for handling chat log changes
     const handleChatLogChanges = (snapshot)=>{
         let tmpChatLog = [];
         console.log(snapshot.val());
         if (snapshot.val() != null){
-            for (const chatId in snapshot.val()) tmpChatLog.push({
-                'chatId': chatId,
-                'uid': snapshot.val()[chatId]['uid'],
-                'time': snapshot.val()[chatId]['time'],
-                'msg': snapshot.val()[chatId]['msg'],
-                'spc': snapshot.val()[chatId]['spc']
-            });
+            for (const chatId in snapshot.val()){
+                const localCurrentClient = sessionStorage.getItem('heartlinehk-currentClient');
+                tmpChatLog.push({
+                    'chatId': chatId,
+                    'uid': snapshot.val()[chatId]['uid'],
+                    'time': snapshot.val()[chatId]['time'],
+                    'msg': snapshot.val()[chatId]['msg'],
+                    'spc': snapshot.val()[chatId]['spc']
+                });
+                if (snapshot.val()[chatId]['spc'] === "clientLeft" && snapshot.val()[chatId]['uid'] === localCurrentClient) setIsTransferrable(false);
+            }
+            
         }
         console.log(tmpChatLog);
         setChatLog(tmpChatLog);
@@ -134,14 +149,16 @@ const Chatroom = (props) =>{
     }
 
     //Callback for handling incoming transfer chat request changes
-    const handleIncomingTransferChanges = (snapshot)=>{
+    const handleIncomingTransferChanges = async (snapshot)=>{
         console.log(snapshot.val());
         if (snapshot.val() != null){
             if (snapshot.val()['status'] === "pending"){
                 //Open a confirm modal when a pending transfer request is received
-                setTransferFromVolunId(snapshot.val()['from']);
+                const fromVolunPreferredName = (await preferredNameRef.child(snapshot.val()['from']).once('value')).val();
+                if (fromVolunPreferredName) setTransferFromVolun(fromVolunPreferredName['preferredName']);
+                else setTransferFromVolun(snapshot.val()['from']);
             }
-        }else setTransferFromVolunId(null);
+        }else setTransferFromVolun(null);
     }
 
     //Callback for handling outgoing transfer chat request changes
@@ -183,6 +200,9 @@ const Chatroom = (props) =>{
                     //Reset current client
                     sessionStorage.removeItem('heartlinehk-currentClient');
                     setCurrentClient(null);
+
+                    //Set the chat to be not transferrable (As the chat is already transferred)
+                    setIsTransferrable(false);
 
                     //Set End of Transfer
                     setIsTransferringChat(false);
@@ -239,6 +259,7 @@ const Chatroom = (props) =>{
                 disconnectRef.child(localCurrentClient).on('value', handleConnectionChanges);
                 typingRef.child(localCurrentClient).on('value', handleTypingStatusChanges);
                 setCurrentClient(localCurrentClient);
+                setIsTransferrable(true);
                 sessionStorage.setItem('heartlinehk-currentClient', localCurrentClient);
             }else{
                 console.warn("WARNING: No client is assigned to the current volunteer!");
@@ -254,6 +275,7 @@ const Chatroom = (props) =>{
                     console.log("Start: "+startChatTime);
                     console.log("End: "+endChatTime)
                     try{
+                        setIsClearingChat(true);
                         const checkChatRecord = firebase.functions().httpsCallable('checkChatRecord');
                         let result = await checkChatRecord({'startChatTime': startChatTime});
                         if (!result.data.isRecordExists){
@@ -274,18 +296,16 @@ const Chatroom = (props) =>{
                                 return;
                             }
                         });
-                        if (chatroomTransaction.error){
-                            setIsEndingChat(false);
-                            throw new Error(chatroomTransaction.error);
-                        }else if (!chatroomTransaction.committed){
-                            setIsEndingChat(false);
-                            throw new Error("Chatrom Transaction Aborted!");
-                        }
+                        if (chatroomTransaction.error) throw new Error(chatroomTransaction.error);
+                        else if (!chatroomTransaction.committed) throw new Error("Chatrom Transaction Aborted!");
                         setChatLog([]);
+                        setIsClearingChat(false);
                         document.getElementById('auto-clearchat-modal').classList.add("opened");
                         openChatRecordPopupWindow(startChatTime, endChatTime);
+
                     }catch(error){
                         console.error("ERROR: "+error.message);
+                        setIsClearingChat(false);
                     }
 
                 }
@@ -449,6 +469,9 @@ const Chatroom = (props) =>{
                 disconnectRef.child(tmpCurrentClient).on('value', handleConnectionChanges);
                 typingRef.child(tmpCurrentClient).on('value', handleTypingStatusChanges);
 
+                //Set the chat to be transferrable
+                setIsTransferrable(true);
+
                 //End of procedure of starting a new chat
                 setIsStartingChat(false);
             }
@@ -581,6 +604,9 @@ const Chatroom = (props) =>{
                 //Reset current client
                 sessionStorage.removeItem('heartlinehk-currentClient');
                 setCurrentClient(null);
+
+                //Set the chat to be not transferrable (As the chat is ended)
+                setIsTransferrable(false);
                 
                 //End of procedure of ending a chat
                 setIsEndingChat(false);
@@ -824,6 +850,9 @@ const Chatroom = (props) =>{
                     sessionStorage.setItem('heartlinehk-currentClient', tmpClientId);
                     setCurrentClient(tmpClientId);
 
+                    //Set the chat to be transferreable
+                    setIsTransferrable(true);
+
                     //Subscribe to current client's disconnect time and typing status
                     disconnectRef.child(tmpClientId).on('value', handleConnectionChanges);
                     typingRef.child(tmpClientId).on('value', handleTypingStatusChanges);
@@ -835,7 +864,7 @@ const Chatroom = (props) =>{
                 }
 
             }else await transferRef.child('status').set('rejected');
-            setTransferFromVolunId(null);
+            setTransferFromVolun(null);
             modalContainerDiv.classList.remove("opened");
         }else console.error("ERROR: Parent Element is not a transfer request modal!");
     }
@@ -846,6 +875,32 @@ const Chatroom = (props) =>{
         const modalContainerDiv = e.target.parentElement.parentElement;
         if (modalContainerDiv.id === "auto-clearchat-modal") modalContainerDiv.classList.remove("opened");
         else console.error("ERROR: Parent Element is not an auto clear chat modal!");
+    }
+
+    //Callback for handling the form submission of the waiting transfer notice modal
+    const cancelTransferFormHandler = async (e)=>{
+        e.preventDefault();
+        const modalContainerDiv = e.target.parentElement.parentElement;
+        if (modalContainerDiv.id === "waitingtransfer-modal"){
+            const targetVolunId = sessionStorage.getItem('heartlinehk-targetVolun');
+            if (!targetVolunId) throw new Error('No Target Transfer Volunteer!');
+
+            //Remove transfer request on disconnect listener
+            firebase.database().ref(`transfer_requests/${targetVolunId}`).onDisconnect().cancel();
+
+            //Unsubscribe to the outgoing transfer request database listener
+            firebase.database().ref(`transfer_requests/${targetVolunId}`).off('value');
+
+            //Remove the outgoing transfer request
+            await firebase.database().ref(`transfer_requests/${targetVolunId}`).remove();
+
+            //Remove the target transfer volunteer ID
+            sessionStorage.removeItem('heartlinehk-targetVolun');
+
+            //Reset the transferring status
+            setIsTransferringChat(false);
+            modalContainerDiv.classList.remove("opened");
+        }else console.error("ERROR: Parent Element is not a waiting transfer modal!");
     }
 
     //Callback for handling selection of emoji in the emoji picker
@@ -861,7 +916,6 @@ const Chatroom = (props) =>{
         msgInput.value = originalMsgStart + emojiObject.emoji + originalMsgEnd;
         msgInput.focus();
         msgInput.setSelectionRange(originalMsgStart.length+2, originalMsgStart.length+2);
-
     }
 
     //Callback for handling selection of special chinese character
@@ -878,6 +932,20 @@ const Chatroom = (props) =>{
         msgInput.value = originalMsgStart + specialChar + originalMsgEnd;
         msgInput.focus();
         msgInput.setSelectionRange(originalMsgStart.length+1, originalMsgStart.length+1);
+    }
+
+    //Callback for handling selection of stock phrase
+    const stockPhraseHandler = async (e)=>{
+        let stockPhrase = stockPhrases[e.target.value];
+        const preferredName = (await preferredNameRef.child(props.currentUser.uid).once('value')).val();
+        const msgInput = document.querySelector(".chatroom .chat-container .input-container #msg-input");
+        if (e.target.value === 'opening' && preferredName){
+            const namePos = stockPhrase.indexOf('XXX');
+            stockPhrase = stockPhrases[e.target.value].substring(0, namePos) + preferredName['preferredName'] + stockPhrases[e.target.value].substring(namePos+3, stockPhrases[e.target.value].length);
+        }
+        msgInput.value = stockPhrase;
+        msgInput.focus()
+        msgInput.setSelectionRange(stockPhrase.length+1, stockPhrase.length+1);
     }
 
     //Function for toggling between Queue and Chat on screen (in smaller screen devices)
@@ -899,6 +967,7 @@ const Chatroom = (props) =>{
         const modalContainerDiv = document.getElementById("transferchat-modal");
         const onlineVoluns = (await onlineTimeRef.once('value')).val();
         const roomAssigned = (await assignedRef.once('value')).val();
+        const preferredNames = (await preferredNameRef.once('value')).val();
         let tmpFreeVolun = [];
         for (const onlineVolunId in onlineVoluns){
             if (onlineVolunId != props.currentUser.uid){
@@ -909,7 +978,10 @@ const Chatroom = (props) =>{
                         break;
                     }
                 }
-                if (!isChatting) tmpFreeVolun.push(onlineVolunId);
+                if (!isChatting) tmpFreeVolun.push({
+                    'value': onlineVolunId,
+                    'display': (preferredNames[onlineVolunId]?preferredNames[onlineVolunId]['preferredName']:onlineVolunId)
+                });
             }
         } 
         console.log(tmpFreeVolun);
@@ -920,10 +992,10 @@ const Chatroom = (props) =>{
     //Function for side-scrolling the special chinese character container
     const scrollSpecialChar = (e)=>{
         const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
-        const spcCharDiv = document.querySelector('.chatroom .chat-container .special-char-container');
+        const charBtnDiv = document.querySelector('.chatroom .chat-container .special-char-container .char-btn-container');
         const arrowButton = (e.target.className === "material-icons"?(e.target.innerHTML === "arrow_back_ios"?"back-arrow":"forward-arrow"):e.target.className);
-        if (arrowButton === "back-arrow") spcCharDiv.scrollBy(-(1.3 * rem + 12), 0);
-        else if (arrowButton === "forward-arrow") spcCharDiv.scrollBy((1.3 * rem + 12), 0);
+        if (arrowButton === "back-arrow") charBtnDiv.scrollBy(-(1.3 * rem + 12), 0);
+        else if (arrowButton === "forward-arrow") charBtnDiv.scrollBy((1.3 * rem + 12), 0);
     }
 
     const openChatRecordPopupWindow = (startChatMsec, endChatMsec)=>{
@@ -962,7 +1034,6 @@ const Chatroom = (props) =>{
             queueRef.orderByChild('time').off('value');
             chatroomRef.orderByChild('time').off('value');
             transferRef.off('value');
-            transferRef.off('value');
             if (localCurrentClient){
                 disconnectRef.child(localCurrentClient).off('value');
                 typingRef.child(localCurrentClient).off('value');
@@ -979,18 +1050,28 @@ const Chatroom = (props) =>{
 
     useEffect(()=>{
         const transferRequestModal = document.getElementById('transferrequest-modal');
-        if (transferFromVolunId) transferRequestModal.classList.add("opened");
-        else if (transferRequestModal != null) transferRequestModal.classList.remove("opened");
-    }, [transferFromVolunId]);
+        if (transferRequestModal){
+            if (transferFromVolun) transferRequestModal.classList.add('opened');
+            else transferRequestModal.classList.remove('opened');
+        }
+
+        const waitingTransferModal = document.getElementById('waitingtransfer-modal');
+        if (waitingTransferModal){
+            if (isTransferringChat) waitingTransferModal.classList.add('opened');
+            else waitingTransferModal.classList.remove('opened');
+        }
+    }, [transferFromVolun, isTransferringChat]);
+
 
     return (
         <div className="chatroom">
+            <NoticeModal modalId={"waitingtransfer-modal"} noticeText={"正在等待對方接受或拒絕你的轉移對話要求。如要取消請按「確定」。"} formSubmitHandler={cancelTransferFormHandler}></NoticeModal>
             <NoticeModal modalId={"auto-clearchat-modal"} noticeText={"系統已自動結束了你上次沒有結束的對話，請謹記要在對話完結時按「結束對話」。"} formSubmitHandler={autoClearChatFormHandler}></NoticeModal>
-            <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolunId}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
+            <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolun}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
             <DropdownModal modalId={"transferchat-modal"} dropdownId={"volun-dropdown-list"} descriptionText={"請選擇要接手對話的義工。"} dropdownOptions={freeVolun} formSubmitHandler={trasnferChatFormHandler}></DropdownModal>
             <ConfirmModal modalId={"endchat-modal"} confirmText={"你確定要結束對話嗎？"} formSubmitHandler={endChatFormHandler}></ConfirmModal>
             <ConfirmModal modalId={"startchat-modal"} confirmText={"你確定要開啟新對話嗎？"} formSubmitHandler={startChatFormHandler}></ConfirmModal>
-            {(isStartingChat || isEndingChat || isTransferringChat) && <Loading></Loading>}
+            {(isStartingChat || isEndingChat || isClearingChat) && <Loading></Loading>}
             <div className="chat-container">
                 {disconnectTime != null &&
                     <p className="disconnect-msg">使用者已於{getFormattedDateString(disconnectTime)}開始離線。</p>
@@ -1008,11 +1089,15 @@ const Chatroom = (props) =>{
                 </div>
                 <div className="special-char-container">
                     <button className="back-arrow" onClick={scrollSpecialChar}><span className="material-icons">arrow_back_ios</span></button>
-                    {specialChineseChars.map((char, idx)=>{
-                        return (
-                            <button key={"spc-char"+idx} className="spc-char" onClick={specialCharHandler}>{char}</button>
-                        );
-                    })}
+                    <div className="char-btn-container">
+                        <button className="stock-phrase" onClick={stockPhraseHandler} value="opening">開始</button>
+                        <button className="stock-phrase" onClick={stockPhraseHandler} value="ending">完結</button>
+                        {specialChineseChars.map((char, idx)=>{
+                            return (
+                                <button key={"spc-char"+idx} className="spc-char" onClick={specialCharHandler}>{char}</button>
+                            );
+                        })}
+                    </div>
                     <button className="forward-arrow" onClick={scrollSpecialChar}><span className="material-icons">arrow_forward_ios</span></button>
                 </div>
                 <form className="input-container" onSubmit={sendChatMessage}>
@@ -1020,7 +1105,7 @@ const Chatroom = (props) =>{
                         <p className="typing-msg">使用者正在輸入...</p>
                     }
                     <button type="button" name="emoji-btn" id="emoji-btn" onClick={toggleEmojiPicker}><span className="material-icons">emoji_emotions</span></button>
-                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" onInput={changeTypingStatus}/>
+                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" onInput={changeTypingStatus} onChange={changeTypingStatus} onPaste={changeTypingStatus} onCut={changeTypingStatus} onSelect={changeTypingStatus}/>
                     <button type="submit" name="submit-btn" id="submit-btn"><span className="material-icons">send</span></button>
                 </form>
                 
@@ -1039,7 +1124,7 @@ const Chatroom = (props) =>{
                     })}
                 </div>
                 <div className="buttons-container">
-                    <button type="submit" name="trasnsfer-btn" id="transfer-btn" disabled={currentClient == null} onClick={openTransferChatModal}>轉移對話</button>
+                    <button type="submit" name="trasnsfer-btn" id="transfer-btn" disabled={currentClient == null || !isTransferrable} onClick={openTransferChatModal}>轉移對話</button>
                     <button type="submit" name="start-btn" id="start-btn" disabled={currentClient != null || clientQueue.length <= 0} onClick={()=>{document.getElementById("startchat-modal").classList.add("opened")}}>開始對話</button>
                     <button type="submit" name="end-btn" id="end-btn" disabled={currentClient == null} onClick={()=>{document.getElementById("endchat-modal").classList.add("opened")}}>結束對話</button>
                 </div>

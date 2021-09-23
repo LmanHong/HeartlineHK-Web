@@ -132,14 +132,17 @@
     overflow-y: auto;
     overflow-x: hidden;
     flex-direction: column;
-    width: 100%;
-    height: 30rem;
+    width: calc(100% - 1.5rem);
+    height: 27rem;
+    padding: 0.5rem 0.75rem 2.5rem 0.75rem;
     background-color: rgba(0,0,0,0.05);
     border-radius: 1rem;
 }
 
 .chatroom .chat-container .messages-container .loader{
-    position: relative;
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);

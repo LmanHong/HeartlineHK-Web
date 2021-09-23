@@ -77,6 +77,14 @@
     background-color: white;
 }
 
+.supervisor .volunteers-container .volun-btn.chatting:not(.selected){
+    background-color: lightgreen;
+}
+
+.supervisor .volunteers-container .volun-btn.chatting::before{
+    content: "[CHAT]";
+}
+
 .supervisor .volunteers-container .volun-btn.selected{
     background-color: greenyellow;
 }

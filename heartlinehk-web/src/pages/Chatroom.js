@@ -70,7 +70,7 @@ const Chatroom = () =>{
                 queueRef.child(currentUser.uid).remove();
                 queueRef.child(currentUser.uid).onDisconnect().cancel();
                 //Subscribe to chatroom changes
-                setupChatroomListener();
+                setupChatroomListener(true);
                 setIsInQueue(false);
             }
         }
@@ -100,7 +100,7 @@ const Chatroom = () =>{
         setIsVolunTyping(snapshot.val());
     }
 
-    const setupChatroomListener = async ()=>{
+    const setupChatroomListener = async (fromRoomAssignedHandler=false)=>{
         try{
             let currentUser = firebase.auth().currentUser;
             //Check if the required database reference is available
@@ -114,6 +114,7 @@ const Chatroom = () =>{
                 let assignedVolun = assignedSnapshot.val();
                 if (assignedVolun === null) throw new Error(`No volunteer is assigned to user ${currentUser.uid}!`);
                 else if (assignedVolun === "volunLeft"){
+                    sessionStorage.removeItem('heartlinehk-currentVolun');
                     await assignedRef.child(currentUser.uid).remove();
                     alert("Previous chat was ended by volunteer!");
                     throw new Error("Previous chat was ended by volunteer!");
@@ -127,6 +128,9 @@ const Chatroom = () =>{
 
                     //Subscribe to the chatroom listener
                     firebase.database().ref(`chat_log/${assignedVolun}`).on('value', handleChatLogChanges);
+
+                    //Subscribe to room assigned listener
+                    if (!fromRoomAssignedHandler) assignedRef.child(currentUser.uid).on('value', handleRoomAssignedChanges);
 
                     //Subscribe to connection listener
                     firebase.database().ref('.info/connected').on('value', handleConnectionChanges);
@@ -545,7 +549,7 @@ const Chatroom = () =>{
                     }else console.log('Warning: Last Login Time not updated as no user logged in!');
                 }, 3000);
                 //Setup Chatroom Listener (if the user has unfinished chat)
-                setupChatroomListener();
+                setupChatroomListener(false);
             })
             .catch((error)=>{
                 console.error("ERROR: "+error.message);
@@ -740,7 +744,7 @@ const Chatroom = () =>{
                         <p className="typing-msg">義工正在輸入...</p>
                     }
                     <button type="button" name="emoji-btn" id="emoji-btn" onClick={toggleEmojiPicker}><span className="material-icons">emoji_emotions</span></button>
-                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" onInput={changeTypingStatus}/>
+                    <input type="text" name="msg-input" id="msg-input" placeholder="按此對話…" onInput={changeTypingStatus}  onChange={changeTypingStatus} onPaste={changeTypingStatus} onCut={changeTypingStatus} onSelect={changeTypingStatus}/>
                     <button type="submit" name="submit-btn" id="submit-btn"><span className="material-icons">send</span></button>
                 </form>
                 {isPickerOpened && <Picker onEmojiClick={emojiPickerHandler}></Picker>}

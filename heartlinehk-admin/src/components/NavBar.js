@@ -11,6 +11,7 @@ const NavBar = (props) =>{
     const menuNav = useRef();
     const navBackgroundDiv = useRef();
     const [isSupervisor, setIsSupervisor] = useState(false);
+    const [preferredName, setPreferredName] = useState(null);
 
     const openNav = ()=>{
         menuNav.current.style.transitionDuration = "0.5s";
@@ -28,6 +29,10 @@ const NavBar = (props) =>{
         firebase.database().ref('supervisors').child(props.currentUser.uid).once('value', (snapshot)=>{
             if (snapshot.val() != null) setIsSupervisor(true);
             else setIsSupervisor(false);
+        });
+        firebase.database().ref('preferred_names').child(props.currentUser.uid).once('value', (snapshot)=>{
+            if (snapshot.val() != null) setPreferredName(snapshot.val()['firstName']+" "+snapshot.val()['lastName']);
+            else setPreferredName(props.currentUser.dispalyName);
         });
     }, []);
 
@@ -67,7 +72,7 @@ const NavBar = (props) =>{
             </ul>
             <div className="nav-user" onClick={props.handleLogout}>
                 <img src="https://t4.ftcdn.net/jpg/02/34/61/79/360_F_234617921_p1AGQkGyEl8CSzwuUI74ljn6IZXqMUf2.jpg" alt="" />
-                <a className="username">{props.currentUser.displayName}</a>
+                <a className="username">{preferredName}</a>
             </div>
         </nav>
 

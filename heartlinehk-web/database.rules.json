@@ -14,7 +14,7 @@
         "preferred_names":{
             "$volun_id":{
                 ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
-                ".validate": "newData.isString() || !newData.exists()"
+                ".validate": "newData.hasChildren(['preferredName', 'lastName', 'firstName']) || !newData.exists()"
             },
             ".read": "auth.uid != null && auth.provider === 'password'",
             ".write": false
