@@ -1,6 +1,7 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { google } = require('googleapis');
+const nodemailer = require('nodemailer');
 admin.initializeApp();
 
 // // Create and Deploy Your First Cloud Functions
@@ -77,7 +78,7 @@ exports.resetSystem = functions.region('asia-east2').pubsub.schedule('0 10 * * *
     return null;
 });
 
-exports.checkChatRecord = functions.region('asia-east2').https.onCall(async (data, context)=>{
+exports.checkChatRecord = functions.https.onCall(async (data, context)=>{
     const startChatTime = data.startChatTime;
     const volunId = context.auth.uid;
     console.log("Start: "+startChatTime+" <> volunID: "+volunId);
@@ -181,7 +182,7 @@ const getShiftsByVolunteer = (shiftSheet, preferredName, lastName, firstName)=>{
     return shiftsByVolun;
 }
 
-exports.getVolunShifts = functions.region('asia-east2').https.onCall(async (data, context)=>{
+exports.getVolunShifts = functions.https.onCall(async (data, context)=>{
     const auth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']});
     const googleSheets = google.sheets({version: "v4", auth: auth});
     const shiftSpreadsheetId = "1-5kjDRq0nK63v1KzK5FlAKgGSFgLgWiNyF4TR1dQiAs";
@@ -211,6 +212,7 @@ exports.getVolunShifts = functions.region('asia-east2').https.onCall(async (data
     }
 });
 
+/*
 exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(async (req, res)=>{
 
     //Flag indicating if this is in development
@@ -254,3 +256,236 @@ exports.getVolunShiftsHttps = functions.region('asia-east2').https.onRequest(asy
         res.send("ERROR: "+error.message);
     }
 });
+*/
+
+const generateToken = (length)=>{
+    let tmpToken = "";
+    let charType = 0;
+    let numOfChar = 26;
+    let asciiStart = 97;
+    for (let i=0; i<length; i++){
+        charType = Math.floor(Math.random() * 3);
+        numOfChar = (charType === 0 || charType === 1?26:10);
+        asciiStart = (charType === 0?97:(charType === 1?65:48));
+        tmpToken = tmpToken + String.fromCharCode(Math.floor(Math.random() * numOfChar) + asciiStart);
+    }
+    return tmpToken;
+};
+
+const sendResetPasswordEmail = async (toEmail, preferredName, token, loginEmail)=>{
+    const resetLink = `https://admin-heartlinehk-8e3ec.web.app/reset-password?token=${token}&loginEmail=${loginEmail}`;
+    const transporter = nodemailer.createTransport({
+        service: 'hotmail',
+        auth:{
+            user: functions.config().heartlinehk.resetemail,
+            pass: functions.config().heartlinehk.resetpwd
+        }
+    });
+
+    const result = await transporter.sendMail({
+        from: '"HeartlineHK IT Team" <heartlinehkresetpwd@outlook.com>',
+        to: toEmail,
+        subject: '[HearlineHK] Reset Volunteer Password',
+        text: `Hi ${preferredName}, We have received your reset password request. Please click the link below to confirm your action, or ignore this email if you didn't submit any password reset. ${resetLink} Best Regards,<br/>HeartlineHK IT Team`,
+        html: `<p>Hi ${preferredName},</p> <p>We have received your reset password request. Please click the link below to confirm your action, or ignore this email if you didn't submit any password reset.</p> <p><a href=${resetLink}>${resetLink}</a></p> <p>Best Regards,<br/>HeartlineHK IT Team</p>`
+    });
+    return result;
+    
+}
+
+const createResetPasswordToken = async (loginEmail, newPassword)=>{
+    if (typeof newPassword != 'string' || newPassword.length < 12) throw new Error('New password is not string or the length is less than 12!');
+    
+    const volunId = (await admin.auth().getUserByEmail(loginEmail)).uid;
+    const token = generateToken(24);
+    const requestRef = admin.firestore().collection('resetPwd').doc(volunId);
+    
+    const isOldRequestExists = (await requestRef.get()).exists;
+    if (isOldRequestExists) console.warn("WARNING: Old request still exists for Volunteer "+loginEmail+"!");
+
+    await requestRef.set({
+        'token': token,
+        'newPassword': newPassword,
+        'time': admin.firestore.FieldValue.serverTimestamp()
+    });
+    return token;
+}
+
+exports.changePassword = functions.https.onCall(async (data, context)=>{
+    const auth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets']});
+    const googleSheets = google.sheets({version: "v4", auth: auth});
+    const credentialsSpreadsheetId = "1o91iiHV0ScnY-Vv01jVpg5L2wqj1M3qxLneWGoydBE4";
+
+    const token = data.token;
+    const loginEmail = data.loginEmail;
+    const isLoggedIn = (context.auth != null);
+
+    const loginEmailCol = 4; //Column E
+    const pwdCol = 5; //Column F
+
+    if ((token === null || typeof token != "string" || token.length === 0) || (loginEmail === null || typeof loginEmail != "string" || loginEmail.length === 0)) throw new functions.https.HttpsError('invalid-argument', 'Both token and login email must be non-empty strings!');
+    else if (isLoggedIn) throw new functions.https.HttpsError('permission-denied', 'Already logged in!');
+
+    try{
+        const volunId = (await admin.auth().getUserByEmail(loginEmail)).uid;
+        const preferredName = (await admin.database().ref('preferred_names').child(volunId).once('value')).val();
+        const requestRef = admin.firestore().collection('resetPwd').doc(volunId);
+        const recordRef = admin.firestore().collection('resetPwdRecord').doc();
+        const requestDoc = await requestRef.get();
+        if (requestDoc.exists){
+            const requestData = requestDoc.data();
+            if (requestData.token === token && requestData.time < Date.now()){
+                let isVolunFound = false;
+                const metaData = (await googleSheets.spreadsheets.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId})).data.sheets;
+                for (const sheetIdx in metaData){
+                    const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId, 'range': metaData[sheetIdx].properties.title})).data.values;
+                    for (const rowIdx in sheetContents){
+                        if (sheetContents[rowIdx][loginEmailCol] === loginEmail){
+                            isVolunFound = true;
+                            await googleSheets.spreadsheets.values.update({
+                                'auth': auth,
+                                'spreadsheetId': credentialsSpreadsheetId,
+                                'valueInputOption': "RAW",
+                                'range': `${metaData[sheetIdx].properties.title}!${String.fromCharCode('A'.charCodeAt()+pwdCol)}${Number(rowIdx)+1}:${String.fromCharCode('A'.charCodeAt()+pwdCol)}${Number(rowIdx)+1}`,
+                                'resource': {
+                                    'values': [[requestData.newPassword]]
+                                }
+                            });
+                            break;
+                        }
+                    }
+                    if (isVolunFound) break;
+                }
+
+                await admin.auth().updateUser(volunId, {password: requestData.newPassword});
+                await recordRef.set({
+                    'volunId': volunId,
+                    'requestTime': requestData.time,
+                    'requestToken': requestData.token,
+                    'finishTime': admin.firestore.FieldValue.serverTimestamp()
+                });
+                await requestRef.delete();
+                return {
+                    'loginEmail': loginEmail,
+                    'preferredName': preferredName['preferredName'],
+                    'volunId': volunId
+                }
+            }else throw new Error("Invalid rese password request contents!");
+        }else throw new Error("No reset password request for "+loginEmail+"!");
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        throw new functions.https.HttpsError('unavailable', error.message);
+    }
+});
+
+exports.requestChangePassword = functions.https.onCall(async (data, context)=>{
+    const auth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']});
+    const googleSheets = google.sheets({version: "v4", auth: auth});
+    const credentialsSpreadsheetId = "1o91iiHV0ScnY-Vv01jVpg5L2wqj1M3qxLneWGoydBE4";
+
+    const loginEmail = data.loginEmail;
+    const newPassword = data.newPassword;
+
+    if (loginEmail === null || newPassword === null) throw new functions.https.HttpsError('invalid-argument', "Login Email and New Password cannot be null!");
+
+    const fullNameCol = 0; //Column A
+    const preferredNameCol = 1; //Column B
+    const personalEmailCol = 2; //Column C
+    const loginEmailCol = 4; //Column E
+    const pwdCol = 5; //Column F
+    try{
+        const metaData = (await googleSheets.spreadsheets.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId})).data.sheets;
+        let isVolunFound = false;
+        let targetVolunDetails = null;
+        for (const sheetIdx in metaData){
+            console.log(sheetIdx+": "+metaData[sheetIdx].properties.title);
+            const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId, 'range': metaData[sheetIdx].properties.title})).data.values;
+            for (const rowIdx in sheetContents){
+                if (sheetContents[rowIdx][loginEmailCol] === loginEmail){
+                    targetVolunDetails = {
+                        'name': sheetContents[rowIdx][fullNameCol],
+                        'preferredName': sheetContents[rowIdx][preferredNameCol],
+                        'personalEmail': sheetContents[rowIdx][personalEmailCol],
+                        'loginEmail': sheetContents[rowIdx][loginEmailCol],
+                        'oldPassword': sheetContents[rowIdx][pwdCol]
+                    };
+                    isVolunFound = true;
+                    break;
+                }
+            }
+            if (isVolunFound) break;
+        }
+        if (!isVolunFound) throw new Error('No volunteer found with login email '+loginEmail+'!');
+        else{
+            const token = await createResetPasswordToken(targetVolunDetails.loginEmail, newPassword);
+            const result = await sendResetPasswordEmail(targetVolunDetails.personalEmail, targetVolunDetails.preferredName, token, targetVolunDetails.loginEmail);
+            return {
+                'mailId': result.messageId,
+                'toEmail': targetVolunDetails.personalEmail
+            }
+        }
+        
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        throw new functions.https.HttpsError('unavailable', error.message);
+    }
+});
+
+/*
+exports.requestChangePasswordHttps = functions.region('asia-east2').https.onRequest(async (req, res)=>{
+    //Development Auth ONLY!
+    const devAuth = new google.auth.GoogleAuth({
+        'keyFile': "./secrets.json",
+        'scopes': "https://www.googleapis.com/auth/spreadsheets.readonly"
+    });
+    const auth = await devAuth.getClient();
+
+    const googleSheets = google.sheets({version: "v4", auth: auth});
+    const credentialsSpreadsheetId = "1o91iiHV0ScnY-Vv01jVpg5L2wqj1M3qxLneWGoydBE4";
+
+    const personalEmail = "lmanpegasis@gmail.com"
+    const loginEmail = "lmanhong@testing.com";
+    const newPassword = "changedpassword";
+
+    if (loginEmail === null || newPassword === null) throw new functions.https.HttpsError('invalid-argument', "Login Email and New Password cannot be null!");
+
+    const fullNameCol = 0; //Column A
+    const preferredNameCol = 1; //Column B
+    const personalEmailCol = 2; //Column C
+    const loginEmailCol = 4; //Column E
+    const pwdCol = 5; //Column F
+    try{
+        const metaData = (await googleSheets.spreadsheets.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId})).data.sheets;
+        let isVolunFound = false;
+        let targetVolunDetails = null;
+        for (const sheetIdx in metaData){
+            console.log(sheetIdx+": "+metaData[sheetIdx].properties.title);
+            const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId, 'range': metaData[sheetIdx].properties.title})).data.values;
+            for (const rowIdx in sheetContents){
+                if (sheetContents[rowIdx][loginEmailCol] === loginEmail && sheetContents[rowIdx][personalEmailCol] === personalEmail){
+                    targetVolunDetails = {
+                        'name': sheetContents[rowIdx][fullNameCol],
+                        'preferredName': sheetContents[rowIdx][preferredNameCol],
+                        'personalEmail': sheetContents[rowIdx][personalEmailCol],
+                        'loginEmail': sheetContents[rowIdx][loginEmailCol],
+                        'oldPassword': sheetContents[rowIdx][pwdCol]
+                    };
+                    isVolunFound = true;
+                    break;
+                }
+            }
+            if (isVolunFound) break;
+        }
+        if (!isVolunFound) throw new functions.https.HttpsError('not-found', "No Volunteer Found!");
+        else{
+            console.log()
+            const token = await createResetPasswordToken(targetVolunDetails.loginEmail, newPassword);
+            const result = await sendResetPasswordEmail(targetVolunDetails.personalEmail, targetVolunDetails.preferredName, token, targetVolunDetails.loginEmail);
+            res.send("Email ID: "+result.messageId+" <> Address: "+targetVolunDetails.personalEmail);
+        }
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        throw new functions.https.HttpsError('unavailable', error.message);
+    }
+});
+*/

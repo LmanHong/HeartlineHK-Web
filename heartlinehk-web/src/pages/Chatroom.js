@@ -4,9 +4,9 @@ import PopupModal from "../components/PopupModal.js";
 import "../styles/Chatroom.css";
 import Picker from "emoji-picker-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import firebase from "firebase/app";
-import "firebase/database";
-import "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/database";
+import "firebase/compat/auth";
 
 const Chatroom = () =>{
 

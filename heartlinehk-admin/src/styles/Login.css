@@ -42,3 +42,7 @@
     margin-top: 1rem;
     cursor: pointer;
 }
+
+.login .login-form .reset-password-link{
+    text-align: center;
+}

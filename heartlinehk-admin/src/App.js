@@ -8,9 +8,10 @@ import Supervisor from "./pages/Supervisor.js";
 import Chatroom from "./pages/Chatroom.js";
 import Dashboard from "./pages/Dashboard.js";
 import Login from "./pages/Login.js";
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import ResetPassword from "./pages/ResetPassword.js";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/database";
 
 function App() {
 
@@ -174,7 +175,16 @@ function App() {
     <Router>
       <div className="App" style={{width: "100vw", minHeight: "calc(100 * var(--vh, 1vh))", position: "relative", backgroundColor: "rgba(0,0,0,0.05)", display: "flex", flexDirection:"row", overflow: "hidden"}}>
         <NoticeModal modalId={"auto-logout-modal"} noticeText={"由於此帳號已於另一裝置/視窗上登入，此視窗將會登出帳號。"} formSubmitHandler={autoLogoutFormHandler}></NoticeModal>
-        {!currentUser && <Login handleLogin={handleLogin}/>}
+        {!currentUser && 
+          <Switch>
+            <Route exact path="/reset-password">
+              <ResetPassword/>
+            </Route>
+            <Route path="/">
+              <Login handleLogin={handleLogin} />
+            </Route>
+          </Switch>
+        }
         {currentUser && 
           <>
           {false && <NoticeModal modalId={"transferrequest-notice-modal"} noticeText={"你收到一個接手對話的邀請，請進入「聊天室」接受或拒絕。"} formSubmitHandler={transferRequestNoticeFormHandler}></NoticeModal>}

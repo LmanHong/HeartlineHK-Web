@@ -5,10 +5,10 @@ import NoticeModal from "../components/NoticeModal.js";
 import Picker from "emoji-picker-react";
 import "../styles/Chatroom.css";
 import newClientSound from "../sound/pristine-609.mp3"
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
-import "firebase/functions";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/database";
+import "firebase/compat/functions";
 import { useEffect, useState, useRef } from "react";
 
 const Chatroom = (props) =>{

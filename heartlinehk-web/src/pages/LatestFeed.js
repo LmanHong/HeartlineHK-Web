@@ -1,8 +1,8 @@
 import Footer from '../components/Footer.js';
 import '../styles/LatestFeed.css';
-import firebase from 'firebase/app';
-import 'firebase/database';
-import 'firebase/storage';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/database';
+import 'firebase/compat/storage';
 import { useEffect, useRef, useState } from 'react';
 
 const LatestFeed = () => {

@@ -1,6 +1,6 @@
 import "../styles/ProfileUpdate.css";
-import firebase from "firebase/app";
-import "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 import { useRef } from "react";
 
 const ProfileUpdate = (props)=>{
