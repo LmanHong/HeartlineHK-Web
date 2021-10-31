@@ -2,13 +2,33 @@ import decoration from '../img/Pages/4 義工招募/e_150x198.png';
 import FlipCountdown from '../components/FlipCountdown.js';
 import Footer from '../components/Footer.js';
 import '../styles/VolunteerRecruit.css';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const VolunteerRecruit = () =>{
+
+    const deadlineDates = ["2021-11-19", "2021-11-20", "2021-11-21"];
+
+    const [deadlineDay, setDeadlineDay] = useState(1);
+    const [deadlineMonth, setDeadlineMonth] = useState(1);
+    const [deadlineYear, setDeadlineYear] = useState(1970);
 
     useEffect(()=>{
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
+
+        //Get next deadline date
+        const nowDate = new Date(Date.now());
+        const nowDateStr = nowDate.toISOString().substring(0, 10);
+        for (let i=0; i<deadlineDates.length; i++){
+            if ((deadlineDates[i] > nowDateStr) || (i == deadlineDates.length-1)){
+                const deadlineDate = new Date(deadlineDates[i]);
+                setDeadlineDay(deadlineDate.getDate());
+                setDeadlineMonth(deadlineDate.getMonth()+1);
+                setDeadlineYear(deadlineDate.getFullYear());
+                break;
+            }
+        }
+
     }, []);
 
     const expandAnswer = (e) =>{
@@ -27,7 +47,7 @@ const VolunteerRecruit = () =>{
             </div>
             <div className="apply-deadline-container">
                 <h1>最新一輪簡介會</h1>
-                <FlipCountdown day={18} month={6} year={2021}></FlipCountdown>
+                <FlipCountdown day={deadlineDay} month={deadlineMonth} year={deadlineYear}></FlipCountdown>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLScBHXRo13emjSJrHf3ZeA2UX5y34xyUyKQpd8Y_SPDRPWJS5A/viewform?usp=sf_link">按此報名</a>
             </div>
             <div className="responsibility-container">
