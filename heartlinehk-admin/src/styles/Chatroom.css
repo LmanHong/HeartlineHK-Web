@@ -265,7 +265,7 @@
     position: relative;
     height: calc(var(--vh, 1vh) * 100 - 1rem);
     display: grid;
-    grid-template-rows: 4rem calc(100% - 11.25rem) 7.25rem;
+    grid-template-rows: 4rem calc(100% - 13.5rem) 9.5rem;
     grid-row: 1 /span 1;
     grid-column: 1 /span 1;
     background-color: rgba(0,0,0,0.3);
@@ -314,19 +314,44 @@
 }
 
 .chatroom .queue-container .clients-container .queue-client{
+    display: grid;
+    grid-template-rows: 1.5rem calc(100% - 1.5rem);
+    grid-template-columns: 2rem calc(100% - 2rem);
     width: 100%;
-    height: fit-content;
+    max-height: 3rem;
     margin-block-start: 0;
     margin-block-end: 0;
     margin-bottom: 0.75rem;
     border-radius: 0.5rem;
     font-size: 1.1rem;
-    background-color: greenyellow;
     text-align: center;
+}
+
+.chatroom .queue-container .clients-container .queue-client.call-client{
+    background-color:cyan;
+}
+
+.chatroom .queue-container .clients-container .queue-client.chat-client{
+    background-color: greenyellow;
 }
 
 .chatroom .queue-container .clients-container .queue-client.assigned{
     background-color: var(--jonquil);
+}
+
+.chatroom .queue-container .clients-container .queue-client .material-icons{
+    grid-row: 1 / span 2;
+    grid-column: 1 / span 1;
+    align-self: center;
+    color: black;
+    font-size: 2rem!important;
+}
+
+.chatroom .queue-container .clients-container .queue-client .client-id{
+    grid-row: 1 / span 1;
+    grid-column: 2 / span 1;
+    text-overflow: hidden;
+    overflow: hidden;
 }
 
 .chatroom .queue-container .clients-container .queue-client .client-id::after{
@@ -335,12 +360,17 @@
 }
 
 .chatroom .queue-container .clients-container .queue-client .enqueue-time{
+    grid-row: 2 / span 1;
+    grid-column: 2 / span 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     color: grey;
 }
 
 .chatroom .queue-container .buttons-container{
     width: calc(100% - 1rem);
-    height: 6.25rem;
+    height: 8.5 rem;
     grid-row: 3 / span 1;
     grid-column: 1 / span 1;
     padding: 0.5rem;
@@ -351,15 +381,22 @@
 
 .chatroom .queue-container .buttons-container button{
     height: 1.75rem;
+    width: 100%;
     border-radius: 0.5rem;
     cursor: pointer;
     font-size: 1.1rem;
     background-color: white;
     border: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .chatroom .queue-container .buttons-container #start-btn{
     color: #43ff25;
+}
+
+.chatroom .queue-container .buttons-container #start-call-btn{
+    color: #03989E;
 }
 
 .chatroom .queue-container .buttons-container #end-btn{
@@ -369,6 +406,11 @@
 .chatroom .queue-container .buttons-container #start-btn:hover{
     color: black;
     background-color: #76ff60;
+}
+
+.chatroom .queue-container .buttons-container #start-call-btn:hover{
+    color: black;
+    background-color: #03989E;
 }
 
 .chatroom .queue-container .buttons-container #end-btn:hover{
@@ -387,8 +429,10 @@
 
 .chatroom .queue-container .buttons-container #start-btn:disabled,
 .chatroom .queue-container .buttons-container #end-btn:disabled,
+.chatroom .queue-container .buttons-container #start-call-btn:disabled,
 .chatroom .queue-container .buttons-container #start-btn:disabled:hover,
 .chatroom .queue-container .buttons-container #end-btn:disabled:hover,
+.chatroom .queue-container .buttons-container #start-call-btn:disabled:hover,
 .chatroom .queue-container .buttons-container #transfer-btn:disabled,
 .chatroom .queue-container .buttons-container #transfer-btn:disabled:hover{
     background-color: white;

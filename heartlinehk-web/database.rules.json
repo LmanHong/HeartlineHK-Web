@@ -14,9 +14,18 @@
         "preferred_names":{
             "$volun_id":{
                 ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
-                ".validate": "newData.hasChildren(['preferredName', 'lastName', 'firstName']) || !newData.exists()"
+                ".validate": "(!data.exists() && newData.hasChildren(['preferredName', 'lastName', 'firstName'])) || (data.hasChildren(['preferredName', 'lastName', 'firstName']) && newData.hasChild('preferredName')) || !newData.exists()"
             },
             ".read": "auth.uid != null && auth.provider === 'password'",
+            ".write": false
+        },
+        "phone_numbers":{
+            "$volun_id":{
+                ".read": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
+                ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $volun_id",
+                ".validate": "(newData.isNumber() && newData.val() >= 20000000 && newData.val() <= 99999999) || (!newData.exists())"
+            },
+            ".read": false,
             ".write": false
         },
         "chat_records":{

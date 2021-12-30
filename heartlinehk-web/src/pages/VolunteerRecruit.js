@@ -48,7 +48,7 @@ const VolunteerRecruit = () =>{
             <div className="apply-deadline-container">
                 <h1>最新一輪簡介會</h1>
                 <FlipCountdown day={deadlineDay} month={deadlineMonth} year={deadlineYear}></FlipCountdown>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLScBHXRo13emjSJrHf3ZeA2UX5y34xyUyKQpd8Y_SPDRPWJS5A/viewform?usp=sf_link">按此報名</a>
+                <a href="https://forms.gle/dPfgxtihJm6VP9BM7">按此報名</a>
             </div>
             <div className="responsibility-container">
                 <h1 className="sub-title">相關職責</h1>

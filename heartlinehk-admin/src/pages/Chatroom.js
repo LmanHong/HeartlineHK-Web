@@ -26,6 +26,8 @@ const Chatroom = (props) =>{
 
     //Volunteer Preferred Name database reference
     const preferredNameRef = firebase.database().ref('preferred_names');
+    //Volunteer Phone Number database reference
+    const phoneNumberRef = firebase.database().ref('phone_numbers');
     //Volunteer Online Time database reference
     const onlineTimeRef = firebase.database().ref('online_time');
     //Chat Records database reference
@@ -70,6 +72,10 @@ const Chatroom = (props) =>{
     const [isStartingChat, setIsStartingChat] = useState(false);
     //Flag indicating an end-chat is in progress
     const [isEndingChat, setIsEndingChat] = useState(false);
+    //Flag indicating a start-call is in progress
+    const [isStartingCall, setIsStartingCall] = useState(false);
+    //Flag indicating an end-call is in progress
+    const [isEndingCall, setIsEndingCall] = useState(false);
     //Flag indicating a chat message is being sent
     const [isSendingMessage, setIsSendingMessage] = useState(false);
     //Flag indicating the chat queue container is shown full screen (in smaller screen devices)
@@ -86,6 +92,8 @@ const Chatroom = (props) =>{
     const [isClearingChat, setIsClearingChat] = useState(false);
     //Flag indicating if the current chat is transferrable
     const [isTransferrable, setIsTransferrable] = useState(false);
+    //Flag indicating if the current chat is a call
+    const [isOngoingCall, setIsOngoingCall] = useState(false);
 
     //Callback for handling chat log changes
     const handleChatLogChanges = (snapshot)=>{
@@ -715,6 +723,38 @@ const Chatroom = (props) =>{
         }
     }
 
+    //Function for initiating a new call
+    const startNewCall = async ()=>{
+        try{
+            let localCurrentClient = (currentClient != null?currentClient:sessionStorage.getItem('heartlinehk-currentClient'));
+
+            //Check if a new call is already starting
+            if (isStartingCall) throw new Error("Already starting a new call!");
+            setIsStartingCall(true);
+
+            //Check if all database references are available
+            if (!phoneNumberRef){
+                setIsStartingCall(false);
+                throw new ReferenceError("Chat Records reference not available!");
+            }
+            //Check if current client is already set
+            else if (localCurrentClient != null){
+                setIsStartingCall(false);
+                throw new Error("CurrentClient is already set!");
+            }else{
+                let volunPhoneNumber = (await phoneNumberRef.child(props.currentUser.uid).once('value')).val();
+                if (volunPhoneNumber == null){
+                    setIsStartingCall(false);
+                    throw new Error("Volunteer Phone Number is null!");
+                }
+                // TODO: Get phone number of the next client
+            }
+        }catch(error){
+            console.error("ERROR: "+error.message);
+            alert(error.message);
+        }
+    }
+
     //Callback for handling the form submission of end chat confirmation modal
     const endChatFormHandler = (e)=>{
         e.preventDefault();
@@ -738,6 +778,20 @@ const Chatroom = (props) =>{
             }
             modalContainerDiv.classList.remove("opened");
         }else console.error("ERROR: Parent Element is not a start chat modal!");
+    }
+
+    //Callback for handling the form submission of start call confirmation modal
+    const startCallFormHandler = (e)=>{
+        e.preventDefault();
+        const modalContainerDiv = e.target.parentElement.parentElement;
+        if (modalContainerDiv.id === "startcall-modal"){
+            const isConfirmed = (e.target.className === "confirm-btn");
+            if (isConfirmed){
+                toggleQueue();
+                startNewCall();
+            }
+            modalContainerDiv.classList.remove("opened");
+        }else console.error("ERROR: Parent Element is not a start call modal!");
     }
 
     //Callback for handling the form submission of the transfer chat dropdown modal
@@ -1070,7 +1124,8 @@ const Chatroom = (props) =>{
             <ConfirmModal modalId={"transferrequest-modal"} confirmText={`義工${transferFromVolun}向你提出轉移對話，你接受嗎？`} formSubmitHandler={resolveRequestFormHandler}></ConfirmModal>
             <DropdownModal modalId={"transferchat-modal"} dropdownId={"volun-dropdown-list"} descriptionText={"請選擇要接手對話的義工。"} dropdownOptions={freeVolun} formSubmitHandler={trasnferChatFormHandler}></DropdownModal>
             <ConfirmModal modalId={"endchat-modal"} confirmText={"你確定要結束對話嗎？"} formSubmitHandler={endChatFormHandler}></ConfirmModal>
-            <ConfirmModal modalId={"startchat-modal"} confirmText={"你確定要開啟新對話嗎？"} formSubmitHandler={startChatFormHandler}></ConfirmModal>
+            <ConfirmModal modalId={"startchat-modal"} confirmText={"你確定要開啟新文字對話嗎？"} formSubmitHandler={startChatFormHandler}></ConfirmModal>
+            <ConfirmModal modalId={"startcall-modal"} confirmText={"你確定要開啟新語音對話嗎？請確保你已在'更改個人資料'中更新了你的香港電話號碼，並能於現在用該號碼接聽。"} formSubmitHandler={startCallFormHandler}></ConfirmModal>
             {(isStartingChat || isEndingChat || isClearingChat) && <Loading></Loading>}
             <div className="chat-container">
                 {disconnectTime != null &&
@@ -1114,6 +1169,14 @@ const Chatroom = (props) =>{
             <div className="queue-container">
                 <p className="main-text"><span className="material-icons">people</span><span className="queue-count">{clientQueue.length}</span></p>
                 <div ref={clientContainerDiv} className="clients-container">
+                    <p className="queue-client chat-client">
+                        <span className="material-icons">email</span><span className="client-id">nnyPm7NGqbTfU8XkqKP5RxolPmRg</span>
+                        <span className="enqueue-time" data-time="123456">16:00, 30/12</span>
+                    </p>
+                    <p className="queue-client call-client">
+                        <span className="material-icons">call</span><span className="client-id" data-phonenumber="23456678">calluserid1</span>
+                        <span className="enqueue-time" data-time="234567">16:30, 30/12</span>
+                    </p>
                     {clientQueue.map((val, idx)=>{
                         return (
                             <p key={val['userId']} className={"queue-client"+(val['status'] === "roomAssigned"?" assigned":"")}>
@@ -1125,7 +1188,8 @@ const Chatroom = (props) =>{
                 </div>
                 <div className="buttons-container">
                     <button type="submit" name="trasnsfer-btn" id="transfer-btn" disabled={currentClient == null || !isTransferrable} onClick={openTransferChatModal}>轉移對話</button>
-                    <button type="submit" name="start-btn" id="start-btn" disabled={currentClient != null || clientQueue.length <= 0} onClick={()=>{document.getElementById("startchat-modal").classList.add("opened")}}>開始對話</button>
+                    <button type="submit" name="start-btn" id="start-btn" disabled={currentClient != null || clientQueue.length <= 0} onClick={()=>{document.getElementById("startchat-modal").classList.add("opened")}}>開始文字對話</button>
+                    <button type="submit" name="start-call-btn" id="start-call-btn" disabled={currentClient != null} onClick={()=>{document.getElementById("startcall-modal").classList.add("opened")}}>開始語音對話</button>
                     <button type="submit" name="end-btn" id="end-btn" disabled={currentClient == null} onClick={()=>{document.getElementById("endchat-modal").classList.add("opened")}}>結束對話</button>
                 </div>
             </div>
