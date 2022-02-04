@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/functions";
 
+//to be used in new funtion
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+
 const ResetPassword = (props)=>{
 
     const [isPasswordContainsInvalidChar, setPasswordContainsInvalidChar] = useState(null);
@@ -123,4 +126,26 @@ const ResetPassword = (props)=>{
         </>
     );
 }
+
+//reset password function based on loginEmail == personalEmail
+//don't know what's the useEffect and what to return...
+const ResetPasswordNew = (props)=>{
+    let email = document.getElementById('login-email').value;
+
+    const auth = getAuth();
+
+    sendPasswordResetEmail(auth, email)
+    .then(() => {
+        // Password reset email sent!
+    })
+    .catch((error) => {
+        // error
+        const errorCode = error.code;
+        const errorMessage = error.message;
+    });
+
+
+}
+
+
 export default ResetPassword;
