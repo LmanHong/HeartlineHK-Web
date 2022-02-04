@@ -431,6 +431,78 @@ exports.requestChangePassword = functions.https.onCall(async (data, context)=>{
     }
 });
 
+
+//function for updating oldEmail to newEmail
+const updateEmail = (oldEmail, newEmail) => {
+    await admin.auth().getUserByEmail(oldEmail)
+    .then((userRecord) => {
+        const uid = userRecord.getUid();
+    
+        await admin.getAuth().updateUser(uid, {
+            email: newEmail
+        })
+        .then((userRecord) => {
+            //successfully updated
+        })
+        .catch((error) => {
+            console.log('Error updating uid:${uid} ${oldEmail} data:', error);
+        })
+    })
+    .catch((error) => {
+        //handle error
+        console.log('Error fetching ${oldEmail} data:', error);
+    });
+}
+
+//function for updating current fake login email to personal email
+exports.updateFakeToPersonalEmail = functions.https.onCall(async (data, context)=> {
+    
+    //loop through spreadsheet, then update one by one
+    const auth = await google.auth.getClient({scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']});
+    const googleSheets = google.sheets({version: "v4", auth: auth});
+    const credentialsSpreadsheetId = "1o91iiHV0ScnY-Vv01jVpg5L2wqj1M3qxLneWGoydBE4";
+
+    //const loginEmail = data.loginEmail;
+    //const newPassword = data.newPassword;
+    //if (loginEmail === null || newPassword === null) throw new functions.https.HttpsError('invalid-argument', "Login Email and New Password cannot be null!");
+
+    const fullNameCol = 0; //Column A
+    const preferredNameCol = 1; //Column B
+    const personalEmailCol = 2; //Column C
+    const loginEmailCol = 4; //Column E
+    const pwdCol = 5; //Column F
+    try{
+        const metaData = (await googleSheets.spreadsheets.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId})).data.sheets;
+        //let isVolunFound = false;
+        let targetVolunDetails = null;
+        for (const sheetIdx in metaData){
+            console.log(sheetIdx+": "+metaData[sheetIdx].properties.title);
+            const sheetContents = (await googleSheets.spreadsheets.values.get({'auth': auth, 'spreadsheetId': credentialsSpreadsheetId, 'range': metaData[sheetIdx].properties.title})).data.values;
+            for (const rowIdx in sheetContents){
+               
+                const fakeEmail = sheetContents[rowIdx][loginEmailCol];
+                const personalEmail = sheetContents[rowIdx][personalEmailCol];
+                console.log(fakeEmail + " " + personalEmail);
+
+                //update part
+                //updateEmail(fakeEmail, personalEmail);
+                
+            }
+        }
+        
+        
+    }catch(error){
+        console.error("ERROR: "+error.message);
+        throw new functions.https.HttpsError('unavailable', error.message);
+    }
+
+});
+
+
+
+
+
+
 /*
 exports.requestChangePasswordHttps = functions.region('asia-east2').https.onRequest(async (req, res)=>{
     //Development Auth ONLY!
