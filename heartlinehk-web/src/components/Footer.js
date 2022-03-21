@@ -1,4 +1,7 @@
 import "../styles/Footer.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLinkedin, faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () =>{
 
@@ -8,8 +11,8 @@ const Footer = () =>{
     }
 
     return (
-        <div className="footer-container">
-            <a className="back-top-btn fa fa-chevron-up" onClick={scrollToTop}></a>
+        <footer className="footer-container">
+            <a className="back-top-btn" onClick={scrollToTop}><FontAwesomeIcon icon={faChevronUp}/></a>
             <div className="left-column">
                 <div className="sponsor">
                     <p>捐助機構︰</p>
@@ -20,12 +23,12 @@ const Footer = () =>{
                 <p className="copyright">&copy; 2021 Heartline HK</p>
             </div>
             <div className="right-column">
-                <a href="https://www.linkedin.com/company/mentalsos/" className="footer-item fa fa-linkedin-square"></a>
-                <a href="https://www.facebook.com/heartlinehongkong" className="footer-item fa fa-facebook-square"></a>
-                <a href="https://www.instagram.com/heartlinehk/" className="footer-item fa fa-instagram"></a>
+                <a href="https://www.linkedin.com/company/mentalsos/" className="footer-item"><FontAwesomeIcon icon={faLinkedin}/></a>
+                <a href="https://www.facebook.com/heartlinehongkong" className="footer-item"><FontAwesomeIcon icon={faFacebookSquare}/></a>
+                <a href="https://www.instagram.com/heartlinehk/" className="footer-item"><FontAwesomeIcon icon={faInstagram}/></a>
                 <a href="tel:95074873" className="footer-item telephone" style={{display: "none"}}>熱線:95074873</a>
             </div>
-        </div>
+        </footer>
     );
 }
 

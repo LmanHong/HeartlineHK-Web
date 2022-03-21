@@ -6,6 +6,9 @@ import logo from '../img/header/logo_80x80.png';
 import '../styles/SideMenu.css';
 import {Link} from 'react-router-dom';
 import {useEffect, useRef, useState} from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes, faCaretDown, faGift, faPhone } from '@fortawesome/free-solid-svg-icons';
+
 
 const SideMenu = () =>{
 
@@ -88,17 +91,19 @@ const SideMenu = () =>{
                     </Link>
                     <ul className="nav-items-container">
                         <li className="nav-item mobile">
-                            <a className="nav-menu-btn fa fa-times" onClick={closeSideMenu}></a>
+                            <a className="nav-menu-btn" onClick={closeSideMenu}><FontAwesomeIcon icon={faTimes}/></a>
                         </li>
                         <li className="nav-item">
                             <Link to="/chatroom" className="chat-btn" onClick={closeSideMenu}></Link>
                         </li>
                         <li className="nav-item">
-                            <a href="https://www.facebook.com/heartlinehongkong" className="nav-item fa fa-facebook"></a>
+                            <a className="phone-btn" href="tel:+85230016615"><FontAwesomeIcon icon={faPhone}/> 30016615</a>
                         </li>
-                        <li className="nav-item">
-                            <a href="https://www.instagram.com/heartlinehk/" className="nav-item fa fa-instagram"></a>
-                        </li>
+                        {false && 
+                            <li className="nav-item">
+                                <Link to="/donation" className="donation-btn" onClick={closeSideMenu}><FontAwesomeIcon icon={faGift}/> 捐款</Link>
+                            </li>
+                        }
                     </ul>
                 </div>
 
@@ -112,10 +117,10 @@ const SideMenu = () =>{
                     <li className="link"><Link to="/about-us" onClick={closeSideMenu}>關於我們</Link></li>
                     <li className="link"><Link to="/chatroom" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
-                        <Link to="/support-us" onClick={closeSideMenu}>支持我們<i className="fa fa-caret-down"></i></Link>
-                        <a className="mobile-dropdown-trigger fa fa-caret-down" onClick={openMobileDropdownMenu}></a>
+                        <Link to="/support-us" onClick={closeSideMenu}>支持我們<FontAwesomeIcon icon={faCaretDown}/></Link>
+                        <a className="mobile-dropdown-trigger" onClick={openMobileDropdownMenu}><FontAwesomeIcon icon={faCaretDown}/></a>
                         <ul ref={dropdownMenuUL} className="dropdown-menu">
-                            <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#donation"}} onClick={closeSideMenu}>捐款</Link></li>
+                            <li className="dropdown-link"><Link to="/donation" onClick={closeSideMenu}>捐款</Link></li>
                             <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#partner"}} onClick={closeSideMenu}>成為合作夥伴</Link></li>
                             <li className="dropdown-link"><Link to="/volunteer-recruit" onClick={closeSideMenu}>成為義工</Link></li>
                         </ul>

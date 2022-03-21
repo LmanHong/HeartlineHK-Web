@@ -132,7 +132,8 @@
 }
 
 
-.support-method .support-detail .volunteer-recruit-btn{
+.support-method .support-detail .detail-right .volunteer-recruit-btn,
+.support-method .support-detail .detail-right .donation-expand-btn{
     display: block;
     text-decoration: none;
     width: fit-content;

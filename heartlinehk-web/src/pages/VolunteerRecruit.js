@@ -3,6 +3,8 @@ import FlipCountdown from '../components/FlipCountdown.js';
 import Footer from '../components/Footer.js';
 import '../styles/VolunteerRecruit.css';
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 const VolunteerRecruit = () =>{
 
@@ -32,9 +34,12 @@ const VolunteerRecruit = () =>{
     }, []);
 
     const expandAnswer = (e) =>{
-        let expandButton = e.target;
-        let answerPara = e.target.parentElement.nextElementSibling;
+        let expandButton = (e.target.tagName == "svg"?e.target.parentElement:e.target);
+        let answerPara = expandButton.parentElement.nextElementSibling;
         
+        console.log(expandButton);
+        console.log(answerPara);
+
         expandButton.classList.toggle('expanded');
         answerPara.classList.toggle('expanded');
     }
@@ -98,15 +103,15 @@ const VolunteerRecruit = () =>{
                         關於招募條件<br />
                         <ol type="a">
                             <li>
-                                <p className="question">我可以隨時報名成為義工嗎？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我可以隨時報名成為義工嗎？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">配合培訓課程安排，我們大概每6個月進行一次義工招募，詳情會在網頁和機構的社交平台 (Facebook, Instagram) 公佈。按此連結至最新一輪的義工招募報名表。</p>
                             </li>
                             <li>
-                                <p className="question">我不是社工或心理學學生，亦沒有相關經驗，能否成為義工？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我不是社工或心理學學生，亦沒有相關經驗，能否成為義工？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">成為義工毋須具備相關資歷和經驗，只需符合上述條件即可。義工在正式投入服務前會接受由<span>本會</span>提供的培訓，使其更有效幫助求助者。</p>
                             </li>
                             <li>
-                                <p className="question">我會否有薪酬或交通津貼 (車馬費)？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我會否有薪酬或交通津貼 (車馬費)？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">因資源有限，本會未能向義工提供薪酬或交通津貼，服務將屬義務性質。</p>
                             </li>
                         </ol>
@@ -115,15 +120,15 @@ const VolunteerRecruit = () =>{
                         關於服務細節<br />
                         <ol type="a">
                             <li>
-                                <p className="question">我每星期也要當值嗎？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我每星期也要當值嗎？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">不會的。每名義工每月至少當值2輪，普遍當值2-3輪。當值時間和日期會事先和義工商議。義工可以按照自己的時間表在登記時通知本會，我們會儘量作出最佳的安排。</p>
                             </li>
                             <li>
-                                <p className="question">我需要整晚當值嗎？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我需要整晚當值嗎？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">我們的服務時間為每晚7pm至翌日7am，分開兩輪當值時間，分別為 (i)7pm至11pm 以及 (ii)11pm至翌日7am。</p>
                             </li>
                             <li>
-                                <p className="question">我可以取消登記嗎？<button onClick={expandAnswer} className="fa fa-chevron-down"></button></p>
+                                <p className="question">我可以取消登記嗎？<button onClick={expandAnswer}><FontAwesomeIcon icon={faChevronDown}/></button></p>
                                 <p className="answer">一般而言，我們期望已登記的義工完成培訓後，參與至少6個月的服務。如個別義工有特殊原因而要中止義工服務，可以跟我們聯絡。</p>
                             </li>
                         </ol>
@@ -134,7 +139,6 @@ const VolunteerRecruit = () =>{
             <p className="contact-text">
                 感謝你考慮成為我們的義工，如對義工服務和招募有任何問題，請以電郵方式(<a href="mailto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>) 或在社交平台聯絡我們 (<a href="https://www.facebook.com/heartlinehongkong">Facebook</a>/<a href="https://www.instagram.com/heartlinehk/">Instagram</a>)。
             </p>
-            <Footer></Footer>
         </div>
     );
 }

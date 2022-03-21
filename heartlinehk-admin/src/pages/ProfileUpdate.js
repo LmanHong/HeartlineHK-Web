@@ -1,18 +1,22 @@
 import "../styles/ProfileUpdate.css";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/database";
-import { useRef } from "react";
+import { getDatabase, ref, set } from "firebase/database";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { useRef, useState } from "react";
+import Loading from "../components/Loading";
+import { useDatabase } from "../hooks/useDatabase";
+import { getApp } from "firebase/app";
 
 const ProfileUpdate = (props)=>{
 
     //Volunteer Preferred Name database reference
-    const preferredNameRef = firebase.database().ref(`preferred_names/${props.currentUser.uid}`);
-    //Volunteer Phone Number database reference
-    const phoneNumberRef = firebase.database().ref(`phone_numbers/${props.currentUser.uid}`);
+    const preferredNameRef = ref(getDatabase(), `preferred_names/${props.currentUser.uid}`);
+    const updateWorkerPhoneNumber = httpsCallable(getFunctions(getApp(), 'us-central1'), 'updateWorkerPhoneNumber');
+    const createTwilioWorker = httpsCallable(getFunctions(getApp(), 'us-central1'), 'createTwilioWorker');
 
     const displayNameInputRef = useRef();
     const phoneNumberInputRef = useRef();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleProfileUpdate = async (e)=>{
         e.preventDefault();
@@ -21,24 +25,31 @@ const ProfileUpdate = (props)=>{
                 const newDisplayName = displayNameInputRef.current.value;
                 const newPhoneNumber = phoneNumberInputRef.current.value;
                 if (newDisplayName == "" && newPhoneNumber == "") throw new Error("Both Inputs are null!");
+                setIsLoading(true);
                 if (newDisplayName != ""){
-                    await preferredNameRef.child('preferredName').set(newDisplayName);
+                    await set(preferredNameRef, newDisplayName);
                     displayNameInputRef.current.value = "";
                 }
                 if (newPhoneNumber != ""){
-                    await phoneNumberRef.set(parseInt(newPhoneNumber));
+                    const result = await createTwilioWorker();
+                    console.log(result.data);
+                    const { data } = await updateWorkerPhoneNumber({phoneNumber: newPhoneNumber});
+                    console.log(data);
                     phoneNumberInputRef.current.value = "";
                 }
+                setIsLoading(false);
                 alert("Profile Update Successful!");
             }else throw new Error("Current User is null!");
         }catch(error){
             console.error("ERROR: "+error.message);
+            setIsLoading(false);
             alert(error.message);
         }
     };
 
     return (
         <div className="profile-update">
+            {isLoading && <Loading/>}
             <form className="update-form" onSubmit={handleProfileUpdate}>
                 <label htmlFor="display-name-input">新顯示名稱</label>
                 <input ref={displayNameInputRef} type="text" name="display-name-input" id="display-name-input" />

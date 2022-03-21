@@ -1,0 +1,251 @@
+.donation{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    min-height: calc(100vh - 6.25rem - (200px + 2.5rem));
+    overflow: hidden;
+    padding-bottom: 3rem;
+
+    --primarygreen: #4E8197;
+    --secondarygreen: #99d1c48a;
+}
+
+.donation .mainText{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.donation .mainText h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    text-align: center;
+    background-image: url('../img/Pages/6\ FAQ/a_140x40.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.donation .mainText p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+    width: 80%;
+}
+
+.donation .donationTypeContainer{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+    font-family: 'GenJyuuGothic';
+    display: flex;
+    flex-direction: row;
+
+}
+
+.donation .donationTypeContainer input[type="radio"]{
+    display: none;
+}
+
+.donation .donationTypeContainer label{
+    width: 100%;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.3rem 0;
+    border: 0.2rem solid lightgrey;
+    border-radius: 0.5rem;
+    color: inherit;
+    background-color: white;
+    cursor: pointer;
+    
+}
+
+.donation .donationTypeContainer input[type="radio"]:checked + label{
+    background-color: var(--secondarygreen);
+    color: var(--primarygreen);
+    border-style: none;
+    padding: 0.5rem 0.2rem;
+}
+
+.donation .amountContainer{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    padding: 2rem 0;
+    color: var(--mainblue);
+    font-family: 'GenJyuuGothic';
+    display: grid;
+    grid-template-columns: 2.6rem repeat(4, 8.4rem);
+    grid-template-rows: 7rem;
+    column-gap: 1rem;
+    row-gap: 1rem;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .donation .amountContainer{
+        grid-template-columns: 2.6rem 8.4rem 8.4rem !important;
+        grid-template-rows: 7rem 7rem;
+    }
+
+    .donation .amountContainer h1{
+        grid-row: 1 / span 2;
+    }
+}
+
+.donation .amountContainer h1{
+    font-size: 2.6rem;
+    width: 2.6rem;
+    line-height: 2.6rem;
+    font-weight: 500;
+    color: var(--primarygreen);
+    grid-column: 1 / span 1;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+
+.donation .amountContainer input[type="radio"]{
+    display: none;
+}
+
+.donation .amountContainer > label{
+    display: block;
+    width: 5rem;
+    height: 5.6rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.3rem;
+    border: 0.2rem solid lightgrey;
+    border-radius: 0.5rem;
+    padding: 0 1.5rem 1rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.donation .amountContainer > label span{
+    font-size: 2.7rem;
+    line-height: 2.7rem;
+
+}
+
+.donation .amountContainer > label span::before{
+    content: "\A";
+    display: block;
+}
+
+.donation .amountContainer input[type="radio"][value="variable"] + label{
+    position: relative;
+    padding-top: 1.25rem;
+    height: 4.35rem;
+}
+
+.donation .amountContainer input[type="radio"]:checked + label{
+    width: 5.4rem;
+    height: 5.8rem;
+    padding-top: 0.2rem;
+    border-style: none;
+    background-color: var(--secondarygreen);
+    color: var(--primarygreen);
+}
+
+.donation .amountContainer input[type="radio"][value="variable"]:checked + label{
+    padding-top: 1.45rem;
+    height: 4.55rem;
+}
+
+.donation .amountContainer input[type="number"]::-webkit-outer-spin-button,
+.donation .amountContainer input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.donation .amountContainer input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.donation .amountContainer input[type="number"]{
+    position: absolute;
+    left: 0;
+    top: 2.5rem;
+    width: 8.1rem;
+    height: 2.7rem;
+    padding: 0;
+    font-size: 2.7rem;
+    font-weight: 600;
+    font-family: 'GenJyuuGothic';
+    color: var(--mainblue);
+    text-align: center;
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+
+.donation .amountContainer input[type="number"] + label{
+    position: absolute;
+    left: 0;
+    bottom: 0.75rem;
+    width: 8.1rem;
+    height: 1rem;
+    font-size: 1rem;
+    color: lightgrey;
+}
+
+.donation .amountContainer input[type="radio"][value="variable"]:checked + label label{
+    color: rgba(0,0,0,0.2);
+    width: 8.5rem;
+    bottom: 0.95rem;
+}
+
+.donation .amountContainer input[type="number"]::placeholder{
+    color: lightgrey;
+    font-size: 2rem;
+    transform: translateY(-0.4rem);
+}
+
+.donation .amountContainer input[type="radio"][value="variable"]:checked + label input[type="number"]{
+    width: 8.5rem;
+    color: var(--primarygreen);
+    top: 2.7rem;
+}
+
+.donation .amountContainer input[type="radio"][value="variable"]:checked + label input[type="number"]::placeholder{
+    color: rgba(0,0,0,0.2);
+}
+
+.donation button.payment{
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.3rem 3rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    font-family: 'GenJyuuGothic';
+    color: var(--primarygreen);
+    background-color: var(--secondarygreen);
+    cursor: pointer;
+}
+
+
+
+
+

@@ -63,7 +63,6 @@ const RelatedServices = () =>{
                     </ul>
                 </li>
             </ul>
-            <Footer></Footer>
         </div>
     );
 }

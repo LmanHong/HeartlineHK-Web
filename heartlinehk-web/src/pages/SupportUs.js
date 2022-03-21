@@ -4,9 +4,47 @@ import volunteer from '../img/Pages/3 支持我們/d_192x192.png';
 import Footer from '../components/Footer.js';
 import '../styles/SupportUs.css';
 import {Link} from 'react-router-dom';
-import { useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/functions';
 
 const SupportUs = (props) => {
+
+    const donationFormRef = useRef();
+    const [isDonationExpanded, setIsDonationExpanded] = useState(false);
+    const [isMonthlyDonation, setIsMonthlyDonation] = useState(false); 
+
+
+    const variableAmountFocused = (e)=>{
+      document.querySelector(".support-methods-container .donation-container .donation-amount-variable-container input[type='radio']").checked = true;  
+    };
+
+    const donationFormHandler = async (e)=>{
+        e.preventDefault();
+        const amountRadioBtns = donationFormRef.current.querySelectorAll("input[type='radio'][name='donation-amount']");
+        const typeRadioBtns = donationFormRef.current.querySelectorAll("input[type='radio'][name='donation-type']");
+        let amount = -1;
+        let type = "";
+        typeRadioBtns.forEach((radio)=>{
+            if (radio.checked) type=radio.value;
+        });
+        amountRadioBtns.forEach((radio)=>{
+            if (radio.checked){
+                amount = (radio.value != "variable"?radio.value:donationFormRef.current.querySelector("#donation-amount-variable").value);
+            }
+        });
+        try{
+            const createCheckoutSession = firebase.functions().httpsCallable('createCheckoutSession');
+            let result = await createCheckoutSession({
+                'donationType': type,
+                'donationAmount': amount
+            });
+            window.location = result.data.redirectUrl;
+        }catch(error){
+            console.error("ERROR: "+error.message);
+
+        }
+    };
 
     useEffect(()=>{
         let hash = window.location.hash;
@@ -17,6 +55,8 @@ const SupportUs = (props) => {
             document.documentElement.scrollTop = 0;
         }
     }, []);
+
+
 
     return (
         <div className="support-us">
@@ -39,24 +79,40 @@ const SupportUs = (props) => {
                         </div>
                         <div className="detail-right">
                             <p>捐款金額不論多少，都可以讓不同的人受惠。</p>
-                            <p>捐款方法：</p>
-                            <ul>
-                                <li>
-                                    <p>如果你有意支持我們機構，請以電郵查詢捐款詳情。</p>
-                                </li>
-                                <li style={{display: "none"}}>
-                                    <p><span>1. 以銀行轉帳形式捐款</span></p>
-                                    <p>銀行名稱：</p>
-                                    <p>戶口名稱：</p>
-                                </li>
-                                <li style={{display: "none"}}>
-                                    <p><span>2. 把劃線支票抬頭及郵寄至</span></p>
-                                    <p>Call centre address</p>
-                                </li>
-                            </ul>
+                            <Link to="/donation" className="donation-expand-btn">按此捐款</Link>
+                            {false && <a className="donation-expand-btn" onClick={()=>{setIsDonationExpanded(!isDonationExpanded)}}>按此捐款</a>}
                         </div>
-                    </div>
+                    </div>                    
                 </li>
+                {false && 
+                <li className="donation-container">
+                    <form ref={donationFormRef} onSubmit={donationFormHandler}>
+                        <input type="radio" name="donation-type" id="donation-type-one-time" defaultChecked={true} value="one-time" required onChange={()=>setIsMonthlyDonation(false)}/>
+                        <label htmlFor="donation-type-one-time">單次捐款</label>
+                        <input type="radio" name="donation-type" id="donation-type-monthly" defaultChecked={false} value="monthly" onClick={()=>setIsMonthlyDonation(true)}/>
+                        <label htmlFor="donation-type-monthly">每月捐款</label>
+                        <div className="amount-container">
+                            <input type="radio" name="donation-amount" id="donation-amount-50hkd" value="50" defaultChecked={true} required/>
+                            <label htmlFor="donation-amount-50hkd">HKD$50</label>
+                            <input type="radio" name="donation-amount" id="donation-amount-100hkd" value="100" defaultChecked={false}/>
+                            <label htmlFor="donation-amount-100hkd">HKD$100</label>
+                            <input type="radio" name="donation-amount" id="donation-amount-200hkd" value="200" defaultChecked={false}/>
+                            <label htmlFor="donation-amount-200hkd">HKD$200</label>
+                            <input type="radio" name="donation-amount" id="donation-amount-500hkd" value="500" defaultChecked={false}/>
+                            <label htmlFor="donation-amount-500hkd">HKD$500</label>
+                            {!isMonthlyDonation && <>
+                                <div className="donation-amount-variable-container">
+                                    <input type="radio" name="donation-amount" id="donation-amount-variable-radio" value="variable" defaultChecked={false}/>
+                                    <label htmlFor="donation-amount-variable-radio">HKD$</label>
+                                    <input type="number" name="donation-amount-variable" id="donation-amount-variable" defaultValue={50} min={50} step={0.5} onFocus={variableAmountFocused}/>
+                                </div>
+                            </>}
+                        </div>
+                        <input type="submit" value="立即捐款" />
+                    </form>
+                </li>
+                }
+                
                 <li className="support-method">
                     <a id="partner"/>
                     <h1 className="sub-title">合作夥伴</h1>
@@ -94,8 +150,6 @@ const SupportUs = (props) => {
                 我們衷心感謝你對HeartlineHK的支持，因著你的支持，我們得以提供更完善的情緒支援服務。<br/>
                 如有任何查詢，歡迎電郵至<a href="mailto:heartlinehongkong@gmail.com">heartlinehongkong@gmail.com</a>與我們聯絡。
             </p>
-
-            <Footer></Footer>
         </div>
     );
 }

@@ -1,8 +1,11 @@
 import NavBar from './components/NavBar.js';
 import SideMenu from './components/SideMenu.js';
+import Footer from './components/Footer.js';
 import Home from './pages/Home.js';
 import AboutUs from './pages/AboutUs.js';
 import SupportUs from './pages/SupportUs.js';
+import Donation from './pages/Donation.js';
+import DonationSuccess from './pages/DonationSuccess.js';
 import VolunteerRecruit from './pages/VolunteerRecruit.js';
 import RelatedServices from './pages/RelatedServices.js';
 import FAQ from './pages/FAQ.js';
@@ -24,6 +27,12 @@ function App() {
           </Route>
           <Route exact path="/support-us">
             <SupportUs/>
+          </Route>
+          <Route exact path="/donation">
+            <UnderConstruction/>
+          </Route>
+          <Route exact path="/donation-success">
+            <DonationSuccess/>
           </Route>
           <Route exact path="/volunteer-recruit">
             <VolunteerRecruit/>
@@ -47,6 +56,7 @@ function App() {
             <Home/>
           </Route>
         </Switch>
+        <Footer/>
       </div>
     </Router>
 

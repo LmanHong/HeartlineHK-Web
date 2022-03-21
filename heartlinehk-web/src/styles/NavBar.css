@@ -159,10 +159,44 @@ nav.nav-container .nav-items-container .nav-item{
     }
 }
 
+nav.nav-container .nav-item .phone-btn{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    padding: 1.25rem 0;
+    color: var(--mainblue);
+    font-size: 1.25rem;
+    font-family: 'GenJyuuGothic';
+    text-decoration: none;
+    line-height: 1;
+}
+
+nav.nav-container .nav-item .phone-btn svg{
+    color: white;
+    background-color: #E0C193;
+    height: 0.75rem !important;
+    padding: 0.25rem;
+    border-radius: 50%;
+}
+
+nav.nav-container .nav-item .donation-btn{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    padding: 0.3rem 1rem;
+    margin-top: 0.575rem;
+    background-color: #D88C57;
+    color: white;
+    font-size: 1.5rem;
+    font-family: 'GenJyuuGothic';
+    text-decoration: none;
+    border-radius: 0.5rem;
+}
+
 nav.nav-container .nav-item .chat-btn{
     display: block;
-    width: 6rem;
-    height: 4rem;
+    width: 5.5rem;
+    height: 3.75rem;
     background-image: url('../img/header/chat-button_96x65.png');
     background-position: center;
     background-repeat: no-repeat;
@@ -173,26 +207,31 @@ nav.nav-container .nav-item .chat-btn{
 nav.nav-container .nav-item.mobile a{
     position: relative;
     display: none;
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 2.5rem;
-    padding: 0.5rem 0;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2rem;
+    padding: 0.875rem 0;
     text-decoration: none;
     color: var(--mainblue);
 }
 
 @media screen and (max-width: 576px){
+    nav.nav-container .nav-item .donation-btn{
+        font-size: 1rem;
+        padding: 0.3rem 0.5rem;
+        margin-top: 0.825rem;
+    }
+
     nav.nav-container .nav-item .chat-btn{
-        width: 5.5rem;
-        height: 3.75rem;
+        width: 3.65rem;
+        height: 2.5rem;
+        padding: 0.625rem 0;
     }
 
     nav.nav-container .nav-item.mobile a{
         display: block;
     }
-}
 
-@media screen and (max-width: 540px){
     nav.nav-container .nav-name{
         display: none;
     }

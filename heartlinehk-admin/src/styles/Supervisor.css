@@ -81,8 +81,16 @@
     background-color: lightgreen;
 }
 
+.supervisor .volunteers-container .volun-btn.calling:not(.selected){
+    background-color: lightblue;
+}
+
 .supervisor .volunteers-container .volun-btn.chatting::before{
     content: "[CHAT]";
+}
+
+.supervisor .volunteers-container .volun-btn.calling::before{
+    content: "[CALL]";
 }
 
 .supervisor .volunteers-container .volun-btn.selected{
@@ -133,6 +141,20 @@
     overflow-x: hidden;
 }
 
+.supervisor .call-container{
+    position: relative;
+    height: calc(var(--vh, 1vh) * 100 - 2rem);
+    width: calc(100% - 1.5rem);
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0,0,0,0.05); 
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 @media screen and (max-width: 600px){
     .supervisor .chat-container{
         grid-row: 2 / span 1;
@@ -140,6 +162,23 @@
         margin: 0;
         height: calc(100% - 1rem);
     }
+
+    .supervisor .call-container{
+        margin: 0;
+        height: calc(100% - 1rem);
+    }
+}
+
+.supervisor .call-container span{
+    display: block;
+    font-size: 20rem;
+    color: white;
+    text-align: center;
+    align-items: center;
+}
+
+.supervisor .call-container h4{
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .supervisor .chat-container .message{

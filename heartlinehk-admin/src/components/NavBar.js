@@ -5,6 +5,7 @@ import "../styles/NavBar.css";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "firebase/compat/database";
+import { useDatabase } from "../hooks/useDatabase";
 
 const NavBar = (props) =>{
 
@@ -12,6 +13,8 @@ const NavBar = (props) =>{
     const navBackgroundDiv = useRef();
     const [isSupervisor, setIsSupervisor] = useState(false);
     const [preferredName, setPreferredName] = useState(null);
+    const [supervisorsRef, sLoading, sError, supervisors] = useDatabase('supervisors');
+    const [preferredNamesRef, pLoading, pError, preferredNames] = useDatabase('preferred_names');
 
     const openNav = ()=>{
         menuNav.current.style.transitionDuration = "0.5s";
@@ -26,15 +29,13 @@ const NavBar = (props) =>{
     }
 
     useEffect(()=>{
-        firebase.database().ref('supervisors').child(props.currentUser.uid).once('value', (snapshot)=>{
-            if (snapshot.val() != null) setIsSupervisor(true);
-            else setIsSupervisor(false);
-        });
-        firebase.database().ref('preferred_names').child(props.currentUser.uid).once('value', (snapshot)=>{
-            if (snapshot.val() != null) setPreferredName(snapshot.val()['firstName']+" "+snapshot.val()['lastName']);
-            else setPreferredName(props.currentUser.dispalyName);
-        });
-    }, []);
+        if (supervisors && props.currentUser && supervisors[props.currentUser.uid]) setIsSupervisor(true);
+        else setIsSupervisor(false);
+
+        if (preferredNames && props.currentUser && preferredNames[props.currentUser.uid]) setPreferredName(preferredNames[props.currentUser.uid]['firstName']+" "+preferredNames[props.currentUser.uid]['lastName']);
+        else setPreferredName("");
+
+    }, [props.currentUser, supervisors, preferredNames]);
 
     return (
         <>

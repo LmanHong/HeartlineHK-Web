@@ -214,6 +214,7 @@ svg.menu-content-wave{
 .menu-nav .nav-items-container .nav-item{
     float: right;
     text-align: center;
+    margin-left: 0.625rem;
 }
 
 .menu-nav .nav-item.mobile a{
@@ -228,6 +229,40 @@ svg.menu-content-wave{
     }
 }
 
+.menu-nav .nav-item .phone-btn{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    padding: 1.25rem 0;
+    color: white;
+    font-size: 1.25rem;
+    font-family: 'GenJyuuGothic';
+    text-decoration: none;
+    line-height: 1;
+}
+
+.menu-nav .nav-item .phone-btn svg{
+    color: white;
+    background-color: #E0C193;
+    height: 0.75rem !important;
+    padding: 0.25rem;
+    border-radius: 50%;
+}
+
+.menu-nav .nav-item .donation-btn{
+    display: block;
+    width: fit-content;
+    height: fit-content;
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
+    margin-top: 0.825rem;
+    background-color: #D88C57;
+    color: white;
+    font-family: 'GenJyuuGothic';
+    text-decoration: none;
+    border-radius: 0.5rem;
+}
+
 .menu-nav .nav-item .chat-btn{
     display: block;
     width: 5.5rem;
@@ -238,11 +273,12 @@ svg.menu-content-wave{
     background-size: contain;
     animation: jiggle 20s normal infinite forwards;
 }
-.menu-nav .nav-item a:not(.chat-btn){
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 2.5rem;
-    padding: 0.5rem 0;
+
+.menu-nav .nav-item.mobile a{
+    width: fit-content;
+    height: fit-content;
+    font-size: 2rem;
+    padding: 0.875rem 0;
     text-decoration: none;
     justify-self: start;
     color: white;
@@ -283,6 +319,12 @@ svg.menu-content-wave{
 }
 
 @media screen and (max-width: 576px){
+    .menu-nav .nav-item .chat-btn{
+        width: 3.65rem;
+        height: 2.5rem;
+        padding: 0.625rem 0;
+    }
+
     .menu-content .menu-btn{
         display: none;
     }
@@ -326,14 +368,14 @@ ul.menu-links{
 }
 
 .menu-links .link a .fa-caret-down{
-    margin: 0 10px;
+    margin: 0 5px;
 }
 
 .menu-links .link .mobile-dropdown-trigger{
     display: none;
     position: absolute;
     top: 1.8rem;
-    right: 0;
+    right: -10px;
     margin: 0 10px;
     z-index: 2;
 }
@@ -358,11 +400,11 @@ ul.menu-links{
         position: relative;
     }
 
-    .menu-links .link a .fa-caret-down{
+    .menu-links .link a:not(.mobile-dropdown-trigger) .fa-caret-down{
         position: absolute;
         top: 1.8rem;
         right: 0;
-        margin: 0 10px;
+        margin: 0 5px;
     }
 
     .menu-links .link .mobile-dropdown-trigger{

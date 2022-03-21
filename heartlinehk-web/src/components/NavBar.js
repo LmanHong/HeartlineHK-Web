@@ -1,6 +1,8 @@
 import logo from '../img/header/logo_80x80.png';
 import '../styles/NavBar.css';
 import {Link} from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faGift, faPhone } from '@fortawesome/free-solid-svg-icons';
 
 const NavBar  = (props) =>{
 
@@ -22,11 +24,20 @@ const NavBar  = (props) =>{
         </Link>
         <ul className="nav-items-container">
             <li className="nav-item mobile">
-                <a className="nav-menu-btn fa fa-bars" onClick={openMobileMenu}></a>
+                <a className="nav-menu-btn" onClick={openMobileMenu}><FontAwesomeIcon icon={faBars}/></a>
             </li>
             <li className="nav-item">
                 <Link to="/chatroom" className="chat-btn"></Link>
             </li>
+            <li className="nav-item">
+                <a className="phone-btn" href="tel:+85230016615"><FontAwesomeIcon icon={faPhone}/> 30016615</a>
+            </li>
+            {false && 
+                <li className="nav-item">
+                    <Link to="/donation" className="donation-btn"><FontAwesomeIcon icon={faGift}/> 捐款</Link>
+                </li>
+            }
+            
         </ul>
 
     </nav>

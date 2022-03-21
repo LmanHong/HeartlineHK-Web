@@ -189,7 +189,6 @@ const LatestFeed = () => {
                     );
                 })}
             </div>
-            <Footer></Footer>
         </div>
     );
 }

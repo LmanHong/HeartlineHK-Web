@@ -6,10 +6,8 @@ const UnderConstruction = () =>{
         <div className="under-construction">
             <div className="main-text">
                 <i className="fa fa-exclamation-circle"></i>
-                <p>我們正在積極籌備、招募義工，預期會於九月正式推出服務。</p>
+                <p>我們正在積極籌備捐款事宜，敬請期待。</p>
             </div>
-
-            <Footer></Footer>
         </div>
     );
 }

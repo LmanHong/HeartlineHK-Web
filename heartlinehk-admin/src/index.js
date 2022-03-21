@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/database';
-import 'firebase/compat/auth';
-import 'firebase/compat/functions';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
 var firebaseConfig = {
   apiKey: "AIzaSyD-gB_LHwUq2qiUXdDt2CAxGCYQQla4hMo",
@@ -19,11 +19,13 @@ var firebaseConfig = {
 };
 
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-firebase.database().useEmulator("localhost", 9000);
-firebase.auth().useEmulator("http://localhost:9099");
-firebase.functions().useEmulator("localhost", 5001);
+if (window.location.hostname === "localhost"){
+  connectDatabaseEmulator(getDatabase(), "localhost", 9000);
+  connectAuthEmulator(getAuth(), "http://localhost:9099");
+  connectFunctionsEmulator(getFunctions(), "localhost", 5001);
+}
 
 
 ReactDOM.render(

@@ -47,7 +47,6 @@ const FAQ = () =>{
                 </li>
 
             </ul>
-            <Footer></Footer>
         </div>
     );
 }

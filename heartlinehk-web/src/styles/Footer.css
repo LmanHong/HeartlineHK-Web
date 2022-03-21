@@ -13,6 +13,7 @@
 .footer-container .back-top-btn{
     position: absolute;
     margin-left: 50%;
+    transform: translateX(-50%);
     left: -0.75rem;
     bottom: 215px;
     text-decoration: none;
@@ -23,7 +24,7 @@
 .footer-container .back-top-btn::after{
     position: absolute;
     bottom: -15px;
-    left: -20px;
+    left: -21px;
     width: 72px;
     content: "back to top";
     font-size: 0.8rem;
@@ -83,14 +84,6 @@
     text-decoration: none;
     color: white;
     height: fit-content;
-}
-
-.footer-container .right-column .telephone{
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.footer-container .right-column .fa{
     font-size: 1.9rem;
 }
 
@@ -102,23 +95,18 @@
         row-gap: 0.5rem;
     }
 
-    .footer-container .right-column .fa-instagram{
+    .footer-container .right-column .footer-item:nth-child(3){
         grid-column: 1 / span 1;
         grid-row: 1/ span 1;
     }
 
-    .footer-container .right-column .fa-facebook-square{
+    .footer-container .right-column .footer-item:nth-child(2){
         grid-column: 2 / span 1;
         grid-row: 1/ span 1;
     }
 
-    .footer-container .right-column .fa-linkedin-square{
+    .footer-container .right-column .footer-item:nth-child(1){
         grid-column: 3 / span 1;
         grid-row: 1/ span 1;
-    }
-
-    .footer-container .right-column .telephone{
-        grid-row: 2 / span 1;
-        grid-column: 1 / span 3;
     }
 }

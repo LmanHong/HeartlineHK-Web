@@ -60,6 +60,41 @@
     font-family: 'GenJyuuGothic';
 }
 
+.chatroom .t-and-c-container .toggle-lang-container{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    column-gap: 0.5rem;
+}
+
+.chatroom .t-and-c-container .toggle-lang-container p{
+    width: 100%;
+    height: fit-content;
+    text-align: start;
+}
+
+.chatroom .t-and-c-container .toggle-lang-container .toggle-lang-btn{
+    height: fit-content;
+    width: fit-content;
+    min-width: 11rem;
+    background-color: var(--mainblue);
+    color: white;
+    border-style: none;
+    border-radius: 0.3rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-family: 'GenJyuuGothic';
+    cursor: pointer;
+    align-self: center;
+}
+
+.chatroom .t-and-c-container .toggle-lang-btn:hover{
+    background-color: white;
+    color: var(--mainblue);
+    border: 0.1rem solid var(--mainblue);
+}
+
 .chatroom .t-and-c-container a{
     color: var(--mainblue);
 }

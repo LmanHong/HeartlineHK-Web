@@ -22,6 +22,60 @@
     }
 }
 
+.chatroom .call-container{
+    position: relative;
+    height: calc(var(--vh, 1vh) * 100 - 11.75rem);
+    grid-row: 1 /span 1;
+    grid-column: 2 / span 1;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 10rem 0 0.75rem 0;
+    background-color: rgba(0,0,0,0.05); 
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media screen and (max-width: 600px){
+    .chatroom.queue-opened .call-container{
+        display: none;
+    }
+    
+    .chatroom .call-container{
+        grid-column: 1 /span 1;
+    }
+}
+
+.chatroom .call-container span{
+    display: block;
+    font-size: 20rem;
+    color: white;
+    text-align: center;
+    align-items: center;
+}
+
+.chatroom .call-container h4{
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.chatroom .call-container textarea{
+    width: calc(95% - 2rem);
+    height: 100%;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 1rem;
+    border-style: none;
+    font-size: 1.2rem;
+    color: white;
+    padding: 1rem;
+    resize: none;
+}
+
+.chatroom .call-container textarea:focus{
+    outline: none;
+}
+
 .chatroom .chat-container{
     position: relative;
     height: calc(var(--vh, 1vh) * 100 - 1rem);
@@ -229,6 +283,29 @@
     color: grey;
 }
 
+.chatroom .chat-container .to-new-msg-btn{
+    position: absolute;
+    top: -6.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    height: fit-content;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 1rem;
+    background-color: #0d6efd;
+    color: whitesmoke;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    cursor: pointer;
+    align-items: center;
+    text-align: center;
+}
+
+.chatroom .chat-container .to-new-msg-btn span{
+    font-size: 1em;
+    transform: translateY(10%);
+}
 
 
 .chatroom .chat-container .input-container #msg-input{
@@ -265,7 +342,7 @@
     position: relative;
     height: calc(var(--vh, 1vh) * 100 - 1rem);
     display: grid;
-    grid-template-rows: 4rem calc(100% - 13.5rem) 9.5rem;
+    grid-template-rows: 4rem calc(100% - 17.5rem) 12.5rem;
     grid-row: 1 /span 1;
     grid-column: 1 /span 1;
     background-color: rgba(0,0,0,0.3);
@@ -370,13 +447,64 @@
 
 .chatroom .queue-container .buttons-container{
     width: calc(100% - 1rem);
-    height: 8.5 rem;
+    height: 12.5rem;
     grid-row: 3 / span 1;
     grid-column: 1 / span 1;
     padding: 0.5rem;
     display: flex;
     flex-direction: column;
     row-gap: 0.5rem;
+}
+
+.chatroom .queue-container .buttons-container label.toggle-switch{
+    display: flex;
+    column-gap: 0.5rem;
+    position: relative;
+    width: 100%;
+    height: 1.5rem;
+    color: white;
+    font-size: 1rem;
+    align-items: center;
+}
+
+@media screen and (max-width: 1050px) and (min-width: 600px){
+    .chatroom .queue-container .buttons-container label.toggle-switch{
+        font-size: 0.8rem;
+    }
+}
+
+
+
+.chatroom .queue-container .buttons-container label.toggle-switch .slider{
+    width: 2rem;
+    height: 1rem;
+    padding: 0.25rem;
+    display: inline-block;
+    border-radius: 1rem;
+    background-color: lightgrey;
+    cursor: pointer;
+}
+
+.chatroom .queue-container .buttons-container label.toggle-switch .slider::before{
+    content: " ";
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: white;
+    transition: transform 0.3s ease-in-out;
+}
+
+.chatroom .queue-container .buttons-container label.toggle-switch input[type="checkbox"]{
+    display: none;
+}
+
+.chatroom .queue-container .buttons-container label.toggle-switch input[type="checkbox"]:checked + .slider{
+    background-color: lightblue !important;
+}
+
+.chatroom .queue-container .buttons-container label.toggle-switch input[type="checkbox"]:checked + .slider::before{
+    transform: translateX(100%);
 }
 
 .chatroom .queue-container .buttons-container button{
@@ -389,6 +517,7 @@
     border: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    grid-column: 1 / span 2;
 }
 
 .chatroom .queue-container .buttons-container #start-btn{
