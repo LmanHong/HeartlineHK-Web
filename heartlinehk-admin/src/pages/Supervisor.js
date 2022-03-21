@@ -138,10 +138,10 @@ const Supervisor = (props)=>{
             for (const chatId in chatLogs[currentVolun]){
                 tmpChatLog.push({
                     'chatId': chatId,
-                    'uid': chatLogs[chatId]['uid'],
-                    'time': chatLogs[chatId]['time'],
-                    'msg': chatLogs[chatId]['msg'],
-                    'spc': chatLogs[chatId]['spc']
+                    'uid': chatLogs[currentVolun][chatId]['uid'],
+                    'time': chatLogs[currentVolun][chatId]['time'],
+                    'msg': chatLogs[currentVolun][chatId]['msg'],
+                    'spc': chatLogs[currentVolun][chatId]['spc']
                 });
             }
         }

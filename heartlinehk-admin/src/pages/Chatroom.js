@@ -256,6 +256,7 @@ const Chatroom = (props) =>{
     };
 
     const requestNotificationPermission = async (e)=>{
+        console.log("In request Noti!");
         if (e.target.checked && Notification.permission !== "granted"){
             let newPermission = await Notification.requestPermission();
             console.log(newPermission);
