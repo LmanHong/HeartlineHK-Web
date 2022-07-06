@@ -1,4 +1,4 @@
-import { useList, useObject, useObjectVal } from 'react-firebase-hooks/database';
+import { useList, useObjectVal } from 'react-firebase-hooks/database';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref } from 'firebase/database';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -23,6 +23,7 @@ const Supervisor = () => {
     const [supervisors, supervisorsLoading] = useObjectVal(ref(firebaseDB, 'supervisors'));
     const [preferredNames] = useObjectVal(ref(firebaseDB, 'preferred_names'));
     const [onlineStatus] = useList(ref(firebaseDB, 'online_status'));
+    const [onlineTimes] = useList(ref(firebaseDB, 'online_time')); // Depreciated, use onlineStatus instead
     const [disconnectTimes] = useObjectVal(ref(firebaseDB, 'disconnect_time'));
     const [chatAssigned] = useList(ref(firebaseDB, 'chat_assigned'));
     const [callAssigned] = useList(ref(firebaseDB, 'call_assigned'));
@@ -35,7 +36,7 @@ const Supervisor = () => {
     }, [currentUser, supervisors]);
     const onlineVoluns = useMemo(() => {
 
-        const chattingVoluns = chatAssigned.map(value => ({
+        const chattingVoluns = chatAssigned.filter(value => value.val() !== 'volunLeft').map(value => ({
             'preferredName': ((preferredNames && value.val() in preferredNames) ? preferredNames[value.val()]['preferredName'] : value.val()),
             'volunId': value.val(),
             'clientId': value.key,
@@ -51,22 +52,24 @@ const Supervisor = () => {
         }));
         const callingVolunIds = callingVoluns.map(value => value.volunId);
 
-        const onlineVoluns = onlineStatus.map(value => (
-            chattingVolunIds.indexOf(value.key) > -1 ? 
-            chattingVoluns[chattingVolunIds.indexOf(value.key)] : 
-            (
-                callingVolunIds.indexOf(value.key) > -1 ? 
-                callingVoluns[callingVolunIds.indexOf(value.key)] : 
-                {
-                    'preferredName': ((preferredNames && value.key in preferredNames) ? preferredNames[value.key]['preferredName'] : value.key),
-                    'volunId': value.key,
-                    'clientId': null,
-                    'type': 'idle'
-                }
-            )
-        ));
+        const onlineVoluns = onlineStatus.filter(value => callingVolunIds.indexOf(value.key) < 0 && chattingVolunIds.indexOf(value.key) < 0)
+            .map(value => ({
+                'preferredName': ((preferredNames && value.key in preferredNames) ? preferredNames[value.key]['preferredName'] : value.key),
+                'volunId': value.key,
+                'clientId': null,
+                'type': 'idle'
+            }));
 
-        return onlineVoluns;
+        // Depreciated, use onlineVoluns instead
+        const onlineTimeVolun = onlineTimes.filter(value => callingVolunIds.indexOf(value.key) < 0 && chattingVolunIds.indexOf(value.key) < 0)
+            .map(value => ({
+                'preferredName': ((preferredNames && value.key in preferredNames) ? preferredNames[value.key]['preferredName'] : value.key),
+                'volunId': value.key,
+                'clientId': null,
+                'type': 'idle'
+            }));
+
+        return onlineVoluns.concat(onlineTimeVolun).concat(chattingVoluns).concat(callingVoluns);
     }, [onlineStatus, chatAssigned, callAssigned, preferredNames]);
     const [currentVolun, setCurrentVolun] = useState(null);
     const currentClient = useMemo(() => 
@@ -126,7 +129,7 @@ const Supervisor = () => {
                         <button
                             key={"online-volun-"+idx}
                             className={"volun-btn"
-                                + (currentVolun !== null && currentVolun === value['volunId'] ? " selected" : "")
+                                + (currentVolun && currentVolun === value['volunId'] ? " selected" : "")
                                 + (value['type'] === 'chat' ? " chatting" : "")
                                 + (value['type'] === 'call' ? " calling" : "")
                             }
@@ -137,11 +140,11 @@ const Supervisor = () => {
                         </button>
                     )}
                 </div>
-                {disconnectedAt !== null && <p className="disconnect-msg">使用者已於{getFormattedDateString(disconnectedAt)}開始離線。</p>}
+                {disconnectedAt && <p className="disconnect-msg">使用者已於{getFormattedDateString(disconnectedAt)}開始離線。</p>}
                 {currentMode !== 'call' && 
                 <div ref={messageContainerDiv} className="chat-container">
-                    {currentVolun !== null && currentMode === 'idle' && <p key="nochatstarted" className="message special">{specialChatMessages['noChatStarted']}</p>}
-                    {currentVolun !== null && currentClient !== null && selectedChatLog.map((value, idx) => 
+                    {currentVolun && currentMode === 'idle' && <p key="nochatstarted" className="message special">{specialChatMessages['noChatStarted']}</p>}
+                    {currentVolun && currentClient && selectedChatLog.map((value, idx) => 
                         <p 
                             key={value['chatId']} 
                             className={"message "+(value['spc'] ? "special" : (value['uid'] === currentClient ? "left" : "right"))}
@@ -155,7 +158,7 @@ const Supervisor = () => {
                 {currentMode === 'call' && 
                 <div className="call-container">
                     <span className="material-icons">wifi_calling_3</span>
-                    {callAssignedStatus !== null && <h4 className="call-assigned-status">{callAssignedStatus}</h4>}
+                    {callAssignedStatus && <h4 className="call-assigned-status">{callAssignedStatus}</h4>}
                 </div>
                 }
             </>
