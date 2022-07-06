@@ -22,7 +22,8 @@ const SideMenu = () =>{
 
     const menuContentDiv = useRef();
     const menuContentWave = useRef();
-    const dropdownMenuUL = useRef();
+    const supportUsDropdown = useRef();
+    const faqDropdown = useRef();
 
     const openSideMenu = (e) =>{
         let wave = menuWavePaths[Math.floor(Math.random()*menuWavePaths.length)];
@@ -38,8 +39,8 @@ const SideMenu = () =>{
         menuContentDiv.current.classList.remove("opened");
     }
 
-    const openMobileDropdownMenu = (e) =>{
-        dropdownMenuUL.current.classList.toggle("opened");
+    const openMobileDropdownMenu = (ref) =>{
+        ref.current.classList.toggle("opened");
     }
 
     useEffect(()=>{
@@ -117,9 +118,9 @@ const SideMenu = () =>{
                     <li className="link"><Link to="/about-us" onClick={closeSideMenu}>關於我們</Link></li>
                     <li className="link"><Link to="/chatroom" onClick={closeSideMenu}>聊天室</Link></li>
                     <li className="link dropdown-trigger">
-                        <Link to="/support-us" onClick={closeSideMenu}>支持我們<FontAwesomeIcon icon={faCaretDown}/></Link>
-                        <a className="mobile-dropdown-trigger" onClick={openMobileDropdownMenu}><FontAwesomeIcon icon={faCaretDown}/></a>
-                        <ul ref={dropdownMenuUL} className="dropdown-menu">
+                        <Link to="/support-us" onTouchEnd={e => console.log("Touched")} onClick={closeSideMenu}>支持我們<FontAwesomeIcon icon={faCaretDown}/></Link>
+                        <a className="mobile-dropdown-trigger" onClick={() => openMobileDropdownMenu(supportUsDropdown)}><FontAwesomeIcon icon={faCaretDown}/></a>
+                        <ul id="support-us-dropdown" ref={supportUsDropdown} className="dropdown-menu">
                             <li className="dropdown-link"><Link to="/donation" onClick={closeSideMenu}>捐款</Link></li>
                             <li className="dropdown-link"><Link to={{pathname: "/support-us", hash: "#partner"}} onClick={closeSideMenu}>成為合作夥伴</Link></li>
                             <li className="dropdown-link"><Link to="/volunteer-recruit" onClick={closeSideMenu}>成為義工</Link></li>
@@ -127,7 +128,13 @@ const SideMenu = () =>{
                     </li>
                     <li className="link"><Link to="/latest-feed" onClick={closeSideMenu}>最新動態</Link></li>
                     <li className="link"><Link to="/related-services" onClick={closeSideMenu}>相關服務</Link></li>
-                    <li className="link"><Link to="/faq" onClick={closeSideMenu}>常見問題</Link></li>
+                    <li className="link dropdown-trigger">
+                        <Link to="/faq" onClick={closeSideMenu}>常見問題<FontAwesomeIcon icon={faCaretDown}/></Link>
+                        <a className="mobile-dropdown-trigger" onClick={() => openMobileDropdownMenu(faqDropdown)}><FontAwesomeIcon icon={faCaretDown}/></a>
+                        <ul id="faq-dropdown" ref={faqDropdown} className="dropdown-menu">
+                            <li className="dropdown-link"><Link to="/effective-communication" onClick={closeSideMenu}>有效對話</Link></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

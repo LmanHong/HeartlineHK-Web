@@ -8,7 +8,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 const VolunteerRecruit = () =>{
 
-    const deadlineDates = ["2021-11-19", "2021-11-20", "2021-11-21"];
+    const deadlineDates = ["2022-06-12", "2022-06-17", "2022-06-18"];
 
     const [deadlineDay, setDeadlineDay] = useState(1);
     const [deadlineMonth, setDeadlineMonth] = useState(1);
@@ -53,7 +53,7 @@ const VolunteerRecruit = () =>{
             <div className="apply-deadline-container">
                 <h1>最新一輪簡介會</h1>
                 <FlipCountdown day={deadlineDay} month={deadlineMonth} year={deadlineYear}></FlipCountdown>
-                <a href="https://forms.gle/dPfgxtihJm6VP9BM7">按此報名</a>
+                <a href="https://forms.gle/ApZjnMrvGfUzfk4j7">按此報名</a>
             </div>
             <div className="responsibility-container">
                 <h1 className="sub-title">相關職責</h1>

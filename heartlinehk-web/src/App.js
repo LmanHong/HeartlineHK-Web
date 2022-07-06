@@ -13,6 +13,7 @@ import LatestFeed from './pages/LatestFeed.js';
 import Chatroom from "./pages/Chatroom.js";
 import UnderConstruction from './pages/UnderConstruction.js';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import EffectiveCommunication from './pages/EffectiveCommunication.js';
 
 function App() {
 
@@ -29,10 +30,10 @@ function App() {
             <SupportUs/>
           </Route>
           <Route exact path="/donation">
-            <UnderConstruction/>
+            <UnderConstruction />
           </Route>
           <Route exact path="/donation-success">
-            <DonationSuccess/>
+            <UnderConstruction />
           </Route>
           <Route exact path="/volunteer-recruit">
             <VolunteerRecruit/>
@@ -51,6 +52,9 @@ function App() {
           </Route>
           <Route exact path="/under-construction">
             <UnderConstruction/>
+          </Route>
+          <Route exact path="/effective-communication">
+            <EffectiveCommunication />
           </Route>
           <Route path="/">
             <Home/>

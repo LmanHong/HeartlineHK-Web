@@ -1,0 +1,135 @@
+.effective-communication{
+    position: relative;
+    width: 100vw;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.effective-communication .main-text{
+    position: relative;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto;
+    color: var(--mainblue);
+}
+
+.effective-communication .main-text h1{
+    margin: 0 auto;
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.5rem;
+    font-weight: normal;
+    text-align: center;
+    background-image: url('../img/Pages/7\ 相關服務/a_140x40.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.effective-communication .main-text p{
+    margin: 50px auto;
+    font-size: 1.3rem;
+    font-family: 'GenJyuuGothic';
+    line-height: 1.6;
+    text-align: center;
+    height: fit-content;
+}
+
+.effective-communication .table-container::before{
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    top: -3rem;
+    background-image: url('../img/Pages/9\ 如何構建有效的對話/a_500x500.png');
+    background-size: contain;
+    background-position: center;
+    width: 8rem;
+    height: 8rem;
+}
+
+@media screen and (max-width: 576px) {
+    .effective-communication .table-container{
+        padding-bottom: 8rem;
+    }
+
+    .effective-communication .table-container.table-container::before{
+        bottom: 0;
+        top:unset;
+    }
+}
+
+.effective-communication table.compare-table{
+    display: block;
+    position: relative;
+    height: fit-content;
+    margin: 0;
+    color: var(--mainblue);
+    font-family: 'GenJyuuGothic';
+    border-collapse: collapse;
+}
+
+.effective-communication table.compare-table caption{
+    font-family: 'TanukiPermanentMarker';
+    font-size: 1.8em;
+    text-align: start;
+    padding: 2rem 0;
+}
+
+.effective-communication table.compare-table th{
+    width: 50%;
+    height: fit-content;
+    border-radius: 0.3em;
+}
+
+.effective-communication table.compare-table td{
+    padding: 1rem 0;
+}
+
+.effective-communication table.compare-table tr{
+    border-bottom: 0.1rem solid rgba(0,0,0,0.1);
+    border-radius: 0.05rem;
+    border-collapse: collapse;
+}
+
+.effective-communication .suggestions-container{
+    position: relative;
+    display: grid;
+    grid-template-columns: 18.75rem calc(100% - 18.75rem);
+    grid-template-rows: auto auto;
+    width: 80%;
+    max-width: 960px;
+    height: fit-content;
+    margin: 0 auto 3rem auto;
+    color: var(--mainblue);
+    align-items: center;
+}
+
+.effective-communication .suggestions-container h2{
+    grid-row: 1 / span 1;
+    grid-column: 1 / span 2;
+    font-size: 1.8rem;
+    font-weight: normal;
+}
+
+.effective-communication .suggestions-container ul{
+    font-family: 'GenJyuuGothic';
+}
+
+.effective-communication .suggestions-container img{
+    width: 18.75rem;
+    height: 18.75rem;
+}
+
+@media screen and (max-width: 576px) {
+    .effective-communication .suggestions-container {
+        grid-template-columns: 9.375rem calc(100% - 9.75rem);
+    }
+
+    .effective-communication .suggestions-container img{
+        width: 9.375rem;
+        height: 9.375rem;
+    }
+}
+

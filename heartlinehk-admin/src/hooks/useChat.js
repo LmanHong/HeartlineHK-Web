@@ -140,7 +140,7 @@ export function useChat(currentUser){
     const startNewChat = async ()=>{
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.currentClient !== null) throw new HeartlineNotFoundError("Current Client is not null!");
             else if (chatQueue.length <= 0) throw new HeartlineNotFoundError("No available client in chat queue!");
@@ -184,7 +184,7 @@ export function useChat(currentUser){
     const endChat = async ()=>{
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.currentClient === null) throw new HeartlineNotFoundError("Current Client is null!");
             else{
@@ -252,7 +252,7 @@ export function useChat(currentUser){
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
             else if (msg === null || msg === undefined || typeof msg !== 'string' || msg === "") throw new HeartlineValidationError("Invalid message!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.currentClient === null) throw new HeartlineNotFoundError("Current Client is null!");
             else if (state.assignedStatus === ASSIGNED_STATUS.CLIENT_LEFT) throw new HeartlineNotFoundError("Client already left!");
@@ -285,7 +285,7 @@ export function useChat(currentUser){
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
             else if (targetUid === null || targetUid === undefined || typeof targetUid !== 'string' || targetUid === "") throw new HeartlineValidationError("Invalid Target Volunteer ID!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.currentClient === null) throw new HeartlineNotFoundError("Current Client is null!");
             else if (state.assignedStatus === ASSIGNED_STATUS.CLIENT_LEFT) throw new HeartlineNotFoundError("Client already left!");
@@ -324,7 +324,7 @@ export function useChat(currentUser){
     const cancelOutgoingTransferRequest = async ()=>{
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.outgoingTransferRequest === null) throw new HeartlineNotFoundError("Outgoing transfer request is null!");
             else{
@@ -350,7 +350,7 @@ export function useChat(currentUser){
         try{
             if (state.isStartingChat || state.isEndingChat || state.isSendingMsg || state.isSendingRequest || state.isResolvingRequest) throw new HeartlineDuplicatedExecutionError("Another Chat action is ongoing!");
             else if (decision === null || decision === undefined || (decision !== REQUEST_STATUS.ACCEPTED && decision !== REQUEST_STATUS.REJECTED)) throw new HeartlineValidationError("Invalid request decision!");
-            else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading || lLoading || tLoading || dLoading || trLoading || oLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (currentUser === null || currentUser === undefined) throw new HeartlineNotFoundError("Current Volunteer is not set!");
             else if (state.incomingTransferRequest === null) throw new HeartlineNotFoundError("Incoming transfer request is null!");
             else{

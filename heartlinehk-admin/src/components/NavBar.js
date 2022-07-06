@@ -1,20 +1,44 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { Avatar } from '@mui/material';
 import logo from "../img/logo/logo_80x80.png";
 import "../styles/NavBar.css";
-import firebase from "firebase/compat/app";
-import "firebase/compat/auth";
-import "firebase/compat/database";
-import { useDatabase } from "../hooks/useDatabase";
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref } from "firebase/database";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useObjectVal } from "react-firebase-hooks/database";
 
 const NavBar = (props) =>{
 
+    const firebaseAuth = getAuth();
+    const firebaseDB = getDatabase();
+    const [currentUser] = useAuthState(firebaseAuth);
+    const [supervisors] = useObjectVal(ref(firebaseDB, 'supervisors'));
+    const [preferredNames] = useObjectVal(ref(firebaseDB, 'preferred_names'));
+
     const menuNav = useRef();
     const navBackgroundDiv = useRef();
-    const [isSupervisor, setIsSupervisor] = useState(false);
-    const [preferredName, setPreferredName] = useState(null);
-    const [supervisorsRef, sLoading, sError, supervisors] = useDatabase('supervisors');
-    const [preferredNamesRef, pLoading, pError, preferredNames] = useDatabase('preferred_names');
+
+    const isSupervisor = useMemo(() => {
+        if (currentUser && supervisors){
+            return (supervisors[currentUser.uid] !== undefined)
+        }
+        return false;
+    }, [supervisors, currentUser]);
+    const preferredName = useMemo(() => {
+        if (currentUser && preferredNames && preferredNames[currentUser.uid]){
+            const userPreferredName = preferredNames[currentUser.uid];
+            return userPreferredName["firstName"] + " "+ userPreferredName["lastName"];
+        }
+        return "";
+    }, [preferredNames, currentUser]);
+    const avatarBgColor = useMemo(() => "#"+Math.floor(Math.random()*16777215).toString(16), [])
+    const avatarAbbrev = useMemo(() => {
+        if (preferredName){
+            return preferredName.split(' ')[0][0] + preferredName.split(' ')[1][0];
+        }
+        return "";
+    }, [preferredName])
 
     const openNav = ()=>{
         menuNav.current.style.transitionDuration = "0.5s";
@@ -28,14 +52,6 @@ const NavBar = (props) =>{
         navBackgroundDiv.current.classList.remove("opened");
     }
 
-    useEffect(()=>{
-        if (supervisors && props.currentUser && supervisors[props.currentUser.uid]) setIsSupervisor(true);
-        else setIsSupervisor(false);
-
-        if (preferredNames && props.currentUser && preferredNames[props.currentUser.uid]) setPreferredName(preferredNames[props.currentUser.uid]['firstName']+" "+preferredNames[props.currentUser.uid]['lastName']);
-        else setPreferredName("");
-
-    }, [props.currentUser, supervisors, preferredNames]);
 
     return (
         <>
@@ -72,7 +88,7 @@ const NavBar = (props) =>{
 
             </ul>
             <div className="nav-user" onClick={props.handleLogout}>
-                <img src="https://t4.ftcdn.net/jpg/02/34/61/79/360_F_234617921_p1AGQkGyEl8CSzwuUI74ljn6IZXqMUf2.jpg" alt="" />
+                <Avatar sx={{ bgcolor: avatarBgColor, width: '75%', height: '75%', mx: 'auto' }}>{avatarAbbrev}</Avatar>
                 <a className="username">{preferredName}</a>
             </div>
         </nav>

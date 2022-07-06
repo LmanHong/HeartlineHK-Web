@@ -159,6 +159,7 @@
 }
 
 .chatroom .chat-container .messages-container .message.right span{
+    color: rgba(240, 240, 240, 0.5);
     text-align: end;
 }
 
@@ -167,6 +168,7 @@
 }
 
 .chatroom .chat-container .messages-container .message.right{
+    color: rgba(240, 240, 240, 1);
     background-color: var(--honolulublue);
     align-self: flex-end;
 }

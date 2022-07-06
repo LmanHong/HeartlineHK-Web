@@ -17,7 +17,6 @@ const REDUCER_ACTIONS = {
 
 // Constant for database reducer initial state
 const initialState = {
-    loading: true,
     error: null,
     values: null
 }
@@ -58,7 +57,6 @@ export function useDatabase(refPath){
     const auth = getAuth();
 
     const [state, dispatch] = useReducer(databaseReducer, initialState);
-    //const [databaseRefPath, setDatabaseRefPath] = useState(null);
     const [databaseRef, setDatabaseRef] = useState(null);
 
     const onValueHandler = (snapshot)=>{
@@ -76,7 +74,7 @@ export function useDatabase(refPath){
             const newDatabaseRef = ref(database, tmpRefPath);
 
             //Detach listeners if the database reference has updated
-            if (databaseRef != null) off(databaseRef, 'value');
+            if (databaseRef !== null) off(databaseRef, 'value');
 
             //Listen for onValue event at the database reference
             setDatabaseRef(newDatabaseRef);
@@ -85,9 +83,9 @@ export function useDatabase(refPath){
         }else dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: "No Database Object!"}});
 
         return ()=>{
-            if (database && databaseRef != null) off(databaseRef, 'value');
+            if (database && databaseRef !== null) off(databaseRef, 'value');
         };
-    }, [refPath, auth.currentUser]);
+    }, [refPath, database, auth.currentUser]);
 
     return [databaseRef, state.loading, state.error, state.values]
 };

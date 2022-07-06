@@ -39,3 +39,10 @@ export class HeartlineNotModifiedError extends Error{
         this.name = "HeartlineNotModifiedError";
     }
 }
+
+export class HeartlineNotSupportedError extends Error{
+    constructor(message="Not Supported!"){
+        super(message);
+        this.name = "HeartlineNotSupportedError";
+    }
+}

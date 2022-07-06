@@ -417,26 +417,28 @@ ul.menu-links{
 /* Dropdown menu styles */
 
 .dropdown-trigger:hover .dropdown-menu{
-    opacity: 1;
+    opacity: 1!important;
 }
 
-ul.dropdown-menu{
+#support-us-dropdown.dropdown-menu,
+#faq-dropdown.dropdown-menu{
     position: absolute;
-    left: 10vw; 
-    top: calc(20vh + 3em);
+    /*left: 10vw; 
+    top: calc(20vh + 3em); */
     list-style: none;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
 }
 
 @media screen and (max-width: 610px) {
-    ul.dropdown-menu{
+    #support-us-dropdown.dropdown-menu{
         left: 0;
     }
 }
 
 @media screen and (max-width: 576px){
-    ul.dropdown-menu{
+    #support-us-dropdown.dropdown-menu,
+    #faq-dropdown.dropdown-menu{
         position: relative;
         top: 0;
         height: 0;
@@ -445,8 +447,12 @@ ul.dropdown-menu{
         overflow: hidden;
     }
 
-    ul.dropdown-menu.opened{
+    #support-us-dropdown.dropdown-menu.opened{
         height: calc(6rem + 30px);
+    }
+
+    #faq-dropdown.dropdown-menu.opened{
+        height: calc(2rem + 10px);
     }
 }
 

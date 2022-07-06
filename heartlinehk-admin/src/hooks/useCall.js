@@ -120,7 +120,7 @@ export function useCall(currentUser){
     const startNewCall = async ()=>{
         try{
             if (tLoading) throw new HeartlineNotReadyError("Twilio is still loading!");
-            else if (qLoading || aLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (tError) throw new Error(tError);
             else if (phoneNumber == null) throw new HeartlineNotFoundError("No Phone Number in Twilio Worker!");
             else if (callQueue.length <= 0 ) throw new HeartlineNotFoundError("No available client in call queue!");
@@ -217,7 +217,7 @@ export function useCall(currentUser){
         state.currentClient, 
         state.assignedStatus, 
         state.timeElapsed, 
-        (tLoading || qLoading || aLoading || state.waitingTimer != null), 
+        (tLoading || state.waitingTimer != null), 
         (tError || qError || aError),
         startNewCall,
         endCall

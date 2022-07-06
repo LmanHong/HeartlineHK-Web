@@ -4,14 +4,11 @@ import DropdownModal from "../components/DropdownModal.js";
 import NoticeModal from "../components/NoticeModal.js";
 import Picker from "emoji-picker-react";
 import "../styles/Chatroom.css";
-import newClientSound from "../sound/pristine-609.mp3"
-import firebase from "firebase/compat/app";
 import { getDatabase, child, runTransaction, ref, update, set, get } from 'firebase/database';
 import "firebase/compat/auth";
 import "firebase/compat/database";
 import "firebase/compat/functions";
 import { useEffect, useState, useRef } from "react";
-import { useDatabaseList, SORT_ORDERS } from '../hooks/useDatabase.js';
 import { useCall, ASSIGNED_STATUS } from "../hooks/useCall.js";
 import { REQUEST_STATUS, useChat } from "../hooks/useChat.js";
 

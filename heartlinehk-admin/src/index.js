@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+//import App from './App';
+import NewApp from './NewApp';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, connectDatabaseEmulator } from 'firebase/database';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
@@ -21,6 +22,7 @@ var firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+
 if (window.location.hostname === "localhost"){
   connectDatabaseEmulator(getDatabase(), "localhost", 9000);
   connectAuthEmulator(getAuth(), "http://localhost:9099");
@@ -28,9 +30,10 @@ if (window.location.hostname === "localhost"){
 }
 
 
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <NewApp />
   </React.StrictMode>,
   document.getElementById('root')
 );

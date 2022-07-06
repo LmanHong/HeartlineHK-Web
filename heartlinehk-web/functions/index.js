@@ -2,11 +2,16 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
-const stripe = require('stripe')("sk_test_51KDUjmKGhlOCSkyzuCyurJKy2uory6ised3gIb9gQUO02vDO1NzHpN4jsoH2oe2QVGK2VZNc7x24LVp0vXhzfusl00eVDOGWD0");
+
+const stripeProductionKey = "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"
+const stripeTestKey = "sk_test_51KDUjmKGhlOCSkyzuCyurJKy2uory6ised3gIb9gQUO02vDO1NzHpN4jsoH2oe2QVGK2VZNc7x24LVp0vXhzfusl00eVDOGWD0"
+
+const stripe = require('stripe')(stripeProductionKey);
 const twilio = require('twilio');
 const { ref } = require("firebase-functions/v1/database");
 const VoiceResponse = twilio.twiml.VoiceResponse;
 const taskrouter = twilio.jwt.taskrouter;
+const AccessToken = twilio.jwt.AccessToken;
 admin.initializeApp();
 
 const DEV_URL = "https://84de-218-102-144-7.ngrok.io";
@@ -46,6 +51,15 @@ const CALL_QUEUE_STATUS = {
 //   functions.logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+
+exports.deleteOnlineStatus = functions.database.ref('/online_status/{user_id}').onWrite((change, context) => {
+    console.log(change.after.val());
+    if (change.after.exists() && change.after.child('deviceCount').val() <= 0){
+        return change.after.ref.set(null);
+    }else{
+        return null;
+    }
+})
 
 const getAnonymousUsers = async (users=[], nextPageToken)=>{
     const result = await admin.auth().listUsers(1000, nextPageToken);
@@ -298,7 +312,7 @@ exports.requestChangePassword = functions.https.onCall(async (data, context)=>{
 
 // BELOW IS STRIPE FUNCTION
 
-/*
+
 exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
     const monthlyDonationPrices = {
         50: "price_1KG46yKGhlOCSkyzHWK6uMj4",
@@ -309,6 +323,8 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
     
     const donationType = data.donationType;
     const donationAmount = Number(data.donationAmount);
+
+    console.log(donationType, donationAmount);
 
     if (donationType == null || (donationType != "one-time" && donationType != "monthly")) throw new functions.https.HttpsError('invalid-argument', "Donation Type must either be one-time or monthly!");
     else if (Number.isNaN(donationAmount) || donationAmount < 50) throw new functions.https.HttpsError('invalid-argument', "Donation amount must be a number larger than 50!");
@@ -333,7 +349,7 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
 
     const sessionObject = {
         client_reference_id: referenceIdRef.key,
-        expires_at: Date.now() / 1000 + 1800,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
         line_items: [lineItem],
         mode: (donationType=="one-time"?"payment":"subscription"),
         payment_method_types: paymentMethods,
@@ -356,7 +372,7 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
     }
 
 });
-*/
+
 
 
 
@@ -753,4 +769,28 @@ exports.getTaskStatus = functions.https.onCall(async (data, context)=>{
     }catch(error){
         throw new functions.https.HttpsError('aborted', error.message);
     }
+});
+
+exports.generateToken = functions.https.onCall(async (data, context)=>{
+    const accountSid = functions.config().heartlinehk.twilioaccountsid;
+    const twimlAppSid = "AP3029d6ceb294b80fa642e3859bc18406";
+
+    const apiKey = process.env.TWILIO_API_KEY;
+    const secret = process.env.TWILIO_API_SECRET;
+
+    if (context.auth == null) throw new functions.https.HttpsError('unauthenticated', "Not logged in!");
+    const volunId = context.auth.uid;
+
+    const accessToken = new AccessToken(accountSid, apiKey, secret, { identity: volunId });
+    const voiceGrant = new AccessToken.VoiceGrant({
+        incomingAllow: true,
+        outgoingApplicationSid: twimlAppSid
+    });
+    accessToken.addGrant(voiceGrant);
+
+    res.send({
+        'volunId': volunId,
+        'token': accessToken.toJwt()
+    });
+
 });
