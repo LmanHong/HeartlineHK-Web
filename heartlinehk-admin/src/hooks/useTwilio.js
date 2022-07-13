@@ -103,9 +103,9 @@ const twilioReducer = (state, action)=>{
     };
 };
 
-export function useTwilio(){
+export function useTwilio(currentUser){
     
-    const [workerRef, wLoading, wError, workerSid ] = useDatabase(`twilio_workers/${getAuth().currentUser.uid}`);
+    const [workerRef, wLoading, wError, workerSid ] = useDatabase(`twilio_workers/${currentUser.uid}`);
     const functions = getFunctions(getApp(), 'us-central1');
     const updateWorkerActivity = httpsCallable(functions, 'updateWorkerActivity');      
     const updateTaskStatus = httpsCallable(functions, 'updateTaskStatus');

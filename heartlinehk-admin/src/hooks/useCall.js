@@ -95,7 +95,7 @@ const callReducer = (state, action)=>{
 };
 
 export function useCall(currentUser){
-    const [currentActivity, phoneNumber, tLoading, tError, updateActivity, updateTask] = useTwilio();
+    const [currentActivity, phoneNumber, tLoading, tError, updateActivity, updateTask] = useTwilio(currentUser);
     const [callQueueRef, qLoading, qError, callQueue] = useDatabaseList('call_queue', 'time', false, SORT_ORDERS.ASCENDING);
     const [callAssignedRef, aLoading, aError, callAssigned] = useDatabase('call_assigned');
     const [state, dispatch] = useReducer(callReducer, initialState);

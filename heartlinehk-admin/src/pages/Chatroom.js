@@ -273,7 +273,7 @@ const Chatroom = (props) =>{
         console.log(notiPermission);
         
         while (callIdx < callQueue.length || chatIdx < chatQueue.length){
-            if (chatIdx >= chatQueue.length || (callIdx < callQueue && callQueue[callIdx]['key']['time'] < chatQueue[chatIdx]['time'])){
+            if (chatIdx >= chatQueue.length || (callIdx < callQueue && callQueue[callIdx]['key']['time'] < chatQueue[chatIdx].val()['time'])){
                 if (notiPermission && callNoti && !newCallNoti){
                     let isUserExist = false;
                     for (let i=0; i<uniQueue.length; i++) if (uniQueue[i].userId === callQueue[callIdx]['key']){
@@ -291,16 +291,16 @@ const Chatroom = (props) =>{
             }else{
                 if (notiPermission && chatNoti && !newChatNoti){
                     let isUserExist = false;
-                    for (let i=0; i<uniQueue.length; i++) if (uniQueue[i].userId === chatQueue[chatIdx]['key']){
+                    for (let i=0; i<uniQueue.length; i++) if (uniQueue[i].userId === chatQueue[chatIdx].key){
                         isUserExist = true;
                         break;
                     }
                     if (!isUserExist) newChatNoti = true;
                 }
                 tmpUniQueue.push({
-                    'userId': chatQueue[chatIdx]['key'],
-                    'time': chatQueue[chatIdx]['value']['time'],
-                    'status': chatQueue[chatIdx]['value']['status'],
+                    'userId': chatQueue[chatIdx].key,
+                    'time': chatQueue[chatIdx].val()['time'],
+                    'status': chatQueue[chatIdx].val()['status'],
                     'type': 'chat-client'
                 });
                 chatIdx++;
@@ -384,9 +384,9 @@ const Chatroom = (props) =>{
                     <div ref={messageContainerDiv} className="messages-container">
                         {chatLog.map((val, idx)=>{
                             return(
-                                <p key={val['key']} className={"message "+(val['value']['spc']?"special":(chatCurrentClient === null?(val['value']['uid'] === props.currentUser.uid?"right":"left"):(val['value']['uid'] === chatCurrentClient?"left":"right")))}>
-                                    {(val['value']['msg']?val['value']['msg']:(specialChatMessages[val['value']['spc']]?specialChatMessages[val['value']['spc']]:specialChatMessages['clientId']))}
-                                    <span>{getFormattedDateString(val['value']['time'])}</span>
+                                <p key={val.key} className={"message "+(val.val()['spc']?"special":(chatCurrentClient === null?(val.val()['uid'] === props.currentUser.uid?"right":"left"):(val.val()['uid'] === chatCurrentClient?"left":"right")))}>
+                                    {(val.val()['msg']?val.val()['msg']:(specialChatMessages[val.val()['spc']]?specialChatMessages[val.val()['spc']]:specialChatMessages['clientId']))}
+                                    <span>{getFormattedDateString(val.val()['time'])}</span>
                                 </p>
                             );
                         })}

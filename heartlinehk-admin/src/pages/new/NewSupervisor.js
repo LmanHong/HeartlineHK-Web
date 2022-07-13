@@ -73,10 +73,10 @@ const Supervisor = () => {
     }, [onlineStatus, chatAssigned, callAssigned, preferredNames]);
     const [currentVolun, setCurrentVolun] = useState(null);
     const currentClient = useMemo(() => 
-        (currentVolun ? onlineVoluns.filter(value => value['volunId'] === currentVolun)[0]['clientId'] : null)
+        (currentVolun && onlineVoluns.length > 0 ? onlineVoluns.filter(value => value['volunId'] === currentVolun)[0]['clientId'] : null)
     , [onlineVoluns, currentVolun]);
     const currentMode = useMemo(() => 
-        (currentVolun ? onlineVoluns.filter(value => value['volunId'] === currentVolun)[0]['type'] : null)
+        (currentVolun && onlineVoluns.length > 0 ? onlineVoluns.filter(value => value['volunId'] === currentVolun)[0]['type'] : null)
     , [onlineVoluns, currentVolun]);
     const selectedChatLog = useMemo(() => {
         let tmpChatLog = []
