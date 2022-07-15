@@ -52,14 +52,14 @@ const CALL_QUEUE_STATUS = {
 //   response.send("Hello from Firebase!");
 // });
 
-exports.deleteOnlineStatus = functions.database.ref('/online_status/{user_id}').onWrite((change, context) => {
-    console.log(change.after.val());
-    if (change.after.exists() && change.after.child('deviceCount').val() <= 0){
-        return change.after.ref.set(null);
-    }else{
-        return null;
-    }
-})
+// exports.deleteOnlineStatus = functions.database.ref('/online_status/{user_id}').onWrite((change, context) => {
+//     console.log(change.after.val());
+//     if (change.after.exists() && change.after.child('deviceCount').val() <= 0){
+//         return change.after.ref.set(null);
+//     }else{
+//         return null;
+//     }
+// });
 
 const getAnonymousUsers = async (users=[], nextPageToken)=>{
     const result = await admin.auth().listUsers(1000, nextPageToken);

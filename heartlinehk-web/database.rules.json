@@ -128,7 +128,9 @@
         "online_status": {
             "$user_id": {
                 ".write": "auth.uid != null && auth.provider === 'password' && auth.uid === $user_id",
-                ".validate": "newData.hasChildren(['time', 'deviceCount'])"
+                "$machine_uid": {
+                    ".validate": "(newData.isNumber() && newData.val() <= now) || !newData.exists()"
+                }
             },
             ".read": "auth.uid != null && auth.provider === 'password'",
             ".write": false

@@ -229,6 +229,7 @@ const Chatroom = (props) =>{
 
     //Function for opening the transfer chat modal
     const openTransferChatModal = async ()=>{
+        console.log("OPENED!");
         const modalContainerDiv = document.getElementById("transferchat-modal");
         modalContainerDiv.classList.add("opened");
     }

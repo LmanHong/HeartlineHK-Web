@@ -1,9 +1,11 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { ref, getDatabase, onDisconnect, serverTimestamp, increment, set } from "firebase/database";
+import { ref, getDatabase, onDisconnect, serverTimestamp, increment, set, push, remove } from "firebase/database";
 import { browserSessionPersistence, getAuth, setPersistence, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { useCallback, useEffect, lazy, Suspense } from "react";
 import { useObjectVal } from "react-firebase-hooks/database";
+import { v4 as uuidv4 } from 'uuid';
+import { useLocalStorage } from 'react-use';
 
 const Login = lazy(() => import('./pages/Login'));
 const Supervisor = lazy(() => import('./pages/new/NewSupervisor'));
@@ -18,6 +20,7 @@ const App = () => {
     const firebaseDB = getDatabase();
     const [currentUser, userLoading] = useAuthState(firebaseAuth);
     const [isConnected, connectedLoading] = useObjectVal(ref(firebaseDB, '.info/connected'));
+    const [machineUid, setMachineUid, removeMachineUid] = useLocalStorage('heartlinehk-admin:machineUid', uuidv4());
 
     const handleLogin = useCallback(async (e) => {
         e.preventDefault();
@@ -34,10 +37,11 @@ const App = () => {
 
     const handleLogout = useCallback(async () => {
         try{
-            await set(ref(firebaseDB, `online_status/${currentUser.uid}`), {
-                'time': serverTimestamp(),
-                'deviceCount': increment(-1)
-            });
+            // await set(ref(firebaseDB, `online_status/${currentUser.uid}`), {
+            //     'time': serverTimestamp(),
+            //     'deviceCount': increment(-1)
+            // });
+            await remove(ref(firebaseDB, `online_status/${currentUser.uid}/${machineUid}`));
             await signOut(firebaseAuth);
         }catch(error){
             console.error(error.message);
@@ -58,14 +62,16 @@ const App = () => {
     useEffect(() => {
         if (!connectedLoading && currentUser){
             if (isConnected) {
-                set(ref(firebaseDB, `online_status/${currentUser.uid}`), {
-                    'time': serverTimestamp(),
-                    'deviceCount': increment(1)
-                });
-                onDisconnect(ref(firebaseDB, `online_status/${currentUser.uid}`)).set({
-                    'time': serverTimestamp(),
-                    'deviceCount': increment(-1)
-                });
+                set(ref(firebaseDB, `online_status/${currentUser.uid}/${machineUid}`), serverTimestamp());
+                onDisconnect(ref(firebaseDB, `online_status/${currentUser.uid}/${machineUid}`)).remove();
+                // set(ref(firebaseDB, `online_status/${currentUser.uid}`), {
+                //     'time': serverTimestamp(),
+                //     'deviceCount': increment(1)
+                // });
+                // onDisconnect(ref(firebaseDB, `online_status/${currentUser.uid}`)).set({
+                //     'time': serverTimestamp(),
+                //     'deviceCount': increment(-1)
+                // });
             }
         }
     }, [isConnected, connectedLoading, currentUser]);
