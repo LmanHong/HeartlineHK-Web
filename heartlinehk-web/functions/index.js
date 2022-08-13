@@ -2,11 +2,16 @@ const functions = require("firebase-functions");
 const admin = require('firebase-admin');
 const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
-const stripe = require('stripe')("sk_test_51KDUjmKGhlOCSkyzuCyurJKy2uory6ised3gIb9gQUO02vDO1NzHpN4jsoH2oe2QVGK2VZNc7x24LVp0vXhzfusl00eVDOGWD0");
+
+const stripeProductionKey = "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"
+const stripeTestKey = "sk_test_51KDUjmKGhlOCSkyzuCyurJKy2uory6ised3gIb9gQUO02vDO1NzHpN4jsoH2oe2QVGK2VZNc7x24LVp0vXhzfusl00eVDOGWD0"
+
+const stripe = require('stripe')(stripeProductionKey);
 const twilio = require('twilio');
 const { ref } = require("firebase-functions/v1/database");
 const VoiceResponse = twilio.twiml.VoiceResponse;
 const taskrouter = twilio.jwt.taskrouter;
+const AccessToken = twilio.jwt.AccessToken;
 admin.initializeApp();
 
 const DEV_URL = "https://84de-218-102-144-7.ngrok.io";
@@ -45,6 +50,15 @@ const CALL_QUEUE_STATUS = {
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //   functions.logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
+// });
+
+// exports.deleteOnlineStatus = functions.database.ref('/online_status/{user_id}').onWrite((change, context) => {
+//     console.log(change.after.val());
+//     if (change.after.exists() && change.after.child('deviceCount').val() <= 0){
+//         return change.after.ref.set(null);
+//     }else{
+//         return null;
+//     }
 // });
 
 const getAnonymousUsers = async (users=[], nextPageToken)=>{
@@ -298,30 +312,37 @@ exports.requestChangePassword = functions.https.onCall(async (data, context)=>{
 
 // BELOW IS STRIPE FUNCTION
 
-/*
+
 exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
-    const monthlyDonationPrices = {
+    const monthlyDonationPricesTest = {
         50: "price_1KG46yKGhlOCSkyzHWK6uMj4",
         100: "price_1KG48JKGhlOCSkyzlcegIcxs",
         200: "price_1KG48TKGhlOCSkyzqv0DWM9X",
         500: "price_1KG48cKGhlOCSkyzlrxskNsV"
     }
+
+    const monthlyDonationPricesProduction = {
+        50: "price_1LGczXKGhlOCSkyzbZ4txT1h",
+        100: "price_1LGcxKKGhlOCSkyzyW3tJ5DU",
+        200: "price_1LGcx7KGhlOCSkyzkXuS3oG0",
+        500: "price_1LGcwlKGhlOCSkyzQ48mrNbn"
+    }
     
     const donationType = data.donationType;
     const donationAmount = Number(data.donationAmount);
 
-    if (donationType == null || (donationType != "one-time" && donationType != "monthly")) throw new functions.https.HttpsError('invalid-argument', "Donation Type must either be one-time or monthly!");
-    else if (Number.isNaN(donationAmount) || donationAmount < 50) throw new functions.https.HttpsError('invalid-argument', "Donation amount must be a number larger than 50!");
+    console.log(donationType, donationAmount);
 
-    const referenceIdRef = await admin.database().ref('stripe_records').push();
-    console.log(referenceIdRef.key);
+    if (donationType == null || (donationType != "one-time" && donationType != "monthly")) throw new functions.https.HttpsError('invalid-argument', "Donation Type must either be one-time or monthly!");
+    else if (Number.isNaN(donationAmount) || donationAmount < 30) throw new functions.https.HttpsError('invalid-argument', "Donation amount must be a number larger than 30!");
+    else if (donationType == 'monthly' && !monthlyDonationPricesProduction[donationAmount]) throw new functions.https.HttpsError('invalid-argument', "Monthly donation amount must be either 50, 100, 200 or 500!");
 
     const paymentMethods = ["card"];
     let lineItem = {
         quantity: 1
     };
     if (donationType == "one-time"){
-        paymentMethods.push("wechat_pay");
+        //paymentMethods.push("wechat_pay");
         lineItem.price_data = {
             currency: "hkd",
             product_data: {
@@ -329,11 +350,10 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
             },
             unit_amount_decimal: donationAmount*100 
         }
-    }else lineItem.price = monthlyDonationPrices[donationAmount];
+    }else lineItem.price = monthlyDonationPricesProduction[donationAmount];
 
     const sessionObject = {
-        client_reference_id: referenceIdRef.key,
-        expires_at: Date.now() / 1000 + 1800,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
         line_items: [lineItem],
         mode: (donationType=="one-time"?"payment":"subscription"),
         payment_method_types: paymentMethods,
@@ -342,21 +362,19 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
                 client: "web"
             }
         },
-        success_url: `http://localhost:3000/donation-success?reference_id=${referenceIdRef.key}`,
-        cancel_url: 'http://localhost:3000/donation'
+        success_url: `https://heartlinehk.com/donation-success`,
+        cancel_url: 'https://heartlinehk.com/donation'
     };
     if (donationType == "one-time") sessionObject.submit_type = "donate";
 
     const session = await stripe.checkout.sessions.create(sessionObject);
-    referenceIdRef.set(session.id);
     console.log(session);
 
     return {
         "redirectUrl": session.url
     }
-
 });
-*/
+
 
 
 
@@ -753,4 +771,28 @@ exports.getTaskStatus = functions.https.onCall(async (data, context)=>{
     }catch(error){
         throw new functions.https.HttpsError('aborted', error.message);
     }
+});
+
+exports.generateToken = functions.https.onCall(async (data, context)=>{
+    const accountSid = functions.config().heartlinehk.twilioaccountsid;
+    const twimlAppSid = "AP3029d6ceb294b80fa642e3859bc18406";
+
+    const apiKey = process.env.TWILIO_API_KEY;
+    const secret = process.env.TWILIO_API_SECRET;
+
+    if (context.auth == null) throw new functions.https.HttpsError('unauthenticated', "Not logged in!");
+    const volunId = context.auth.uid;
+
+    const accessToken = new AccessToken(accountSid, apiKey, secret, { identity: volunId });
+    const voiceGrant = new AccessToken.VoiceGrant({
+        incomingAllow: true,
+        outgoingApplicationSid: twimlAppSid
+    });
+    accessToken.addGrant(voiceGrant);
+
+    res.send({
+        'volunId': volunId,
+        'token': accessToken.toJwt()
+    });
+
 });

@@ -1,8 +1,10 @@
 import { getFunctions, httpsCallable } from "firebase/functions";
 import { getAuth  } from "firebase/auth";
+import { Device } from "@twilio/voice-sdk";
 import { useEffect, useReducer, useState } from "react";
 import { useDatabase } from "./useDatabase";
 import { getApp } from "firebase/app";
+import { HeartlineNotFoundError } from "../misc/HeartlineError";
 
 export const ACTIVITY_SID = {
     OFFLINE: "WAc987bc93f4348a726633367204d10a0e",
@@ -22,6 +24,9 @@ export const TASK_STATUS = {
 };
 
 const REDUCER_ACTIONS = {
+    UPDATE_DEVICE: "update-device",
+    UPDATE_TOKEN: "update-token",
+    UPDATE_ONGOING_CALL: "update-ongoing-call",
     UPDATE_ACTIVITY: "update-activity",
     UPDATE_TASK: "update-task",
     UPDATE_PHONE: "update-phone",
@@ -32,6 +37,9 @@ const REDUCER_ACTIONS = {
 const initialState = {
     loading: true,
     error: null,
+    token: null,
+    device: null,
+    ongoingCall: null,
     currentActivity: ACTIVITY_SID.OFFLINE,
     phoneNumber: null
 };
@@ -49,6 +57,27 @@ const twilioReducer = (state, action)=>{
                 loading: false,
                 error: action.payload.error
             };
+        case REDUCER_ACTIONS.UPDATE_TOKEN:
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                token: action.payload.token
+            };
+        case REDUCER_ACTIONS.UPDATE_DEVICE:
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                device: action.payload.device
+            };
+        case REDUCER_ACTIONS.UPDATE_ONGOING_CALL:
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                ongoingCall: action.payload.call
+            }
         case REDUCER_ACTIONS.UPDATE_ACTIVITY:
             return {
                 ...state,
@@ -74,14 +103,15 @@ const twilioReducer = (state, action)=>{
     };
 };
 
-export function useTwilio(){
+export function useTwilio(currentUser){
     
-    const [workerRef, wLoading, wError, workerSid ] = useDatabase(`twilio_workers/${getAuth().currentUser.uid}`);
+    const [workerRef, wLoading, wError, workerSid ] = useDatabase(`twilio_workers/${currentUser.uid}`);
     const functions = getFunctions(getApp(), 'us-central1');
     const updateWorkerActivity = httpsCallable(functions, 'updateWorkerActivity');      
     const updateTaskStatus = httpsCallable(functions, 'updateTaskStatus');
     const getWorkerActivity = httpsCallable(functions, 'getWorkerActivity');
     const getTaskStatus = httpsCallable(functions, 'getTaskStatus');
+    const generateToken = httpsCallable(functions, 'generateToken');
     
     const [state, dispatch] = useReducer(twilioReducer, initialState);
 
@@ -152,6 +182,40 @@ export function useTwilio(){
         }
     }
 
+    
+    const handleDeviceIncomingCall = (call)=>{
+        dispatch({type: REDUCER_ACTIONS.UPDATE_ONGOING_CALL, payload: {call: call}});
+    }
+
+    const handleDeviceError = (twilioError, call)=>{
+        dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: twilioError.message}});
+    }
+
+    const handleDeviceRegistered = (device)=>{
+        console.log("Device Registered!");
+        dispatch({type: REDUCER_ACTIONS.UPDATE_DEVICE, payload: {device: device}});
+    }
+
+    const handleDeviceUnregistered = (call)=>{
+        console.log("Device Unregistered!");
+        dispatch({type: REDUCER_ACTIONS.UPDATE_DEVICE, payload: {device: null}});
+    }
+
+    const handleTokenWillExpire = async ()=>{
+        try{
+            if (!generateToken) throw new HeartlineNotFoundError("Generate Token unavailable!");
+            const res = generateToken();
+            console.log(res);
+            dispatch({type: REDUCER_ACTIONS.UPDATE_TOKEN, payload: {token: res.token}});
+            if (state.device instanceof Device) state.device.updateToken(res.token);
+        }catch(error){
+            console.error(error.message);
+            dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: error.message}});
+        }
+    }
+    
+
+
     useEffect(()=>{
         if (!functions) dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: "Cloud Functions unavailable!"}});
         else if (!updateWorkerActivity) dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: "Update worker activity unavailable!"}});
@@ -173,6 +237,32 @@ export function useTwilio(){
             ) updateWorkerActivity({activitySid: ACTIVITY_SID.OFFLINE});
         };
     }, [workerSid]);
+
+    // For initializing the Twilio Device
+    useEffect(async ()=>{
+        if (!generateToken) dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: "Generate Token unavailable!"}});
+        else if (workerSid === null) dispatch({type: REDUCER_ACTIONS.ERROR, payload: {error: "No Twilio Worker SID found!"}});
+        else {
+            const res = await generateToken();
+            dispatch({type: REDUCER_ACTIONS.UPDATE_TOKEN, payload: {token: res.token}});
+    
+            if (state.device instanceof Device) state.device.updateToken(res.token);
+            else{
+                const device = new Device(state.token, { edge: ["singapore", "tokyo"], closeProtection: "離開或重新載入會使通話中斷，你確定嗎？" });
+                device.on('registered', handleDeviceRegistered);
+                device.on('unregistered', handleDeviceUnregistered);
+                device.on('tokenWillExpire', handleTokenWillExpire);
+                device.on('error', handleDeviceError);
+                device.register();
+                dispatch({type: REDUCER_ACTIONS.UPDATE_DEVICE, payload: {device: device}});
+            }
+        }
+
+        return ()=>{
+            if (state.device !== null) state.device.destroy();
+        }
+    }, []);
+    
 
     return [state.currentActivity, state.phoneNumber, state.loading, state.error, updateActivity, updateTask];
 };

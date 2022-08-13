@@ -12,7 +12,6 @@ const Login = (props) =>{
                 <label htmlFor="login-pwd">Password:</label>
                 <input type="password" name="login-password" id="login-password" required />
                 <input type="submit" value="Login" name="login-submit" id="login-submit" />
-                <Link to="/reset-password" className="reset-password-link">Forgot Password? Reset Here.</Link>
             </form>
         </div>
     );

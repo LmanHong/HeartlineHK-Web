@@ -75,52 +75,78 @@ const Supervisor = (props)=>{
 
     useEffect(()=>{
         let tmpOnlineVoluns = [];
-        if (onlineTimes !== null){
-            let isCurrentVolunOnline = false;
-            let tmpCurrentClient = null;
-            let tmpCurrentMode = null;
-            console.log("inside!");
-            for (const volunId in onlineTimes){
-                if (currentVolun !== null && volunId === currentVolun) isCurrentVolunOnline = true;
-                
-                let isChatting = false;
-                for (const userId in chatAssigned){
-                    if (chatAssigned[userId] === volunId){
-                        isChatting = true;
-                        if (currentVolun !== null && volunId === currentVolun){
-                            tmpCurrentClient = userId;
-                            tmpCurrentMode = 'chat';
-                        }
-                        break;
-                    }
-                }
 
-                let isCalling = false;
-                for (const userId in callAssigned){
-                    console.log(callAssigned[userId]['volunId'], volunId, callAssigned[userId]['volunId'] == volunId);
-                    if (callAssigned[userId]['volunId'] === volunId){
-                        isCalling = true;
-                        if (currentVolun !== null && volunId === currentVolun){
-                            tmpCurrentClient = userId;
-                            tmpCurrentMode = 'call';
-                        }
-                        break;
-                    }
-                }
+        let tmpVolunMap = {};
+        let tmpCurrentClient = null;
+        let tmpCurrentMode = null;
 
-                let preferredName = (preferredNames === null || preferredNames[volunId] === null?volunId:preferredNames[volunId]['preferredName']);
-
-                tmpOnlineVoluns.push({ volunId, preferredName, isChatting, isCalling });
-            }
-
-            if (currentVolun !== null){
-                if (!isCurrentVolunOnline) setCurrentVolun(null);
-                setCurrentClient(tmpCurrentClient);
-                setCurrentMode(tmpCurrentMode);
+        for (const userId in chatAssigned){
+            let volunId = chatAssigned[userId];
+            if (!Object.keys(tmpVolunMap).includes(volunId)){
+                let volunPreferredName = (preferredNames === null || preferredNames[volunId] === null?volunId:preferredNames[volunId]['preferredName']);
+                tmpVolunMap[volunId] = {
+                    preferredName: volunPreferredName,
+                    isChatting: true,
+                    isCalling: false,
+                    client: userId
+                };
+            }else{
+                tmpVolunMap[volunId]['isChatting'] = true;
+                tmpVolunMap[volunId]['client'] = userId;
             }
         }
+
+        for (const userId in callAssigned){
+            let volunId = callAssigned[userId]['volunId'];
+            if (!Object.keys(tmpVolunMap).includes(volunId)){
+                let volunPreferredName = (preferredNames === null || preferredNames[volunId] === null?volunId:preferredNames[volunId]['preferredName']);
+                tmpVolunMap[volunId] = {
+                    preferredName: volunPreferredName,
+                    isChatting: false,
+                    isCalling: true,
+                    client: userId
+                };
+            }else{
+                tmpVolunMap[volunId]['isCalling'] = true;
+                tmpVolunMap[volunId]['client'] = userId;
+            }
+        }
+
+        for (const volunId in onlineTimes){
+            if (!Object.keys(tmpVolunMap).includes(volunId)){
+                let volunPreferredName = (preferredNames === null || preferredNames[volunId] === null?volunId:preferredNames[volunId]['preferredName']);
+                tmpVolunMap[volunId] = {
+                    preferredName: volunPreferredName,
+                    isChatting: false,
+                    isCalling: false,
+                    client: null
+                };
+            }
+        }
+
+        for (const volunId in tmpVolunMap){
+            if (currentVolun !== null && volunId === currentVolun){
+                tmpCurrentClient = tmpVolunMap[volunId]['client'];
+                tmpCurrentMode = (tmpVolunMap[volunId]['isChatting']?'chat':(tmpVolunMap[volunId]['isCalling']?'call':null));
+            }
+            tmpOnlineVoluns.push({
+                volunId,
+                preferredName: tmpVolunMap[volunId]['preferredName'],
+                isChatting: tmpVolunMap[volunId]['isChatting'],
+                isCalling: tmpVolunMap[volunId]['isCalling']
+            });
+        }
+
+        if (currentVolun !== null){
+            if (!Object.keys(tmpVolunMap).includes(currentVolun)) setCurrentVolun(null);
+            setCurrentClient(tmpCurrentClient);
+            setCurrentMode(tmpCurrentMode);
+        }
+
         setOnlineVoluns(tmpOnlineVoluns);
     }, [currentVolun, onlineTimes, chatAssigned, callAssigned, preferredNames]);
+
+
 
     useEffect(()=>{
         if (currentClient !== null && disconnectTimes !== null) setDisconnectTime(disconnectTimes[currentClient]);
@@ -149,8 +175,11 @@ const Supervisor = (props)=>{
     }, [chatLogs, currentVolun]);
 
     useEffect(()=>{
-        if (chatLog.length > 0) messageContainerDiv.current.scrollTo(0, messageContainerDiv.current.scrollHeight);
-    }, [chatLog]);
+        //if (chatLog.length > 0) messageContainerDiv.current.scrollTo(0, messageContainerDiv.current.scrollHeight);
+
+        // TODO: Directly scroll to bottom if the message container is near the bottom enough,
+        // show "New Unread Messages" if otherwise
+    }, [chatLog, messageContainerDiv]);
 
     return (
         <div className="supervisor">

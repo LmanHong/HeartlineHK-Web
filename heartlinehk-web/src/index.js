@@ -22,11 +22,12 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.auth().useEmulator("http://localhost:9099");
-firebase.database().useEmulator("localhost", 9000);
-firebase.storage().useEmulator("localhost", 9199);
-firebase.functions().useEmulator("localhost", 5001);
-
+if (window.location.hostname === "localhost"){
+  firebase.auth().useEmulator("http://localhost:9099");
+  firebase.database().useEmulator("localhost", 9000);
+  firebase.storage().useEmulator("localhost", 9199);
+  firebase.functions().useEmulator("localhost", 5001);
+}
 
 ReactDOM.render(
   <React.StrictMode>

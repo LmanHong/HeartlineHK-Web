@@ -95,7 +95,7 @@ const callReducer = (state, action)=>{
 };
 
 export function useCall(currentUser){
-    const [currentActivity, phoneNumber, tLoading, tError, updateActivity, updateTask] = useTwilio();
+    const [currentActivity, phoneNumber, tLoading, tError, updateActivity, updateTask] = useTwilio(currentUser);
     const [callQueueRef, qLoading, qError, callQueue] = useDatabaseList('call_queue', 'time', false, SORT_ORDERS.ASCENDING);
     const [callAssignedRef, aLoading, aError, callAssigned] = useDatabase('call_assigned');
     const [state, dispatch] = useReducer(callReducer, initialState);
@@ -120,7 +120,7 @@ export function useCall(currentUser){
     const startNewCall = async ()=>{
         try{
             if (tLoading) throw new HeartlineNotReadyError("Twilio is still loading!");
-            else if (qLoading || aLoading) throw new HeartlineNotReadyError("Database is still loading!");
+            //else if (qLoading || aLoading) throw new HeartlineNotReadyError("Database is still loading!");
             else if (tError) throw new Error(tError);
             else if (phoneNumber == null) throw new HeartlineNotFoundError("No Phone Number in Twilio Worker!");
             else if (callQueue.length <= 0 ) throw new HeartlineNotFoundError("No available client in call queue!");
@@ -217,7 +217,7 @@ export function useCall(currentUser){
         state.currentClient, 
         state.assignedStatus, 
         state.timeElapsed, 
-        (tLoading || qLoading || aLoading || state.waitingTimer != null), 
+        (tLoading || state.waitingTimer != null), 
         (tError || qError || aError),
         startNewCall,
         endCall
