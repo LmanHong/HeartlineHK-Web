@@ -314,11 +314,18 @@ exports.requestChangePassword = functions.https.onCall(async (data, context)=>{
 
 
 exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
-    const monthlyDonationPrices = {
+    const monthlyDonationPricesTest = {
         50: "price_1KG46yKGhlOCSkyzHWK6uMj4",
         100: "price_1KG48JKGhlOCSkyzlcegIcxs",
         200: "price_1KG48TKGhlOCSkyzqv0DWM9X",
         500: "price_1KG48cKGhlOCSkyzlrxskNsV"
+    }
+
+    const monthlyDonationPricesProduction = {
+        50: "price_1LGczXKGhlOCSkyzbZ4txT1h",
+        100: "price_1LGcxKKGhlOCSkyzyW3tJ5DU",
+        200: "price_1LGcx7KGhlOCSkyzkXuS3oG0",
+        500: "price_1LGcwlKGhlOCSkyzQ48mrNbn"
     }
     
     const donationType = data.donationType;
@@ -327,17 +334,15 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
     console.log(donationType, donationAmount);
 
     if (donationType == null || (donationType != "one-time" && donationType != "monthly")) throw new functions.https.HttpsError('invalid-argument', "Donation Type must either be one-time or monthly!");
-    else if (Number.isNaN(donationAmount) || donationAmount < 50) throw new functions.https.HttpsError('invalid-argument', "Donation amount must be a number larger than 50!");
-
-    const referenceIdRef = await admin.database().ref('stripe_records').push();
-    console.log(referenceIdRef.key);
+    else if (Number.isNaN(donationAmount) || donationAmount < 30) throw new functions.https.HttpsError('invalid-argument', "Donation amount must be a number larger than 30!");
+    else if (donationType == 'monthly' && !monthlyDonationPricesProduction[donationAmount]) throw new functions.https.HttpsError('invalid-argument', "Monthly donation amount must be either 50, 100, 200 or 500!");
 
     const paymentMethods = ["card"];
     let lineItem = {
         quantity: 1
     };
     if (donationType == "one-time"){
-        paymentMethods.push("wechat_pay");
+        //paymentMethods.push("wechat_pay");
         lineItem.price_data = {
             currency: "hkd",
             product_data: {
@@ -345,10 +350,9 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
             },
             unit_amount_decimal: donationAmount*100 
         }
-    }else lineItem.price = monthlyDonationPrices[donationAmount];
+    }else lineItem.price = monthlyDonationPricesProduction[donationAmount];
 
     const sessionObject = {
-        client_reference_id: referenceIdRef.key,
         expires_at: Math.floor(Date.now() / 1000) + 3600,
         line_items: [lineItem],
         mode: (donationType=="one-time"?"payment":"subscription"),
@@ -358,19 +362,17 @@ exports.createCheckoutSession = functions.https.onCall(async (data, context)=>{
                 client: "web"
             }
         },
-        success_url: `http://localhost:3000/donation-success?reference_id=${referenceIdRef.key}`,
-        cancel_url: 'http://localhost:3000/donation'
+        success_url: `https://heartlinehk.com/donation-success`,
+        cancel_url: 'https://heartlinehk.com/donation'
     };
     if (donationType == "one-time") sessionObject.submit_type = "donate";
 
     const session = await stripe.checkout.sessions.create(sessionObject);
-    referenceIdRef.set(session.id);
     console.log(session);
 
     return {
         "redirectUrl": session.url
     }
-
 });
 
 

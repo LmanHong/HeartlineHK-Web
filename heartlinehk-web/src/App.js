@@ -30,10 +30,10 @@ function App() {
             <SupportUs/>
           </Route>
           <Route exact path="/donation">
-            <UnderConstruction />
+            <Donation />
           </Route>
           <Route exact path="/donation-success">
-            <UnderConstruction />
+            <DonationSuccess />
           </Route>
           <Route exact path="/volunteer-recruit">
             <VolunteerRecruit/>

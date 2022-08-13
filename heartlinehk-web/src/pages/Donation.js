@@ -35,6 +35,7 @@ const Donation = ()=>{
                 console.error("ERROR: "+error.message);
                 alert(error.message);
             }
+            setIsLoading(false);
         }
 
     }
@@ -68,8 +69,8 @@ const Donation = ()=>{
                 {donationType === DONATION_TYPE.ONE_TIME && <>
                     <input type="radio" name="donation-amount" id="donation-amount-variable" value="variable" defaultChecked={false} onClick={(e)=>document.querySelector('#variable-amount-input').focus()}/>
                     <label htmlFor="donation-amount-variable">HKD
-                        <input type="number" name="variable-amount" id="variable-amount-input" min={50} step={0.5} placeholder="(自定)" required={isVariableAmountRequired} onFocus={()=>{document.querySelector('#donation-amount-variable').checked = true; setIsVariableAmountRequired(true)}}/>
-                        <label htmlFor="variable-amount-input">最少HKD50</label>
+                        <input type="number" name="variable-amount" id="variable-amount-input" min={30} step={0.5} placeholder="(自定)" required={isVariableAmountRequired} onFocus={()=>{document.querySelector('#donation-amount-variable').checked = true; setIsVariableAmountRequired(true)}}/>
+                        <label htmlFor="variable-amount-input">最少HKD30</label>
                     </label>
                 </>}
             </div>
